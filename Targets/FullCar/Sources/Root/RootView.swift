@@ -14,7 +14,7 @@ import Observation
 @MainActor
 @Observable
 final class RootViewModel {
-    var appState: FullCar.State = .root 
+    var appState: FullCar.State = FullCar.shared.appState
 
     // 자동로그인 시도
     // 로컬 스토리지에 토큰 있는지 검사해서, 유효성 검사하고
@@ -22,7 +22,7 @@ final class RootViewModel {
     // 토큰이 없으면 로그인 화면으로
     func onFirstTask() async {
         try? await Task.sleep(for: .seconds(1))
-        if Bool.random() {
+        if false {
             appState = .home
         } else {
             appState = .login

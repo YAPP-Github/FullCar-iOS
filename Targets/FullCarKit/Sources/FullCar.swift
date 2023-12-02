@@ -8,8 +8,12 @@
 
 import Foundation
 
-public struct FullCar {
+@Observable
+public final class FullCar {
+    public static let shared: FullCar = .init()
+    private init() { }
     
+    public var appState: FullCar.State = .root
 }
 
 public extension FullCar {

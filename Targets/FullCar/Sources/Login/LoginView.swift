@@ -11,14 +11,30 @@ import SwiftUI
 @MainActor
 @Observable
 final class LoginViewModel {
+    var appState: FullCar.State = FullCar.shared.appState
     
+    func loginButtonTapped() async {
+        appState = .home
+    }
 }
 
 struct LoginView: View {
     let viewModel: LoginViewModel
     
     var body: some View {
-        Text("Hello, World!")
+        bodyView
+    }
+    
+    private var bodyView: some View {
+        loginButton
+    }
+    
+    private var loginButton: some View {
+        Button { 
+            Task { await viewModel.loginButtonTapped() }
+        } label: {
+            Text("로그인 버튼")
+        }
     }
 }
 
