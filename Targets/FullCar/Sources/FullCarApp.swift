@@ -5,7 +5,7 @@ import FullCarUI
 struct FullCarApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            RootView(viewModel: .init())
         }
     }
 }
