@@ -41,7 +41,7 @@ extension Project {
             bundleId: "com.fullcar.\(name)",
             infoPlist: .default,
             sources: ["Targets/\(name)/Sources/**"],
-            resources: [],
+            resources: ["Targets/\(name)/Resources/**"],
             dependencies: []
         )
         let tests = Target(
