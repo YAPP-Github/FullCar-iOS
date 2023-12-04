@@ -7,6 +7,7 @@
 //
 
 import SwiftUI
+import FullCarKit
 
 @MainActor
 @Observable
@@ -14,7 +15,7 @@ final class LoginViewModel {
     var appState: FullCar.State = FullCar.shared.appState
     
     func loginButtonTapped() async {
-        appState = .home
+        appState = .tab
     }
 }
 

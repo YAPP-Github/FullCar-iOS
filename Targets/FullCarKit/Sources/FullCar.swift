@@ -20,6 +20,13 @@ public extension FullCar {
     enum State {
         case root
         case login 
-        case home
+        case tab
     }
 } 
+
+public extension FullCar {
+    enum Tab: String, Hashable {
+        case home
+        case settings
+    }
+}

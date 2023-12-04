@@ -22,8 +22,8 @@ final class RootViewModel {
     // 토큰이 없으면 로그인 화면으로
     func onFirstTask() async {
         try? await Task.sleep(for: .seconds(1))
-        if false {
-            appState = .home
+        if true {
+            appState = .tab
         } else {
             appState = .login
         }
@@ -50,8 +50,8 @@ struct RootView: View {
         case .login:
             LoginView(viewModel: .init())
             
-        case .home:
-            HomeView()
+        case .tab:
+            FullCarTabView(viewModel: .init())
         }
     }
 }

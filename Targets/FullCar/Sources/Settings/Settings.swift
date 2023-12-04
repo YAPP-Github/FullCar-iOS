@@ -16,10 +16,10 @@ final class SettingsViewModel {
     
 } 
 
-struct Settings: View {
+struct SettingsView: View {
     let viewModel: SettingsViewModel
     
     var body: some View {
-        Text("")
+        Color.blue
     }
 }

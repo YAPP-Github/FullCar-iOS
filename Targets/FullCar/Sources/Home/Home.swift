@@ -7,13 +7,21 @@
 //
 
 import SwiftUI
+import Observation
+
+@MainActor
+@Observable
+final class HomeViewModel {
+    
+} 
 
 struct HomeView: View {
+    let viewModel: HomeViewModel
     var body: some View {
-        Text("Hello, World!")
+        Color.green
     }
 }
 
 #Preview {
-    HomeView()
+    HomeView(viewModel: .init())
 }
