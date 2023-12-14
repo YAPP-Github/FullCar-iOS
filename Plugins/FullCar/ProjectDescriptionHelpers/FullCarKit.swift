@@ -12,10 +12,9 @@ public let fullCarKit: Target = .makeModule(
     name: "FullCarKit", 
     bundleId: "com.fullcar.kit", 
     dependencies: [
-//        .alamofire,
-//        .analytics,
-//        .crashlytics,
-//        .dependencies,
-//        .dependenciesMacros,
+        .alamofire,
+        .analytics,
+        .crashlytics,
+        .dependencies,
     ]
 )

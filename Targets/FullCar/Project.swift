@@ -20,7 +20,12 @@ let project = Project(
         disableSynthesizedResourceAccessors: true
     ),
     packages: [],
-    settings: .settings(configurations: .app),
+    settings: .settings(
+        base: [
+            "OTHER_LDFLAGS": "-Objc $(inherited)",
+        ], 
+        configurations: .app
+    ),
     targets: [
         mainTarget,
     ],
