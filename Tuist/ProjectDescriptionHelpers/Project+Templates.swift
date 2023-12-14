@@ -5,21 +5,35 @@ import ProjectDescription
 /// Create your own conventions, e.g: a func that makes sure all shared targets are "static frameworks"
 /// See https://docs.tuist.io/guides/helpers/
 
+import MyPlugin
+
 extension Project {
     /// Helper function to create the Project for this ExampleApp
     public static func app(
         name: String,
         platform: Platform,
-        additionalTargets: [String]
+        additionalTargets: [String] = []
     ) -> Project {
         var targets = makeAppTargets(
             name: name,
             platform: platform,
             dependencies: additionalTargets.map { TargetDependency.target(name: $0) }
         )
-        targets += additionalTargets.flatMap { 
-            makeFrameworkTargets(name: $0, platform: platform)
-        }
+        targets += makeFrameworkTargets(
+            name: "FullCarKit", 
+            platform: .iOS,
+            dependencies: [
+                .alamofire,
+                .analytics,
+                .crashlytics,
+                .dependencies,
+//                .dependenciesMacros,
+            ]
+        )
+        targets += makeFrameworkTargets(
+            name: "FullCarUI", 
+            platform: .iOS
+        )
         return Project(
             name: name,
             organizationName: "com.fullcar",
@@ -32,7 +46,8 @@ extension Project {
     /// Helper function to create a framework target and an associated unit test target
     private static func makeFrameworkTargets(
         name: String,
-        platform: Platform
+        platform: Platform,
+        dependencies: [ProjectDescription.TargetDependency] = []
     ) -> [Target] {
         let sources = Target(
             name: name,
@@ -42,7 +57,7 @@ extension Project {
             infoPlist: .default,
             sources: ["Targets/\(name)/Sources/**"],
             resources: ["Targets/\(name)/Resources/**"],
-            dependencies: []
+            dependencies: [] + dependencies
         )
         let tests = Target(
             name: "\(name)Tests",
