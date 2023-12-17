@@ -19,7 +19,7 @@ public struct AccountService {
     }
 
     public func login(accessToken: String) throws {
-        let response = api.login(accessToken: accessToken)
+        let response = api.login(accessToken)
 
         switch response {
         case .success(let token):

@@ -10,15 +10,23 @@ import Foundation
 import Dependencies
 
 struct AccountAPI {
-    func login(accessToken: String) -> Result<String, Error> {
-        // 네트워크 통신
-        let response = Result<String, Error>.success("account token 발급 완료")
-        return response
+    var login: (_ accessToken: String) -> Result<String, Error>
+    var logout: () -> Void
+    var leave: () -> Void
+}
+
+extension AccountAPI: DependencyKey {
+    static var liveValue: AccountAPI {
+        return  AccountAPI(
+            login: { accessToken in
+                // 추후 네트워크 통신 부분
+                let response = Result<String, Error>.success("account token 발급 완료")
+                return response
+            },
+            logout: { },
+            leave: { }
+        )
     }
-
-    func logout() { }
-
-    func leave() { }
 }
 
 extension DependencyValues {
@@ -26,8 +34,4 @@ extension DependencyValues {
         get { self[AccountAPI.self] }
         set { self[AccountAPI.self] = newValue }
     }
-}
-
-extension AccountAPI: DependencyKey {
-    static let liveValue: AccountAPI = .init()
 }
