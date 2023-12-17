@@ -17,17 +17,17 @@ final class LoginViewModel {
 
     @ObservationIgnored @Dependency(\.login) var login
 
-    var appState: FullCar.State = FullCar.shared.appState
+    let fullCar = FullCar.shared
 
     func kakaoLoginButtonTapped() async {
         await login.kakaoLogin() {
-            self.appState = .tab
+            self.fullCar.appState = .tab
         }
     }
 
     func appleLoginButtonTapped(result: Result<ASAuthorization, Error>) {
         login.appleLogin(result: result) {
-            self.appState = .tab
+            self.fullCar.appState = .tab
         }
     }
 }
@@ -43,6 +43,8 @@ struct LoginView: View {
         VStack {
             kakaoLoginButton
             appleLoginButton
+                // 임시 크기 설정
+                .frame(height: 50)
         }
     }
     
