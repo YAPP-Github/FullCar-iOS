@@ -27,7 +27,8 @@ public extension [Configuration] {
 //                "PROVISIONING_PROFILE_SPECIFIER": "FullCar Development",
 //                // 아직 없는데 추가해야하는 아이들
 //                "APP_UNIVERSAL_LINKS": "",
-            ]
+            ],
+            xcconfig: .relativeToRoot("Targets/FullCar/Resources/APIKeys.xcconfig")
         ),
         .release(
             name: .store,
@@ -47,7 +48,8 @@ public extension [Configuration] {
 //                "PROVISIONING_PROFILE_SPECIFIER": "FullCar Distribution",
 //                /// 아직 없는데 추가해야하는 아이들
 //                "APP_UNIVERSAL_LINKS": "",
-            ]
+            ],
+            xcconfig: .relativeToRoot("Targets/FullCar/Resources/APIKeys.xcconfig")
         )
     ]
 }

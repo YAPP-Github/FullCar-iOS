@@ -19,7 +19,18 @@ public let mainTarget: Target = .init(
             "CFBundleShortVersionString": "1.0",
             "CFBundleVersion": "1",
             "UIMainStoryboardFile": "",
-            "UILaunchStoryboardName": "LaunchScreen"
+            "UILaunchStoryboardName": "LaunchScreen",
+            "LSApplicationQueriesSchemes": [
+              "kakaokompassauth",
+              "kakaolink"
+            ],
+            "KakaoNativeAppKey": "$(KAKAO_NATIVE_APP_KEY)",
+            "CFBundleURLTypes": [
+              [
+                "CFBundleTypeRole": "Editor",
+                "CFBundleURLSchemes": ["kakao$(KAKAO_NATIVE_APP_KEY)"]
+              ]
+            ],
         ]
     ),
     sources: ["Sources/**"],
