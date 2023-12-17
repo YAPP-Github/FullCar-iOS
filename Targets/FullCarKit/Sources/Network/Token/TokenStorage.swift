@@ -17,6 +17,8 @@ struct TokenStorage {
         let encoder = JSONEncoder()
         guard let token = try? encoder.encode(token) else { return }
 
+        self.deleteToken()
+
         Keychain.shared.set(token, forKey: key)
     }
 
