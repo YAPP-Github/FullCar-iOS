@@ -15,7 +15,6 @@ import Dependencies
 @MainActor
 @Observable
 final class RootViewModel {
-
     @ObservationIgnored @Dependency(\.accountService) private var account
 
     var appState: FullCar.State = FullCar.shared.appState
@@ -35,7 +34,6 @@ final class RootViewModel {
 }
 
 struct RootView: View {
-    
     let viewModel: RootViewModel
     
     var body: some View {

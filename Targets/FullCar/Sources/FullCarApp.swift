@@ -22,7 +22,7 @@ struct FullCarApp: App {
     }
 
     private func setupKakaoSDK() {
-//        guard let kakaoNativeAppKey = Bundle.main.kakaoNativeAppKey else { return }
-//        KakaoSDK.initSDK(appKey: kakaoNativeAppKey)
+        guard let kakaoNativeAppKey = Bundle.main.kakaoNativeAppKey else { return }
+        KakaoSDK.initSDK(appKey: kakaoNativeAppKey)
     }
 }

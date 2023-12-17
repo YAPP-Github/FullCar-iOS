@@ -10,7 +10,6 @@ import Foundation
 import Dependencies
 
 public struct AccountService {
-
     @Dependency(\.accountAPI) var api
     @Dependency(\.tokenStorage) var tokenStorage
 
@@ -22,9 +21,9 @@ public struct AccountService {
     public func login(accessToken: String) throws {
         let response = api.login(accessToken: accessToken)
 
-        // 서버에서 받아온 account token 저장
         switch response {
         case .success(let token):
+            // 서버에서 받아온 account token과 유효기간 저장
             let credential = AccountCredential(
                 authToken: token,
                 authTokenExpiration: Date()

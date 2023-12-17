@@ -14,7 +14,6 @@ import AuthenticationServices
 @MainActor
 @Observable
 final class LoginViewModel {
-
     @ObservationIgnored @Dependency(\.login) var login
 
     let fullCar = FullCar.shared
