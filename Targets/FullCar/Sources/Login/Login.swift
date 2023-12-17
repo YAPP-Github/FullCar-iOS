@@ -14,12 +14,12 @@ import AuthenticationServices
 import Dependencies
 
 struct Login {
-    @Dependency(\.accountService) var account
+    @Dependency(\.accountService.login) var login
 
     func kakaoLogin(completion: @escaping () -> Void) async {
         do {
             let accessToken = try await self.authenticateWithKakao()
-            try account.login(accessToken: accessToken)
+            try login(accessToken)
             
             completion()
         } catch {
@@ -33,7 +33,7 @@ struct Login {
                 guard let credential = authorization.credential as? ASAuthorizationAppleIDCredential,
                       let identityToken = credential.identityToken,
                       let token = String(data: identityToken, encoding: .utf8) else { return }
-                try account.login(accessToken: token)
+                try login(token)
 
                 completion()
             } catch {
