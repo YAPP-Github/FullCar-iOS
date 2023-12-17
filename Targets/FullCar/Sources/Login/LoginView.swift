@@ -8,14 +8,27 @@
 
 import SwiftUI
 import FullCarKit
+import Dependencies
+import AuthenticationServices
 
 @MainActor
 @Observable
 final class LoginViewModel {
+
+    @ObservationIgnored @Dependency(\.login) var login
+
     var appState: FullCar.State = FullCar.shared.appState
-    
-    func loginButtonTapped() async {
-        appState = .tab
+
+    func kakaoLoginButtonTapped() async {
+        await login.kakaoLogin() {
+            self.appState = .tab
+        }
+    }
+
+    func appleLoginButtonTapped(result: Result<ASAuthorization, Error>) {
+        login.appleLogin(result: result) {
+            self.appState = .tab
+        }
     }
 }
 
@@ -27,14 +40,25 @@ struct LoginView: View {
     }
     
     private var bodyView: some View {
-        loginButton
+        VStack {
+            kakaoLoginButton
+            appleLoginButton
+        }
     }
     
-    private var loginButton: some View {
-        Button { 
-            Task { await viewModel.loginButtonTapped() }
+    private var kakaoLoginButton: some View {
+        Button {
+            Task { await viewModel.kakaoLoginButtonTapped() }
         } label: {
-            Text("로그인 버튼")
+            Text("카카오 로그인 버튼")
+        }
+    }
+
+    private var appleLoginButton: some View {
+        SignInWithAppleButton { request in
+            request.requestedScopes = []
+        } onCompletion: { result in
+            Task { await viewModel.appleLoginButtonTapped(result: result) }
         }
     }
 }
