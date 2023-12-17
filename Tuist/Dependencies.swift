@@ -7,6 +7,7 @@ let dependencies = Dependencies(
             .firebase,
             .dependencies,
             .alamofire,
+            .kakao
         ],
         baseSettings: .settings(
             configurations: [

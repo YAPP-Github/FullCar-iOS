@@ -27,5 +27,8 @@ public let mainTarget: Target = .init(
     dependencies: [
         .fullCarKit,
         .fullCarUI,
+        .kakaoAuth,
+        .kakaoCommon,
+        .kakaoUser
     ]
 )
