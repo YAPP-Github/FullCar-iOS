@@ -38,6 +38,12 @@ final class RootViewModel {
         guard let kakaoNativeAppKey = Bundle.main.kakaoNativeAppKey else { return }
         KakaoSDK.initSDK(appKey: kakaoNativeAppKey)
     }
+
+    func handleKakaoURL(_ url: URL) {
+        if (AuthApi.isKakaoTalkLoginUrl(url)) {
+            _ = AuthController.handleOpenUrl(url: url)
+        }
+    }
 }
 
 struct RootView: View {
@@ -46,9 +52,7 @@ struct RootView: View {
     var body: some View {
         bodyView
             .onOpenURL { url in
-                if (AuthApi.isKakaoTalkLoginUrl(url)) {
-                    _ = AuthController.handleOpenUrl(url: url)
-                }
+                viewModel.handleKakaoURL(url)
             }
             .onFirstTask {
                 await viewModel.setupKakaoSDK()
