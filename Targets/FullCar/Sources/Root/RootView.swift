@@ -11,6 +11,8 @@ import FullCarUI
 import FullCarKit
 import Observation
 import Dependencies
+import KakaoSDKAuth
+import KakaoSDKCommon
 
 @MainActor
 @Observable
@@ -31,6 +33,11 @@ final class RootViewModel {
             appState = .login
         }
     }
+
+    func setupKakaoSDK() async {
+        guard let kakaoNativeAppKey = Bundle.main.kakaoNativeAppKey else { return }
+        KakaoSDK.initSDK(appKey: kakaoNativeAppKey)
+    }
 }
 
 struct RootView: View {
@@ -38,7 +45,15 @@ struct RootView: View {
     
     var body: some View {
         bodyView
-            .onFirstTask { await viewModel.onFirstTask() }
+            .onOpenURL { url in
+                if (AuthApi.isKakaoTalkLoginUrl(url)) {
+                    _ = AuthController.handleOpenUrl(url: url)
+                }
+            }
+            .onFirstTask {
+                await viewModel.setupKakaoSDK()
+                await viewModel.onFirstTask()
+            }
     }
     
     @MainActor
