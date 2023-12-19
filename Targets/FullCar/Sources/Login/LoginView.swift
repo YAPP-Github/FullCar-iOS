@@ -19,8 +19,12 @@ final class LoginViewModel {
     let fullCar = FullCar.shared
 
     func kakaoLoginButtonTapped() async {
-        await account.kakaoLogin() {
+        do {
+            try await account.kakaoLogin()
             self.fullCar.appState = .tab
+        } catch {
+            self.fullCar.appState = .login
+            print(error)
         }
     }
 

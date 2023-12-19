@@ -13,17 +13,21 @@ import KakaoSDKUser
 import AuthenticationServices
 import Dependencies
 
-struct FullCarAccount {
+final class FullCarAccount {
     @Dependency(\.accountService.login) var login
 
-    func kakaoLogin(completion: @escaping () -> Void) async {
-        do {
-            let accessToken = try await self.authenticateWithKakao()
+    private var continuation: CheckedContinuation<String, Error>?
+
+    @MainActor
+    func kakaoLogin() async throws {
+        if self.continuation == nil {
+            let accessToken: String = try await withCheckedThrowingContinuation { continuation in
+                authenticateWithKakao()
+                self.continuation = continuation
+            }
             try login(accessToken)
-            
-            completion()
-        } catch {
-            print(error)
+        } else {
+            throw LoginError.continuationAlreadySet
         }
     }
 
@@ -42,27 +46,23 @@ struct FullCarAccount {
         }
     }
 
-    private func authenticateWithKakao() async throws -> String {
-        return try await withCheckedThrowingContinuation { continuation in
-            let completion: ((OAuthToken?, Error?) -> Void) = { token, error in
-                if let error = error {
-                    continuation.resume(throwing: error)
-                } else {
-                    guard let accessToken = token?.accessToken else {
-                        continuation.resume(throwing: LoginError.kakaoTokenNil)
-                        return
-                    }
-                    continuation.resume(returning: accessToken)
+    private func authenticateWithKakao() {
+        let completion: ((OAuthToken?, Error?) -> Void) = { token, error in
+            if let error = error {
+                self.continuation?.resume(throwing: error)
+            } else {
+                guard let accessToken = token?.accessToken else {
+                    self.continuation?.resume(throwing: LoginError.kakaoTokenNil)
+                    return
                 }
+                self.continuation?.resume(returning: accessToken)
             }
+        }
 
-            DispatchQueue.main.async {
-                if UserApi.isKakaoTalkLoginAvailable() {
-                    UserApi.shared.loginWithKakaoTalk(completion: completion)
-                } else {
-                    UserApi.shared.loginWithKakaoAccount(completion: completion)
-                }
-            }
+        if UserApi.isKakaoTalkLoginAvailable() {
+            UserApi.shared.loginWithKakaoTalk(completion: completion)
+        } else {
+            UserApi.shared.loginWithKakaoAccount(completion: completion)
         }
     }
 }
@@ -75,6 +75,7 @@ extension FullCarAccount {
 
     enum LoginError: Error {
         case kakaoTokenNil
+        case continuationAlreadySet
     }
 }
 
