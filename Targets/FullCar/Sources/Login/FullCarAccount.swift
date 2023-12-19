@@ -1,5 +1,5 @@
 //
-//  Login.swift
+//  FullCarAccount.swift
 //  FullCar
 //
 //  Created by Sunny on 12/17/23.
@@ -13,7 +13,7 @@ import KakaoSDKUser
 import AuthenticationServices
 import Dependencies
 
-struct Login {
+struct FullCarAccount {
     @Dependency(\.accountService.login) var login
 
     func kakaoLogin(completion: @escaping () -> Void) async {
@@ -67,7 +67,7 @@ struct Login {
     }
 }
 
-extension Login {
+extension FullCarAccount {
     enum LoginType: String {
         case kakao
         case apple
@@ -79,12 +79,12 @@ extension Login {
 }
 
 extension DependencyValues {
-    var login: Login {
-        get { self[Login.self] }
-        set { self[Login.self] = newValue }
+    var fullCarAccount: FullCarAccount {
+        get { self[FullCarAccount.self] }
+        set { self[FullCarAccount.self] = newValue }
     }
 }
 
-extension Login: DependencyKey {
-    static var liveValue: Login = .init()
+extension FullCarAccount: DependencyKey {
+    static var liveValue: FullCarAccount = .init()
 }

@@ -14,18 +14,18 @@ import AuthenticationServices
 @MainActor
 @Observable
 final class LoginViewModel {
-    @ObservationIgnored @Dependency(\.login) var login
+    @ObservationIgnored @Dependency(\.fullCarAccount) var account
 
     let fullCar = FullCar.shared
 
     func kakaoLoginButtonTapped() async {
-        await login.kakaoLogin() {
+        await account.kakaoLogin() {
             self.fullCar.appState = .tab
         }
     }
 
     func appleLoginButtonTapped(result: Result<ASAuthorization, Error>) {
-        login.appleLogin(result: result) {
+        account.appleLogin(result: result) {
             self.fullCar.appState = .tab
         }
     }
