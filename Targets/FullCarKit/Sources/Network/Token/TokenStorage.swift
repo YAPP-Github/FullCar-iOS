@@ -10,21 +10,20 @@ import Foundation
 import Dependencies
 
 struct TokenStorage {
-    // 토큰의 key값
-    private let key = "accountCredential"
+    static let key = "accountCredential"
 
     func save(token: AccountCredential) {
         let encoder = JSONEncoder()
         guard let token = try? encoder.encode(token) else { return }
 
-        self.deleteToken()
+        deleteToken()
 
-        Keychain.shared.set(token, forKey: key)
+        Keychain.shared.set(token, forKey: TokenStorage.key)
     }
 
     func loadToken() -> AccountCredential? {
         let decoder = JSONDecoder()
-        guard let data = Keychain.shared.getData(key),
+        guard let data = Keychain.shared.getData(TokenStorage.key),
               let credential = try? decoder.decode(AccountCredential.self, from: data) else {
             return nil
         }
@@ -33,7 +32,7 @@ struct TokenStorage {
     }
 
     func deleteToken() {
-        Keychain.shared.delete(key)
+        Keychain.shared.delete(TokenStorage.key)
     }
 }
 
