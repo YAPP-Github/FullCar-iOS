@@ -9,6 +9,7 @@
 import Foundation
 
 struct AccountCredential: Codable {
-    let authToken: String
-    let authTokenExpiration: Date
+    let accessToken: String
+    let refreshToken: String
+    let accessTokenExpiration: Date
 }
