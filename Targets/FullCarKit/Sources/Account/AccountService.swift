@@ -10,10 +10,11 @@ import Foundation
 import Dependencies
 
 public struct AccountService {
-    public var hasValidToken: () -> Bool
-    public var login: (_ accessToken: String) throws -> Void
+    public var hasValidToken: () async -> Bool
+    public var login: (_ accessToken: String) async throws -> Void
     public var logout: () -> Void
-    public var leave: () -> Void
+    public var leave: () async -> Void
+    public var refresh: (_ accessToken: String, _ refreshToken: String) async -> Void
 }
 
 extension AccountService: DependencyKey {
@@ -23,20 +24,21 @@ extension AccountService: DependencyKey {
 
         return AccountService(
             hasValidToken: {
-                guard let credential = tokenStorage.loadToken() else { return false }
-                return credential.authTokenExpiration > Date()
+                guard let credential = await tokenStorage.loadToken() else { return false }
+                return credential.accessTokenExpiration > Date()
             },
             login: { accessToken in
                 let response = api.login(accessToken)
 
                 switch response {
                 case .success(let token):
-                    // 서버에서 받아온 account token과 유효기간 저장
+                    // 서버에서 받아온 access token과 유효기간, refresh token 저장
                     let credential = AccountCredential(
-                        authToken: token,
-                        authTokenExpiration: Date()
+                        accessToken: token,
+                        refreshToken: "refresh Token",
+                        accessTokenExpiration: Date()
                     )
-                    tokenStorage.save(token: credential)
+                    await tokenStorage.save(token: credential)
                 case .failure(let error):
                     throw error
                 }
@@ -46,9 +48,19 @@ extension AccountService: DependencyKey {
             },
             leave: {
                 api.leave()
-                tokenStorage.deleteToken()
-            }
-        )
+                await tokenStorage.deleteToken()
+            },
+            refresh: { accessToken, refreshToken in
+                let response = api.refresh(accessToken, refreshToken)
+
+                // 서버에서 받아온 access token update
+                let credential = AccountCredential(
+                    accessToken: "재발급 access Token",
+                    refreshToken: "refresh Token",
+                    accessTokenExpiration: Date()
+                )
+                await tokenStorage.save(token: credential)
+            })
     }
 }
 

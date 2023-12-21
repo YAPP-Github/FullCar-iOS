@@ -13,6 +13,7 @@ struct AccountAPI {
     var login: (_ accessToken: String) -> Result<String, Error>
     var logout: () -> Void
     var leave: () -> Void
+    var refresh: (_ accessToken: String, _ refreshToken: String) -> Result<String, Error>
 }
 
 extension AccountAPI: DependencyKey {
@@ -24,8 +25,11 @@ extension AccountAPI: DependencyKey {
                 return response
             },
             logout: { },
-            leave: { }
-        )
+            leave: { },
+            refresh: { accessToken, refreshToken in
+                let response = Result<String, Error>.success("access token 재발급 완료")
+                return response
+            })
     }
 }
 

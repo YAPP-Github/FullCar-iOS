@@ -9,7 +9,7 @@
 import Foundation
 import Dependencies
 
-struct TokenStorage {
+actor TokenStorage {
     static let key = "accountCredential"
 
     func save(token: AccountCredential) {
