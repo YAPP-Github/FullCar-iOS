@@ -25,24 +25,20 @@ final class FullCarAccount {
                 authenticateWithKakao()
                 self.continuation = continuation
             }
-            try login(accessToken)
+            try await login(accessToken)
         } else {
             throw LoginError.continuationAlreadySet
         }
     }
 
-    func appleLogin(result: Result<ASAuthorization, Error>, completion: @escaping () -> Void) {
+    func appleLogin(result: Result<ASAuthorization, Error>) async throws {
         if case let .success(authorization) = result {
-            do {
-                guard let credential = authorization.credential as? ASAuthorizationAppleIDCredential,
-                      let identityToken = credential.identityToken,
-                      let token = String(data: identityToken, encoding: .utf8) else { return }
-                try login(token)
-
-                completion()
-            } catch {
-                print(error)
+            guard let credential = authorization.credential as? ASAuthorizationAppleIDCredential,
+                  let identityToken = credential.identityToken,
+                  let token = String(data: identityToken, encoding: .utf8) else {
+                throw LoginError.appleTokenNil
             }
+            try await login(token)
         }
     }
 
@@ -75,6 +71,7 @@ extension FullCarAccount {
 
     enum LoginError: Error {
         case kakaoTokenNil
+        case appleTokenNil
         case continuationAlreadySet
     }
 }

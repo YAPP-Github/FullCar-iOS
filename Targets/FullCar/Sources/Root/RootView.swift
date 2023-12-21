@@ -27,7 +27,7 @@ final class RootViewModel {
     // 토큰이 없으면 로그인 화면으로
     func onFirstTask() async {
         try? await Task.sleep(for: .seconds(1))
-        if account.hasValidToken() {
+        if await account.hasValidToken() {
             appState = .tab
         } else {
             appState = .login

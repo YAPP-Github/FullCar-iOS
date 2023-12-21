@@ -28,9 +28,13 @@ final class LoginViewModel {
         }
     }
 
-    func appleLoginButtonTapped(result: Result<ASAuthorization, Error>) {
-        account.appleLogin(result: result) {
+    func appleLoginButtonTapped(result: Result<ASAuthorization, Error>) async {
+        do {
+            try await account.appleLogin(result: result)
             self.fullCar.appState = .tab
+        } catch {
+            self.fullCar.appState = .login
+            print(error)
         }
     }
 }
