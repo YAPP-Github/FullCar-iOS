@@ -76,13 +76,13 @@ extension FullCarAccount {
     }
 }
 
+extension FullCarAccount: DependencyKey {
+    static var liveValue: FullCarAccount = .init()
+}
+
 extension DependencyValues {
     var fullCarAccount: FullCarAccount {
         get { self[FullCarAccount.self] }
         set { self[FullCarAccount.self] = newValue }
     }
-}
-
-extension FullCarAccount: DependencyKey {
-    static var liveValue: FullCarAccount = .init()
 }
