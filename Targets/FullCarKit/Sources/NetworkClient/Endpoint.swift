@@ -15,25 +15,37 @@ public extension Endpoint {
 
     enum Account {
         case login(accessToken: String)
+        case logout
+        case leave
+        case refresh(accessToken: String, refreshToken: String)
     }
 }
 
 extension Endpoint.Account: URLRequestConfigurable {
     public var url: URLConvertible {
         switch self {
-        case .login(let accessToken): return "https://www.test.com"
+        case .login: return "https://www.test.com"
+        case .logout: return "https://www.test.com"
+        case .leave: return "https://www.test.com"
+        case .refresh: return "https://www.test.com"
         }
     }
     
     public var path: String? {
         switch self {
         case .login: return "/login"
+        case .logout: return "/logout"
+        case .leave: return "/leave"
+        case .refresh: return "/refresh"
         }
     }
     
     public var method: HTTPMethod {
         switch self {
         case .login: return .post
+        case .logout: return .post
+        case .leave: return .post
+        case .refresh: return .post
         }
     }
     
@@ -42,18 +54,30 @@ extension Endpoint.Account: URLRequestConfigurable {
         case .login(let accessToken): return [
             "accessToken": "\(accessToken)"
         ]
+        case .logout: return nil
+        case .leave: return nil
+        case .refresh(accessToken: let accessToken, refreshToken: let refreshToken): return [
+            "accessToken": "\(accessToken)",
+            "refreshToken": "\(refreshToken)"
+        ]
         }
     }
     
     public var headers: [Header]? {
         switch self {
         case .login: return nil
+        case .logout: return nil
+        case .leave: return nil
+        case .refresh: return nil
         }
     }
     
     public var encoder: ParameterEncodable {
         switch self {
         case .login: return JSONEncoding()
+        case .logout: return URLEncoding()
+        case .leave: return URLEncoding()
+        case .refresh: return JSONEncoding()
         }
     }
 }
