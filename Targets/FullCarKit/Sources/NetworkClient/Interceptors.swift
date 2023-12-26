@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import Dependencies
 
 struct ErrorInterceptor: NetworkInterceptor {
     func adapt(urlRequest: URLRequest, options: NetworkRequestOptions) async throws -> URLRequest {
@@ -56,10 +57,12 @@ struct TokenInterceptor: NetworkInterceptor {
 
 extension TokenInterceptor {
     private func addToken(to urlRequest: URLRequest, for options: NetworkRequestOptions) async throws -> URLRequest {
-//        @Dependency(\.togetherAccount) var togetherAccount 
-//        var urlRequest = urlRequest
-//        let credential = try await togetherAccount.token()
-//        urlRequest.setHeader(.authorization("Bearer \(credential.xAuth)"))
+        @Dependency(\.tokenStorage) var tokenStorage
+
+        var urlRequest = urlRequest
+        let credential = try await tokenStorage.loadToken()
+
+        urlRequest.setHeaders([.authorization("Bearer \(credential.accessToken)")])
         return urlRequest
     }
 }
