@@ -12,9 +12,8 @@ import Dependencies
 public struct AccountService {
     public var hasValidToken: () async throws -> Bool
     public var login: (_ accessToken: String) async throws -> Void
-    public var logout: () -> Void
-    public var leave: () async -> Void
-    public var refresh: (_ accessToken: String, _ refreshToken: String) async -> Void
+    public var logout: () async throws -> Void
+    public var leave: () async throws -> Void
 }
 
 extension AccountService: DependencyKey {
@@ -28,39 +27,24 @@ extension AccountService: DependencyKey {
                 return credential.accessTokenExpiration > Date()
             },
             login: { accessToken in
-                let response = api.login(accessToken)
+                let token = try await api.login(accessToken)
 
-                switch response {
-                case .success(let token):
-                    // 서버에서 받아온 access token과 유효기간, refresh token 저장
-                    let credential = AccountCredential(
-                        accessToken: token,
-                        refreshToken: "refresh Token",
-                        accessTokenExpiration: Date()
-                    )
-                    await tokenStorage.save(token: credential)
-                case .failure(let error):
-                    throw error
-                }
-            },
-            logout: {
-                api.logout()
-            },
-            leave: {
-                api.leave()
-                await tokenStorage.deleteToken()
-            },
-            refresh: { accessToken, refreshToken in
-                let response = api.refresh(accessToken, refreshToken)
-
-                // 서버에서 받아온 access token update
                 let credential = AccountCredential(
-                    accessToken: "재발급 access Token",
+                    accessToken: token,
                     refreshToken: "refresh Token",
                     accessTokenExpiration: Date()
                 )
                 await tokenStorage.save(token: credential)
-            })
+            },
+            logout: {
+                try await api.logout()
+                await tokenStorage.deleteToken()
+            },
+            leave: {
+                try await api.leave()
+                await tokenStorage.deleteToken()
+            }
+        )
     }
 }
 
