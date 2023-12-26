@@ -10,7 +10,7 @@ import Foundation
 import Dependencies
 
 public struct AccountService {
-    public var hasValidToken: () async -> Bool
+    public var hasValidToken: () async throws -> Bool
     public var login: (_ accessToken: String) async throws -> Void
     public var logout: () -> Void
     public var leave: () async -> Void
@@ -24,7 +24,7 @@ extension AccountService: DependencyKey {
 
         return AccountService(
             hasValidToken: {
-                guard let credential = await tokenStorage.loadToken() else { return false }
+                let credential = try await tokenStorage.loadToken()
                 return credential.accessTokenExpiration > Date()
             },
             login: { accessToken in

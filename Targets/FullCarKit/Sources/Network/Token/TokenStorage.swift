@@ -12,6 +12,10 @@ import Dependencies
 actor TokenStorage {
     static let key = "accountCredential"
 
+    enum TokenStorageError: Error {
+        case accountCredentialNil
+    }
+
     func save(token: AccountCredential) {
         let encoder = JSONEncoder()
         guard let token = try? encoder.encode(token) else { return }
@@ -21,11 +25,11 @@ actor TokenStorage {
         Keychain.shared.set(token, forKey: TokenStorage.key)
     }
 
-    func loadToken() -> AccountCredential? {
+    func loadToken() throws -> AccountCredential {
         let decoder = JSONDecoder()
         guard let data = Keychain.shared.getData(TokenStorage.key),
               let credential = try? decoder.decode(AccountCredential.self, from: data) else {
-            return nil
+            throw TokenStorageError.accountCredentialNil
         }
 
         return credential
