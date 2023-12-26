@@ -26,6 +26,8 @@ final class FullCarAccount {
                 self.continuation = continuation
             }
             try await login(accessToken)
+
+            self.continuation = nil
         } else {
             throw LoginError.continuationAlreadySet
         }
