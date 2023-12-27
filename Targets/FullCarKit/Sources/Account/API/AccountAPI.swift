@@ -10,9 +10,9 @@ import Foundation
 import Dependencies
 
 struct AccountAPI {
-    var login: (_ accessToken: String) -> Result<String, Error>
-    var logout: () -> Void
-    var leave: () -> Void
+    var login: (_ accessToken: String) async throws -> AccountCredential
+    var logout: () async throws -> Void
+    var leave: () async throws -> Void
     var refresh: (_ refreshToken: String) async throws -> AccountCredential
 }
 
@@ -20,15 +20,29 @@ extension AccountAPI: DependencyKey {
     static var liveValue: AccountAPI {
         return  AccountAPI(
             login: { accessToken in
-                // 추후 네트워크 통신 부분
-                let response = Result<String, Error>.success("account token 발급 완료")
-                return response
+                // 추후 서버에서 받아온 데이터 타입으로 설정
+                let newCredential: AccountCredential = try await NetworkClient.main.request(
+                    endpoint: Endpoint.Account.login(accessToken: accessToken)
+                ).response()
+                return newCredential
             },
-            logout: { },
-            leave: { },
-            refresh: { accessToken, refreshToken in
-                let response = Result<String, Error>.success("access token 재발급 완료")
-                return response
+            logout: {
+                try await NetworkClient.main.request(
+                    endpoint: Endpoint.Account.logout,
+                    interceptor: NetworkClient.tokenInterceptor
+                ).response()
+            },
+            leave: {
+                try await NetworkClient.main.request(
+                    endpoint: Endpoint.Account.leave,
+                    interceptor: NetworkClient.tokenInterceptor
+                ).response()
+            },
+            refresh: { refreshToken in
+                let newCredential: AccountCredential = try await NetworkClient.main.request(
+                    endpoint: Endpoint.Account.refresh(refreshToken: refreshToken)
+                ).response()
+                return newCredential
             })
     }
 }
