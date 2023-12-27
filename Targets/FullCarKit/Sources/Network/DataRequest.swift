@@ -31,13 +31,19 @@ public final class DataRequest: NetworkRequestable {
     
     @MainActor
     public func response<Model: Decodable>(with decoder: JSONDecoder = .init()) async throws -> Model {
-        let response = try await response()
+        let response = try await fetchResponse()
         try self.validate(response: response)
         let result: Model = try self.decode(with: decoder, response: response)
         return result
     }
-    
-    private func response() async throws -> NetworkResponse {
+
+    @MainActor
+    public func response() async throws {
+        let response = try await fetchResponse()
+        try self.validate(response: response)
+    }
+
+    private func fetchResponse() async throws -> NetworkResponse {
         let initialRequest = try endpoint.asURLRequest()
         let urlRequest = try await adapt(request: initialRequest)
         let response = try await dataTask(with: urlRequest)
