@@ -27,13 +27,8 @@ extension AccountService: DependencyKey {
                 return credential.accessTokenExpiration > Date()
             },
             login: { accessToken in
-                let token = try await api.login(accessToken)
+                let credential = try await api.login(accessToken)
 
-                let credential = AccountCredential(
-                    accessToken: token,
-                    refreshToken: "refresh Token",
-                    accessTokenExpiration: Date()
-                )
                 await tokenStorage.save(token: credential)
             },
             logout: {

@@ -17,7 +17,7 @@ public extension Endpoint {
         case login(accessToken: String)
         case logout
         case leave
-        case refresh(accessToken: String, refreshToken: String)
+        case refresh(refreshToken: String)
     }
 }
 
@@ -56,8 +56,7 @@ extension Endpoint.Account: URLRequestConfigurable {
         ]
         case .logout: return nil
         case .leave: return nil
-        case .refresh(accessToken: let accessToken, refreshToken: let refreshToken): return [
-            "accessToken": "\(accessToken)",
+        case .refresh(refreshToken: let refreshToken): return [
             "refreshToken": "\(refreshToken)"
         ]
         }

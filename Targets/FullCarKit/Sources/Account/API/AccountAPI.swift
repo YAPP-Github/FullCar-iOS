@@ -13,7 +13,7 @@ struct AccountAPI {
     var login: (_ accessToken: String) -> Result<String, Error>
     var logout: () -> Void
     var leave: () -> Void
-    var refresh: (_ accessToken: String, _ refreshToken: String) -> Result<String, Error>
+    var refresh: (_ refreshToken: String) async throws -> AccountCredential
 }
 
 extension AccountAPI: DependencyKey {
