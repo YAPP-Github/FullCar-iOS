@@ -27,7 +27,7 @@ final class RootViewModel {
     // 토큰이 없으면 로그인 화면으로
     func onFirstTask() async {
         try? await Task.sleep(for: .seconds(1))
-        if await account.hasValidToken() {
+        if ((try? await account.hasValidToken()) != nil) {
             appState = .tab
         } else {
             appState = .login
@@ -69,8 +69,13 @@ struct RootView: View {
 //            Image("런치스크린 이미지 나오면!", bundle: .main)
                 
         case .login:
-            LoginView(viewModel: .init())
-            
+            LoginView(
+                viewModel: withDependencies({
+                    $0.accountService = .testValue
+                }, operation: {
+                    LoginViewModel()
+                })
+            )
         case .tab:
             FullCarTabView(viewModel: .init())
         }

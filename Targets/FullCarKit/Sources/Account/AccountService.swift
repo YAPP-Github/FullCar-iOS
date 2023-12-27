@@ -43,6 +43,28 @@ extension AccountService: DependencyKey {
     }
 }
 
+extension AccountService: TestDependencyKey {
+    static public var testValue: AccountService {
+        @Dependency(\.accountAPI) var api
+
+        return AccountService(
+            hasValidToken: { return false },
+            login: { accessToken in
+                // 실제 서버 통신 대신 목데이터 사용
+                let credential = AccountCredential(
+                    accessToken: "access Token",
+                    refreshToken: "refresh Token",
+                    accessTokenExpiration: Date()
+                )
+
+                print("test/ login credential: \(credential)")
+            },
+            logout: { },
+            leave: { }
+        )
+    }
+}
+
 extension DependencyValues {
     public var accountService: AccountService {
         get { self[AccountService.self] }
