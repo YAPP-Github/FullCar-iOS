@@ -19,10 +19,14 @@ public extension TargetDependency {
     static let alamofire: TargetDependency = .external(name: "Alamofire")
     static let crashlytics: TargetDependency = .external(name: "FirebaseCrashlytics")
     static let analytics: TargetDependency = .external(name: "FirebaseAnalytics")
+    static let kakaoAuth: TargetDependency = .external(name: "KakaoSDKAuth")
+    static let kakaoCommon: TargetDependency = .external(name: "KakaoSDKCommon")
+    static let kakaoUser: TargetDependency = .external(name: "KakaoSDKUser")
 }
 
 public extension Package {
     static let firebase: Self = .package(url: "https://github.com/firebase/firebase-ios-sdk", .upToNextMajor(from: "10.19.0"))
     static let dependencies: Self = .package(url: "https://github.com/pointfreeco/swift-dependencies", .upToNextMajor(from: "1.1.2"))
     static let alamofire: Self = .package(url: "https://github.com/Alamofire/Alamofire", .upToNextMajor(from: "5.8.1"))
+    static let kakao: Self = .package(url: "https://github.com/kakao/kakao-ios-sdk", .upToNextMajor(from: "2.19.0"))
 }
