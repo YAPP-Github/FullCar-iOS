@@ -10,23 +10,38 @@ import SwiftUI
 
 public enum Pretendard {
     public enum Style {
-        case heading1 // 22, bold
-        case heading2 // 18, bold
-        case heading3 // 18, semibold
+        /// 22, bold
+        case heading1
+        /// 18, bold
+        case heading2
+        /// 18, semibold
+        case heading3
 
-        case body1 // 17, bold
-        case body2 // 17, semibold
-        case body3 // 16, bold
-        case body4 // 16, semibold
-        case body5 // 16, regular
-        case body6 // 15, medium
+        /// 17, bold
+        case body1
+        /// 17, semibold
+        case body2
+        /// 16, bold
+        case body3
+        /// 16, semibold
+        case body4
+        /// 16, regular
+        case body5
+        /// 15, medium
+        case body6
 
-        case caption1 // 14, semibold
-        case caption2 // 14, medium
-        case caption3 // 13, bold
-        case caption4 // 13, medium
-        case caption5 // 12, bold
-        case caption6 // 12, semibold
+        /// 14, semibold
+        case caption1
+        /// 14, medium
+        case caption2
+        /// 13, bold
+        case caption3
+        /// 13, medium
+        case caption4
+        /// 12, bold
+        case caption5
+        /// 12, semibold
+        case caption6
 
         var weight: FontConvertible {
             switch self {
