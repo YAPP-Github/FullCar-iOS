@@ -8,20 +8,10 @@
 
 import SwiftUI
 
-/// 계층 구조가 가장 높은 행동을 유도하는 Button에 한정해 사용합니다.
-///
-/// ### 사용 방법
-///
-/// ```swift
-/// Button(action: {}, label: { Text("Button") })
-///    .buttonStyle(FullCarButtonStyle())
-/// ```
 public struct FullCarButtonStyle: ButtonStyle {
     @Environment(\.isEnabled) private var isEnabled
 
-    private let labelColor = Color.white
-    private let backgroundActiveColor = Color.fullCar_primary
-    private let backgroundInactiveColor = Color.gray30
+    private let textColor = Color.white
 
     private let verticalPadding: CGFloat = 17
     private let radius: CGFloat = 8
@@ -33,8 +23,8 @@ public struct FullCarButtonStyle: ButtonStyle {
             .font(pretendard: .body1)
             .padding(.vertical, verticalPadding)
             .frame(maxWidth: .infinity)
-            .foregroundStyle(labelColor)
-            .background(isEnabled ? backgroundActiveColor : backgroundInactiveColor)
+            .foregroundStyle(textColor)
+            .background(isEnabled ? Color.fullCar_primary : Color.gray30)
             .cornerRadius(radius: radius, corners: .allCorners)
     }
 }
