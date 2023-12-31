@@ -8,23 +8,16 @@
 
 import SwiftUI
 
-// MARK: Warm Gray
+// MARK: GrayScale
 public extension Color {
-    static let warmGray1: Color = .init(uiColor: .init(hex: "D6D2CD"))
-    static let warmGray2: Color = .init(uiColor: .init(hex: "727272"))
-    static let warmGray3: Color = .init(uiColor: .init(hex: "393939"))
-    static let warmGray4: Color = .init(uiColor: .init(hex: "242424"))
-    static let day_black: Color = .init(uiColor: .init(hex: "000000"))
-}
-
-// MARK: Gray
-public extension Color {
-    static let white: Color = .init(uiColor: .init(hex: "FAFAFB"))
-    static let gray1: Color = .init(uiColor: .init(hex: "ECECEC"))
-    static let gray2: Color = .init(uiColor: .init(hex: "B1B8C0"))
-    static let gray3: Color = .init(uiColor: .init(hex: "C4C3C2"))
-    static let gray4: Color = .init(uiColor: .init(hex: "8B95A1"))
-    static let gray5: Color = .init(uiColor: .init(hex: "4E5968"))
+    static let gray10: Color = .init(uiColor: .init(hex: "F7F7FA"))
+    static let gray20: Color = .init(uiColor: .init(hex: "F4F4F4"))
+    static let gray30: Color = .init(uiColor: .init(hex: "ECECEC"))
+    static let gray40: Color = .init(uiColor: .init(hex: "D6D2CD"))
+    static let gray45: Color = .init(uiColor: .init(hex: "B7B7B7"))
+    static let gray50: Color = .init(uiColor: .init(hex: "B1B8C0"))
+    static let gray60: Color = .init(uiColor: .init(hex: "505967")).opacity(0.69)
+    static let black80: Color = .init(uiColor: .init(hex: "242424"))
 }
 
 // MARK: Main Color
@@ -35,6 +28,9 @@ public extension Color {
 
 // MARK: System Color
 public extension Color {
-    static let warning: Color = .init(uiColor: .init(hex: "FF4B4B"))
-    static let success: Color = .init(uiColor: .init(hex: "00CF85"))
+    static let red100: Color = .init(uiColor: .init(hex: "FF4B4B"))
+    static let red50: Color = .init(uiColor: .init(hex: "FEE8E1"))
+
+    static let green100: Color = .init(uiColor: .init(hex: "00CF85"))
+    static let green50: Color = .init(uiColor: .init(hex: "E1FEE9"))
 }
