@@ -1,5 +1,5 @@
 //
-//  FieldMessage.swift
+//  MessageLabel.swift
 //  FullCarUI
 //
 //  Created by Sunny on 1/2/24.
@@ -9,7 +9,7 @@
 import SwiftUI
 
 /// 가로 정렬의 "메세지 + 아이콘"
-public struct FieldMessage: View {
+public struct MessageLabel: View {
     private let message: Message?
     private let spacing: CGFloat
     private let lineSpacing: CGFloat
@@ -45,9 +45,9 @@ public struct FieldMessage: View {
 struct FieldMessagePreviews: PreviewProvider {
     static var previews: some View {
         VStack(spacing: 20) {
-            FieldMessage(.information("안내 메세지입니다."))
+            MessageLabel(.information("안내 메세지입니다."))
             
-            FieldMessage(.error("에러 메세지입니다."))
+            MessageLabel(.error("에러 메세지입니다."))
         }
     }
 }
