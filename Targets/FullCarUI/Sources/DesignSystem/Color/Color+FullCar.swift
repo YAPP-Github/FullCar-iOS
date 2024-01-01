@@ -10,6 +10,7 @@ import SwiftUI
 
 // MARK: GrayScale
 public extension Color {
+    static let gray5: Color = .init(uiColor: .init(hex: "FAFAFB"))
     static let gray10: Color = .init(uiColor: .init(hex: "F7F7FA"))
     static let gray20: Color = .init(uiColor: .init(hex: "F4F4F4"))
     static let gray30: Color = .init(uiColor: .init(hex: "ECECEC"))
