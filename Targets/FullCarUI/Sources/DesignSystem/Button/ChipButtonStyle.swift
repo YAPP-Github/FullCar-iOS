@@ -11,7 +11,8 @@ import SwiftUI
 public struct ChipButtonStyle: ButtonStyle {
     @Environment(\.isSelected) private var isSelected
 
-    private let padding: CGFloat = 14
+    private let verticalPadding: CGFloat = 11
+    private let horizontalPadding: CGFloat = 14
     private let radius: CGFloat = 50
 
     public init() { }
@@ -19,7 +20,8 @@ public struct ChipButtonStyle: ButtonStyle {
     public func makeBody(configuration: Configuration) -> some View {
         configuration.label
             .font(pretendard: isSelected ? .body6 : .body7)
-            .padding(padding)
+            .padding(.vertical, verticalPadding)
+            .padding(.horizontal, horizontalPadding)
             .foregroundStyle(isSelected ? Color.fullCar_primary : Color.black80)
             .background(isSelected ? Color.fullCar_secondary : Color.white)
             .cornerRadius(radius: radius, corners: .allCorners)
@@ -31,10 +33,20 @@ public struct ChipButtonStyle: ButtonStyle {
     }
 }
 
-#Preview {
-    Button(action: {}, label: {
-        Text("Button")
-    })
-    .buttonStyle(.chip)
-    .isSelected(false)
+struct ChipButtonStylePreviews: PreviewProvider {
+    static var previews: some View {
+        VStack {
+            Button(action: {}, label: {
+                Text("여성")
+            })
+            .buttonStyle(.chip)
+            .isSelected(false)
+
+            Button(action: {}, label: {
+                Text("공개안함")
+            })
+            .buttonStyle(.chip)
+            .isSelected(true)
+        }
+    }
 }
