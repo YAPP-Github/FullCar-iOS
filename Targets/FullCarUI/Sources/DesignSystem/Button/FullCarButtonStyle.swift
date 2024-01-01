@@ -28,3 +28,20 @@ public struct FullCarButtonStyle: ButtonStyle {
             .cornerRadius(radius: radius, corners: .allCorners)
     }
 }
+
+struct FullCarButtonStylePreviews: PreviewProvider {
+    static var previews: some View {
+        VStack {
+            Button(action: {}, label: {
+                Text("다음")
+            })
+            .buttonStyle(.fullCar)
+
+            Button(action: {}, label: {
+                Text("다음")
+            })
+            .buttonStyle(.fullCar)
+            .disabled(true)
+        }
+    }
+}
