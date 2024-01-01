@@ -10,12 +10,7 @@ import SwiftUI
 
 /// 운전자의 정보와 게시글의 상태값을 알려주는 배지입니다.
 public struct Badge: View {
-
     private let type: BadgeType
-
-    private let horizontalPadding: CGFloat = 8
-    private let verticalPadding: CGFloat = 5
-    private let radius: CGFloat = 3
 
     public init(type: BadgeType) {
         self.type = type
@@ -23,40 +18,36 @@ public struct Badge: View {
 
     public var body: some View {
         HStack(spacing: iconSpacing) {
-            icon?
-                .resizable()
-                .frame(width: 16, height: 16)
+            if let icon = icon {
+                icon
+                    .resizable()
+                    .frame(width: 16, height: 16)
+            }
 
-            Text(label)
+            Text(type.rawValue)
                 .font(pretendard: .caption5)
                 .foregroundStyle(textColor)
         }
-        .padding(.horizontal, horizontalPadding)
+        .padding(.horizontal, Constants.horizontalPadding)
+        .padding(.vertical, Constants.verticalPadding)
         .background(backgroundColor)
-        .cornerRadius(radius: radius, corners: .allCorners)
+        .cornerRadius(radius: Constants.radius, corners: .allCorners)
+    }
+}
+
+extension Badge {
+    enum Constants {
+        static let horizontalPadding: CGFloat = 8
+        static let verticalPadding: CGFloat = 5
+        static let radius: CGFloat = 3
     }
 
-    private var label: String {
-        switch type {
-        case .recruite: return "모집중"
-        case .request: return "요청중"
-        case .close: return "마감"
-        case .matching_success: return "매칭 성공"
-        case .matching_cancel: return "매칭 취소"
-        case .driver_female: return "여성 운전자"
-        case .driver_male: return "남성 운전자"
-        case .driving_quiet: return "조용히 가기"
-        case .driving_talk: return "대화하며 가기"
-        }
-    }
-
-    // 아이콘 이미지 임시
     private var icon: Image? {
         switch type {
-        case .driver_female: return .init(systemName: "square.and.arrow.up.circle")
-        case .driver_male: return .init(systemName: "square.and.arrow.up.circle")
-        case .driving_quiet: return .init(systemName: "square.and.arrow.up.circle")
-        case .driving_talk: return .init(systemName: "square.and.arrow.up.circle")
+        case .driver_female: return Icon.image(type: .female)
+        case .driver_male: return Icon.image(type: .male)
+        case .driving_quiet: return Icon.image(type: .quite)
+        case .driving_talk: return Icon.image(type: .talk)
 
         default: return nil
         }
@@ -64,67 +55,79 @@ public struct Badge: View {
 
     private var iconSpacing: CGFloat {
         switch type {
-        case .driver_female: return 2
-        case .driver_male: return 2
-        case .driving_quiet: return 4
-        case .driving_talk: return 4
-
+        case .driver_female, .driver_male : return 2
+        case .driving_quiet, .driving_talk: return 4
         default: return 0
         }
     }
 
     private var backgroundColor: Color {
         switch type {
-        case .recruite: return .secondary
-        case .request: return .secondary
+        case .recruite, .request: return .fullCar_secondary
         case .close: return .gray30
         case .matching_success: return .green50
         case .matching_cancel: return .red50
-        case .driver_female: return .gray10
-        case .driver_male: return .gray10
-        case .driving_quiet: return .gray10
-        case .driving_talk: return .gray10
+        case .driver_female, .driver_male, .driving_quiet, .driving_talk: return .gray10
         }
     }
 
     private var textColor: Color {
         switch type {
-        case .recruite: return .primary
-        case .request: return .primary
+        case .recruite, .request: return .fullCar_primary
         case .close: return .gray60
         case .matching_success: return .green100
         case .matching_cancel: return .red100
-        case .driver_female: return .gray60
-        case .driver_male: return .gray60
-        case .driving_quiet: return .gray60
-        case .driving_talk: return .gray60
+        case .driver_female, .driver_male, .driving_quiet, .driving_talk : return .gray60
         }
     }
 }
 
-extension Badge {
-    public enum BadgeType {
+public extension Badge {
+    enum BadgeType: String {
         /// 모집중
-        case recruite
+        case recruite = "모집중"
         /// 요청중
-        case request
+        case request = "요청중"
         /// 마감
-        case close
+        case close = "마감"
         /// 매칭 성공
-        case matching_success
+        case matching_success = "매칭 성공"
         /// 매칭 취소
-        case matching_cancel
+        case matching_cancel = "매칭 취소"
         /// 여성 운전자
-        case driver_female
+        case driver_female = "여성 운전자"
         /// 남성 운전자
-        case driver_male
+        case driver_male = "남성 운전자"
         /// 조용히 가기
-        case driving_quiet
+        case driving_quiet = "조용히 가기"
         /// 대화하며 가기
-        case driving_talk
+        case driving_talk = "대화하며 가기"
     }
 }
 
-#Preview {
-    Badge(type: .close)
+struct BadgePreviews: PreviewProvider {
+    static var previews: some View {
+        VStack(spacing: 30) {
+            VStack {
+                Badge(type: .recruite)
+                Badge(type: .request)
+                Badge(type: .close)
+            }
+
+            VStack {
+                Badge(type: .matching_success)
+                Badge(type: .matching_cancel)
+            }
+
+            VStack {
+                Badge(type: .driver_female)
+                Badge(type: .driver_male)
+            }
+
+            VStack {
+                Badge(type: .driving_quiet)
+                Badge(type: .driving_talk)
+            }
+        }
+    }
 }
