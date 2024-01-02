@@ -16,11 +16,20 @@ public struct Icon {
 
 extension Icon {
     public enum Symbol {
+        /// Badge
         case female
+        /// Badge
         case male
+        /// Badge
         case quite
+        /// Badge
         case talk
+        /// textField check, Message - .information
         case check
+        /// navigationBar - backButton
+        case back
+        /// navigationBar - destination
+        case car
 
         public var image: Image? {
             if let systemName = systemName {
@@ -50,6 +59,8 @@ extension Icon {
             case .quite: return "square.and.arrow.up.circle"
             case .talk: return "square.and.arrow.up.circle"
             case .check: return "checkmark.circle.fill"
+            case .back: return "chevron.left"
+            case .car: return "car.fill"
             }
         }
     }

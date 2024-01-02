@@ -16,15 +16,6 @@ extension ButtonStyle where Self == FullCarButtonStyle {
     }
 
     /// Basic Filter Chips는 Selected/Unselected에 따라 Default, Active 상태로 분류됩니다. Selected는 Active된 상태로 간주됩니다.
-    ///
-    /// ### 사용 방법
-    /// ```swift
-    /// Button(action: { }, label: {
-    ///     Text("Button")
-    /// })
-    /// .buttonStyle(.chip)
-    /// .isSelected( // viewModel의 isSelect? )
-    /// ```
     public static var chip: ChipButtonStyle {
         ChipButtonStyle()
     }
