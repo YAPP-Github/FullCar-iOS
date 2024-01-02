@@ -11,25 +11,35 @@ import SwiftUI
 public struct ChipButtonStyle: ButtonStyle {
     @Environment(\.isSelected) private var isSelected
 
-    private let verticalPadding: CGFloat = 11
-    private let horizontalPadding: CGFloat = 14
-    private let radius: CGFloat = 50
-
-    public init() { }
-
     public func makeBody(configuration: Configuration) -> some View {
         configuration.label
             .font(pretendard: isSelected ? .body6 : .body7)
-            .padding(.vertical, verticalPadding)
-            .padding(.horizontal, horizontalPadding)
-            .foregroundStyle(isSelected ? Color.fullCar_primary : Color.black80)
-            .background(isSelected ? Color.fullCar_secondary : Color.white)
-            .cornerRadius(radius: radius, corners: .allCorners)
+            .padding(.vertical, Constants.verticalPadding)
+            .padding(.horizontal, Constants.horizontalPadding)
+            .foregroundStyle(isSelected ? Colors.fontColor : Colors.deselectedFontColor)
+            .background(isSelected ? Colors.backgroundColor : Colors.deselectedBackgroundColor)
+            .cornerRadius(radius: Constants.radius, corners: .allCorners)
             .overlay(
-                RoundedRectangle(cornerRadius: radius)
+                RoundedRectangle(cornerRadius: Constants.radius)
                     .inset(by: 0.5)
                     .stroke(isSelected ? Color.fullCar_primary : Color.gray30, lineWidth: 1)
             )
+    }
+}
+
+extension ChipButtonStyle {
+    enum Constants {
+        static let verticalPadding: CGFloat = 11
+        static let horizontalPadding: CGFloat = 14
+        static let radius: CGFloat = 50
+    }
+
+    enum Colors {
+        static let textColor = Color.white
+        static let backgroundColor = Color.fullCar_secondary
+        static let deselectedBackgroundColor = Color.white
+        static let fontColor = Color.fullCar_primary
+        static let deselectedFontColor = Color.black80
     }
 }
 

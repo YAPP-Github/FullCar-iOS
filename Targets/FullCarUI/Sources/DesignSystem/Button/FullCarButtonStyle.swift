@@ -10,22 +10,28 @@ import SwiftUI
 
 public struct FullCarButtonStyle: ButtonStyle {
     @Environment(\.isEnabled) private var isEnabled
-
-    private let textColor = Color.white
-
-    private let verticalPadding: CGFloat = 17
-    private let radius: CGFloat = 8
-
-    public init() { }
     
     public func makeBody(configuration: Configuration) -> some View {
         configuration.label
             .font(pretendard: .body1)
-            .padding(.vertical, verticalPadding)
+            .padding(.vertical, Constants.verticalPadding)
             .frame(maxWidth: .infinity)
-            .foregroundStyle(textColor)
-            .background(isEnabled ? Color.fullCar_primary : Color.gray30)
-            .cornerRadius(radius: radius, corners: .allCorners)
+            .foregroundStyle(Colors.textColor)
+            .background(isEnabled ? Colors.backgroundColor : Colors.disableBackgroundColor)
+            .cornerRadius(radius: Constants.radius, corners: .allCorners)
+    }
+}
+
+extension FullCarButtonStyle {
+    enum Constants {
+        static let verticalPadding: CGFloat = 17
+        static let radius: CGFloat = 8
+    }
+
+    enum Colors {
+        static let textColor = Color.white
+        static let backgroundColor = Color.fullCar_primary
+        static let disableBackgroundColor = Color.gray30
     }
 }
 
