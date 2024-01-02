@@ -13,7 +13,7 @@ public enum Message {
     case information(String, icon: Icon.Symbol? = .check)
     case error(String, icon: Icon.Symbol? = nil)
 
-    public var color: Color {
+    public var fontColor: Color {
         switch self {
         case .information: return Color.fullCar_primary
         case .error: return Color.red100

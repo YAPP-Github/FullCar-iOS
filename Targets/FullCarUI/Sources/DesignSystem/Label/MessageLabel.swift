@@ -37,7 +37,7 @@ public struct MessageLabel: View {
                     .lineSpacing(lineSpacing)
                     .font(pretendard: .caption1)
             }
-            .foregroundStyle(message.color)
+            .foregroundStyle(message.fontColor)
         }
     }
 }

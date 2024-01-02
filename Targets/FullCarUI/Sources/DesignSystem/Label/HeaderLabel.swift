@@ -8,21 +8,11 @@
 
 import SwiftUI
 
-/// SectionView의 Header에 들어가는 HeaderLabel
+/// Header에 위치하는 Label입니다. 필수적으로 입력해야 하는  Content가 존재하는 경우, isRequired 속성을 true로 설정합니다.
 public struct HeaderLabel: View {
     private let value: String
     private let isRequired: Bool
     private let font: Pretendard.Style
-
-    init(
-        value: String,
-        isRequired: Bool,
-        font: Pretendard.Style = .body4
-    ) {
-        self.value = value
-        self.isRequired = isRequired
-        self.font = font
-    }
 
     public var body: some View {
         HStack(spacing: 0) {
@@ -38,9 +28,21 @@ public struct HeaderLabel: View {
     }
 }
 
+public extension HeaderLabel {
+    init(
+        title: String,
+        isRequired: Bool = false,
+        font: Pretendard.Style = .body4
+    ) {
+        self.value = title
+        self.isRequired = isRequired
+        self.font = font
+    }
+}
+
 #Preview {
     HeaderLabel(
-        value: "희망 접선 장소",
+        title: "희망 접선 장소",
         isRequired: true,
         font: .body4
     )

@@ -1,5 +1,5 @@
 //
-//  TextField.swift
+//  FullCarTextField.swift
 //  FullCarUI
 //
 //  Created by Sunny on 1/1/24.
@@ -32,7 +32,7 @@ public struct FullCarTextField: View {
             header: {
                 if let headerText = headerText {
                     HeaderLabel(
-                        value: headerText,
+                        title: headerText,
                         isRequired: isHeaderRequired,
                         font: headerFont
                     )
@@ -115,12 +115,9 @@ extension FullCarTextField {
 
 extension FullCarTextField {
     enum Constants {
-        /// radius
         static let textFieldViewRadius: CGFloat = 10
-        /// padding
         static let footerPadding: CGFloat = 8
         static let textFieldViewPadding: CGFloat = 16
-        /// size
         static let iconSize: CGFloat = 24
     }
 
@@ -149,7 +146,8 @@ struct FullCarTextFieldPreviews: PreviewProvider {
                 value: $text,
                 state: $inputState,
                 placeholder: "회사, 주소 검색",
-                headerText: "Header 제목입니다.",
+                headerText: "회사 입력",
+                isHeaderRequired: true,
                 headerPadding: 5
             )
             .isChecked(false)

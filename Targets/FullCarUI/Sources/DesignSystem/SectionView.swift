@@ -67,7 +67,7 @@ struct SectionViewPreviews: PreviewProvider {
                 }, 
                 header: {
                     HeaderLabel(
-                        value: "희망 접선 장소",
+                        title: "희망 접선 장소",
                         isRequired: true,
                         font: .body4
                     )
@@ -80,7 +80,7 @@ struct SectionViewPreviews: PreviewProvider {
                 },
                 header: {
                     HeaderLabel(
-                        value: "회사 메일을 입력해 주세요.",
+                        title: "회사 메일을 입력해 주세요.",
                         isRequired: false,
                         font: .heading1
                     )
