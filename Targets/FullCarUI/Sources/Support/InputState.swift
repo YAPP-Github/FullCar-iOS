@@ -10,15 +10,16 @@ import SwiftUI
 
 /// TextField의 상태값을 나타내는 타입
 public enum InputState {
-    case normal
+    /// TextField가 선택되지 않았고 , error도 없는 상태
+    case `default`
     case focus
     case error(String)
 
     public var borderColor: Color {
         switch self {
-        case .normal: return Color.gray30
-        case .focus: return Color.fullCar_primary
-        case .error: return Color.red100
+        case .default: return .gray30
+        case .focus: return .fullCar_primary
+        case .error: return .red100
         }
     }
 }

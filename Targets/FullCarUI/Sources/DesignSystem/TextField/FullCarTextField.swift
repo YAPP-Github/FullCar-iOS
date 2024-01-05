@@ -80,7 +80,7 @@ public struct FullCarTextField: View {
         // 에러 상태일 땐, focus상태여도 error상태 그대로 유지
         .onChange(of: isFocused) { oldValue, newValue in
             if case .error = state { return }
-            state = newValue ? .focus : .normal
+            state = newValue ? .focus : .default
         }
     }
 
@@ -128,7 +128,7 @@ extension FullCarTextField {
 
     private var footerTopPadding: CGFloat {
         switch state {
-        case .normal, .focus: return 10
+        case .default, .focus: return 10
         case .error: return 8
         }
     }
@@ -136,7 +136,7 @@ extension FullCarTextField {
 
 struct FullCarTextFieldPreviews: PreviewProvider {
     @State static var text: String = ""
-    @State static var inputState: InputState = .normal
+    @State static var inputState: InputState = .default
 
     @State static var inputState_error: InputState = .error("일치하는 메일 정보가 없습니다.\n회사 메일이 없는 경우 명함으로 인증하기를 이용해 주세요!")
 

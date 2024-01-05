@@ -15,8 +15,8 @@ public enum Message {
 
     public var fontColor: Color {
         switch self {
-        case .information: return Color.fullCar_primary
-        case .error: return Color.red100
+        case .information: return .fullCar_primary
+        case .error: return .red100
         }
     }
 
