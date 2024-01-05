@@ -16,8 +16,8 @@ public struct ChipButtonStyle: ButtonStyle {
             .font(pretendard: isSelected ? .body6 : .body7)
             .padding(.vertical, Constants.verticalPadding)
             .padding(.horizontal, Constants.horizontalPadding)
-            .foregroundStyle(isSelected ? Colors.fontColor : Colors.deselectedFontColor)
-            .background(isSelected ? Colors.backgroundColor : Colors.deselectedBackgroundColor)
+            .foregroundStyle(isSelected ? Colors.font : Colors.deselectedFont)
+            .background(isSelected ? Colors.background : Colors.deselectedBackground)
             .cornerRadius(radius: Constants.radius, corners: .allCorners)
             .overlay(
                 RoundedRectangle(cornerRadius: Constants.radius)
@@ -35,11 +35,11 @@ extension ChipButtonStyle {
     }
 
     enum Colors {
-        static let textColor = Color.white
-        static let backgroundColor = Color.fullCar_secondary
-        static let deselectedBackgroundColor = Color.white
-        static let fontColor = Color.fullCar_primary
-        static let deselectedFontColor = Color.black80
+        static let text: Color = .white
+        static let background: Color = .fullCar_secondary
+        static let deselectedBackground: Color = .white
+        static let font: Color = .fullCar_primary
+        static let deselectedFont: Color = .black80
     }
 }
 

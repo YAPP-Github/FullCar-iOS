@@ -16,8 +16,8 @@ public struct FullCarButtonStyle: ButtonStyle {
             .font(pretendard: .body1)
             .padding(.vertical, Constants.verticalPadding)
             .frame(maxWidth: .infinity)
-            .foregroundStyle(Colors.textColor)
-            .background(isEnabled ? Colors.backgroundColor : Colors.disableBackgroundColor)
+            .foregroundStyle(Colors.text)
+            .background(isEnabled ? Colors.background : Colors.disableBackground)
             .cornerRadius(radius: Constants.radius, corners: .allCorners)
     }
 }
@@ -29,9 +29,9 @@ extension FullCarButtonStyle {
     }
 
     enum Colors {
-        static let textColor = Color.white
-        static let backgroundColor = Color.fullCar_primary
-        static let disableBackgroundColor = Color.gray30
+        static let text: Color = .white
+        static let background: Color = .fullCar_primary
+        static let disableBackground: Color = .gray30
     }
 }
 

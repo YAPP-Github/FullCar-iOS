@@ -63,7 +63,7 @@ public struct FullCarTextField: View {
             }
         }
         .padding(Constants.textFieldViewPadding)
-        .background(Colors.backgroundColor)
+        .background(Colors.background)
         .overlay(
             RoundedRectangle(cornerRadius: Constants.textFieldViewRadius)
                 .stroke(state.borderColor, lineWidth: 1)
@@ -87,7 +87,7 @@ public struct FullCarTextField: View {
     private var icon: some View {
         Icon.image(type: .check)?
             .frame(width: Constants.iconSize)
-            .foregroundStyle(Colors.iconColor)
+            .foregroundStyle(Colors.icon)
     }
 }
 
@@ -122,8 +122,8 @@ extension FullCarTextField {
     }
 
     enum Colors {
-        static let backgroundColor: Color = .gray5
-        static let iconColor: Color = .green100
+        static let background: Color = .gray5
+        static let icon: Color = .green100
     }
 
     private var footerTopPadding: CGFloat {
