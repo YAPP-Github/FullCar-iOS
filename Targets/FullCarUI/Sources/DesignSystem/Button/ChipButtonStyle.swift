@@ -20,8 +20,8 @@ public struct ChipButtonStyle: ButtonStyle {
             .font(pretendard: isSelected ? .body8 : .body9)
             .padding(.vertical, Constants.verticalPadding)
             .padding(.horizontal, Constants.horizontalPadding)
-            .foregroundStyle(style.foreground)
-            .background(style.background)
+            .foregroundStyle(style.dark)
+            .background(style.light)
             .cornerRadius(radius: Constants.radius, corners: .allCorners)
             .overlay(
                 RoundedRectangle(cornerRadius: Constants.radius)
@@ -32,7 +32,7 @@ public struct ChipButtonStyle: ButtonStyle {
 
     private var style: ColorStyle {
         switch isSelected {
-        case true: return .palette(.primary)
+        case true: return .palette(.primary_secondary)
         case false: return .palette(.black)
         }
     }

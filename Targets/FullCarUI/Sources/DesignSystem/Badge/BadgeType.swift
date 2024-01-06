@@ -35,8 +35,8 @@ public enum BadgeType {
 
         var style: ColorStyle {
             switch self {
-            case .recruite, .request: return .palette(.primary)
-            case .close: return .palette(.gray)
+            case .recruite, .request: return .palette(.primary_secondary)
+            case .close: return .palette(.gray60)
             }
         }
     }
@@ -92,6 +92,6 @@ public enum BadgeType {
             return configurable
         }
 
-        var style: ColorStyle { return .palette(.gray) }
+        var style: ColorStyle { return .palette(.gray60) }
     }
 }

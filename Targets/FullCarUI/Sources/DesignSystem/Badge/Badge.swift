@@ -24,14 +24,14 @@ public struct Badge<LeadingIcon: View, Label: View, TrailingIcon: View>: View {
 
             label
                 .font(pretendard: configurable.font)
-                .foregroundStyle(style.foreground)
+                .foregroundStyle(style.dark)
 
             trailingIcon
                 .frame(width: configurable.iconSize, height: configurable.iconSize)
         }
         .padding(.horizontal, configurable.horizontalPadding)
         .padding(.vertical, configurable.verticalPadding)
-        .background(style.background)
+        .background(style.light)
         .cornerRadius(radius: configurable.cornerRadius, corners: .allCorners)
     }
 }

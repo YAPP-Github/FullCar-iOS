@@ -10,38 +10,42 @@ import SwiftUI
 
 /// 자주 사용하는 색상 조합 타입입니다.
 public struct ColorStyle {
-    let foreground: Color
-    let background: Color
+    let dark: Color
+    let light: Color
     let extra: Color
 
     init(
-        foreground: Color,
-        background: Color,
+        dark: Color,
+        light: Color,
         extra: Color? = nil
     ) {
-        self.foreground = foreground
-        self.background = background
-        self.extra = extra ?? foreground
+        self.dark = dark
+        self.light = light
+        self.extra = extra ?? dark
     }
 }
 
 public extension ColorStyle {
-    /// main color로 case 설정
+    /// foreground color로 case 설정
     enum Palette {
-        case primary
+        case primary_secondary
+        case primary_white
         case green
         case red
-        case gray
+        case gray30
+        case gray60
         case black
     }
 
     static func palette(_ type: Palette) -> ColorStyle {
         switch type {
-        case .primary: return .init(foreground: .fullCar_primary, background: .fullCar_secondary)
-        case .green: return .init(foreground: .green100, background: .green50)
-        case .red: return .init(foreground: .red100, background: .red50)
-        case .gray: return .init(foreground: .gray60, background: .gray30)
-        case .black: return .init(foreground: .black80, background: .white, extra: .gray30)
+        case .primary_secondary: return .init(dark: .fullCar_primary, light: .fullCar_secondary)
+        case .primary_white: return .init(dark: .fullCar_primary, light: .white)
+        case .green: return .init(dark: .green100, light: .green50)
+        case .red: return .init(dark: .red100, light: .red50)
+        case .gray30: return .init(dark: .gray30, light: .white, extra: .fullCar_primary)
+        case .gray60: return .init(dark: .gray60, light: .gray30)
+        case .black: return .init(dark: .black80, light: .white, extra: .gray30)
         }
     }
 }
