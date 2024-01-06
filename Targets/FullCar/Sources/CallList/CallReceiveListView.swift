@@ -10,14 +10,15 @@ import SwiftUI
 
 struct CallReceiveListView: View {
     
-    @Binding var data: [String]
+    @Binding var data: [Dummy]
     
     var body: some View {
         ScrollView {
             LazyVGrid(columns: [GridItem()], content: {
                 
-                ForEach(data.indices, id:\.self) { idx in
-                    CallListItem()
+                ForEach(data, id:\.self) { item in
+                    CallListItem(status: item.status,
+                                 isLast: item.id == data.last?.id)
                 }
             })
         }

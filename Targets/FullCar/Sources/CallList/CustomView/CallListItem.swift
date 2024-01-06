@@ -7,9 +7,13 @@
 //
 
 import SwiftUI
+import FullCarUI
+import FullCarKit
+import Observation
 
 struct CallListItem: View {
     
+    var status: FullCar.CallStatus = .failure
     var isLast: Bool = false
     
     var body: some View {
@@ -55,21 +59,25 @@ extension CallListItem {
             
             HStack {
                 Spacer()
-                ZStack {
-                    RoundedRectangle(cornerRadius: 3)
-                        .foregroundStyle(.blue.opacity(0.2))
-                    Text("요청중")
-                        .foregroundStyle(.blue)
-                        .font(.system(size: 12))
-                        .bold()
-                        .padding(.vertical, 5)
-                        .padding(.horizontal, 8)
-                }
-                .fixedSize()
                 
-                    
+                statusBadgeView
+                
             }
         }
+    }
+    
+    var statusBadgeView: some View {
+        ZStack {
+            RoundedRectangle(cornerRadius: 3)
+                .foregroundStyle(getColor(back: true))
+            Text(status.rawValue)
+                .foregroundStyle(getColor())
+                .font(.system(size: 12))
+                .bold()
+                .padding(.vertical, 5)
+                .padding(.horizontal, 8)
+        }
+        .fixedSize()
     }
     
     var mainTitleView: some View {
@@ -112,6 +120,22 @@ extension CallListItem {
     }
 }
 
+// Action
+extension CallListItem {
+    func getColor(back: Bool = false) -> Color {
+        switch status {
+        case .waiting:
+            return back ? .blue.opacity(0.2) : .blue
+        case .success:
+            return back ? .green.opacity(0.2) : .green
+        case .failure:
+            return back ? .red.opacity(0.2) : .red
+        }
+    }
+}
+
 #Preview {
     CallListItem()
 }
+
+

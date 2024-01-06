@@ -11,12 +11,17 @@ import FullCarUI
 import FullCarKit
 import Observation
 
+struct Dummy: Hashable {
+    let id : UUID = UUID()
+    let status: FullCar.CallStatus
+}
+
 @MainActor
 @Observable
 final class CallListViewModel {
     var selection: FullCar.CallListTab = .request
     
-    var dummyData: [String] = ["","","","","", "","","", ""]
+    var dummyData: [Dummy] = [.init(status: .waiting),.init(status: .failure),.init(status: .waiting),.init(status: .success),.init(status: .waiting),.init(status: .waiting),.init(status: .success),.init(status: .success), .init(status: .success)]
 }
 
 

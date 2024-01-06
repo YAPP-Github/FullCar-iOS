@@ -34,4 +34,10 @@ public extension FullCar {
         case request
         case receive
     }
+    
+    enum CallStatus: String, Hashable {
+        case waiting = "요청중"
+        case success = "매칭 성공"
+        case failure = "매칭 취소"
+    }
 }
