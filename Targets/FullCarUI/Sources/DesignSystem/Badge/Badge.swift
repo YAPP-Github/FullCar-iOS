@@ -11,7 +11,7 @@ import SwiftUI
 /// 아이콘 + 라벨 + 아이콘 조합의 배지입니다.
 public struct Badge<LeadingIcon: View, Label: View, TrailingIcon: View>: View {
     private let configurable: BadgeConfigurable
-    private let style: BadgeStyle
+    private let style: ColorStyle
 
     @ViewBuilder private let leadingIcon: LeadingIcon
     @ViewBuilder private let label: Label
@@ -24,14 +24,14 @@ public struct Badge<LeadingIcon: View, Label: View, TrailingIcon: View>: View {
 
             label
                 .font(pretendard: configurable.font)
-                .foregroundStyle(style.textColor)
+                .foregroundStyle(style.main)
 
             trailingIcon
                 .frame(width: configurable.iconSize, height: configurable.iconSize)
         }
         .padding(.horizontal, configurable.horizontalPadding)
         .padding(.vertical, configurable.verticalPadding)
-        .background(style.backgroundColor)
+        .background(style.background)
         .cornerRadius(radius: configurable.cornerRadius, corners: .allCorners)
     }
 }
@@ -39,7 +39,7 @@ public struct Badge<LeadingIcon: View, Label: View, TrailingIcon: View>: View {
 extension Badge {
     private init(
         configurable: BadgeConfigurable,
-        style: BadgeStyle,
+        style: ColorStyle,
         @ViewBuilder leading: () -> LeadingIcon = { EmptyView() },
         @ViewBuilder label: () -> Label = { EmptyView() },
         @ViewBuilder trailing: () -> TrailingIcon = { EmptyView() }
@@ -56,7 +56,7 @@ public extension Badge where Label == Text {
     init(
         title: String,
         configurable: BadgeConfigurable,
-        style: BadgeStyle,
+        style: ColorStyle,
         @ViewBuilder leading: () -> LeadingIcon = { EmptyView() },
         @ViewBuilder trailing: () -> TrailingIcon = { EmptyView() }
     ) {
@@ -133,7 +133,7 @@ public extension Badge where Label == Text, LeadingIcon == Image?, TrailingIcon 
             Badge(
                 title: "테스트",
                 configurable: .init(font: .body2, iconSpacing: 5), 
-                style: .colorPalette(.red),
+                style: .palette(.red),
                 leading: {
                     Icon.image(type: .car)?
                         .resizable()

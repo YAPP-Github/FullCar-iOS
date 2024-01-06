@@ -12,7 +12,7 @@ protocol BadgeStyleConfiguration {
     var title: String? { get }
     var icon: Image? { get }
     var configurable: BadgeConfigurable { get }
-    var style: BadgeStyle { get }
+    var style: ColorStyle { get }
 }
 
 extension BadgeStyleConfiguration {
@@ -32,10 +32,10 @@ public enum BadgeType {
 
         var title: String? { self.rawValue }
 
-        var style: BadgeStyle {
+        var style: ColorStyle {
             switch self {
-            case .recruite, .request: return .colorPalette(.primary)
-            case .close: return .colorPalette(.gray)
+            case .recruite, .request: return .palette(.primary)
+            case .close: return .palette(.gray)
             }
         }
     }
@@ -49,10 +49,10 @@ public enum BadgeType {
 
         var title: String? { self.rawValue }
 
-        var style: BadgeStyle {
+        var style: ColorStyle {
             switch self {
-            case .success: return .colorPalette(.green)
-            case .cancel: return .colorPalette(.red)
+            case .success: return .palette(.green)
+            case .cancel: return .palette(.red)
             }
         }
     }
@@ -91,6 +91,6 @@ public enum BadgeType {
             return configurable
         }
 
-        var style: BadgeStyle { return .colorPalette(.gray) }
+        var style: ColorStyle { return .palette(.gray) }
     }
 }
