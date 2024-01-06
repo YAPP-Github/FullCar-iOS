@@ -82,6 +82,7 @@ public enum BadgeType {
 
         var configurable: BadgeConfigurable {
             var configurable: BadgeConfigurable = .standard
+            configurable.font = .caption6
             switch self {
             case .female, .male:
                 configurable.iconSpacing = 2

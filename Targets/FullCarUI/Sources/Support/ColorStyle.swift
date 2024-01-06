@@ -44,7 +44,7 @@ public extension ColorStyle {
         case .green: return .init(dark: .green100, light: .green50)
         case .red: return .init(dark: .red100, light: .red50)
         case .gray30: return .init(dark: .gray30, light: .white, extra: .fullCar_primary)
-        case .gray60: return .init(dark: .gray60, light: .gray30)
+        case .gray60: return .init(dark: .gray60, light: .gray10)
         case .black: return .init(dark: .black80, light: .white, extra: .gray30)
         }
     }

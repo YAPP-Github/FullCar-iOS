@@ -10,7 +10,7 @@ import Foundation
 
 /// Badge의 구성 가능한 특성을 나타낸 타입입니다.
 public struct BadgeConfigurable {
-    let font: Pretendard.Style
+    var font: Pretendard.Style
     var iconSpacing: CGFloat
     let iconSize: CGFloat
     let horizontalPadding: CGFloat
