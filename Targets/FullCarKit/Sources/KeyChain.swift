@@ -18,7 +18,7 @@ public class Keychain {
     private init() {}
     
     private func getPrefixedKey(key: String) -> String {
-        return "com.havi.DayRoom.\(key)"
+        return "com.fullcar.app.\(key)"
     }
     
     private func toString(_ value: CFString) -> String {

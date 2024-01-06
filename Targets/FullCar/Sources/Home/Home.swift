@@ -7,12 +7,24 @@
 //
 
 import SwiftUI
+import FullCarKit
 import Observation
+import Dependencies
 
 @MainActor
 @Observable
 final class HomeViewModel {
+    @ObservationIgnored
+    @Dependency(\.homeAPI) private var homeAPI
     
+    func fetchHome() async {
+        do {
+            let response = try await homeAPI.fetch(id: "id", name: "name")
+        }
+        catch {
+            // some error handling
+        }
+    }
 } 
 
 struct HomeView: View {
