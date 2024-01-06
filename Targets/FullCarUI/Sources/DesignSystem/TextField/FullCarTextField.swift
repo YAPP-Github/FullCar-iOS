@@ -10,10 +10,11 @@ import SwiftUI
 
 /// Header, TextField, Footer로 구성되어있는 View입니다. Footer는 Message 타입으로 error, information 등의 정보를 나타냅니다.
 public struct FullCarTextField: View {
-    @Environment(\.isChecked) private var isChecked
     @FocusState private var isFocused: Bool
+
     @Binding private var value: String
     @Binding private var state: InputState
+    @Binding private var isChecked: Bool
 
     private let placeholder: String
     /// header 관련 속성
@@ -95,6 +96,7 @@ extension FullCarTextField {
     public init(
         value: Binding<String>,
         state: Binding<InputState>,
+        isChecked: Binding<Bool>,
         placeholder: String,
         headerText: String? = nil,
         isHeaderRequired: Bool = false,
@@ -104,6 +106,7 @@ extension FullCarTextField {
     ) {
         self._value = value
         self._state = state
+        self._isChecked = isChecked
         self.placeholder = placeholder
         self.headerText = headerText
         self.footerMessage = footerMessage
@@ -138,34 +141,36 @@ struct FullCarTextFieldPreviews: PreviewProvider {
     @State static var text: String = ""
     @State static var inputState: InputState = .default
 
+    @State static var isChecked: Bool = false
+
     @State static var inputState_error: InputState = .error("일치하는 메일 정보가 없습니다.\n회사 메일이 없는 경우 명함으로 인증하기를 이용해 주세요!")
 
     static var previews: some View {
         VStack(spacing: 30) {
             FullCarTextField(
                 value: $text,
-                state: $inputState,
+                state: $inputState, 
+                isChecked: $isChecked,
                 placeholder: "회사, 주소 검색",
                 headerText: "회사 입력",
                 isHeaderRequired: true,
                 headerPadding: 5
             )
-            .isChecked(false)
 
             FullCarTextField(
                 value: $text,
                 state: $inputState_error,
+                isChecked: $isChecked,
                 placeholder: "Placeholder"
             )
-            .isChecked(false)
 
             FullCarTextField(
                 value: $text,
                 state: $inputState,
+                isChecked: $isChecked,
                 placeholder: "Placeholder",
                 footerMessage: .information("이건 정보성 메세지에요.")
             )
-            .isChecked(true)
         }
         .padding()
     }
