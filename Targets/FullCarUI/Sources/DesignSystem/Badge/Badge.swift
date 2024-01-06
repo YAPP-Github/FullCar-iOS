@@ -101,9 +101,7 @@ public extension Badge where Label == Text, LeadingIcon == Image?, TrailingIcon 
             title: driver.rawValue,
             configurable: driver.configurable,
             style: driver.style,
-            leading: {
-                driver.icon?.resizable()
-            }
+            leading: { driver.icon?.resizable() }
         )
     }
 }

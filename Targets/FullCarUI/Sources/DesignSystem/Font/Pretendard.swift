@@ -29,6 +29,10 @@ public enum Pretendard {
         case body6
         /// 16, medium, 20
         case body7
+        /// 15, bold, 18
+        case body8
+        /// 15, medium, 18
+        case body9
 
         /// 14, semibold, 20
         case caption1
@@ -55,6 +59,8 @@ public enum Pretendard {
             case .body5: return Pretendard.semiBold
             case .body6: return Pretendard.regular
             case .body7: return Pretendard.medium
+            case .body8: return Pretendard.bold
+            case .body9: return Pretendard.medium
 
             case .caption1: return Pretendard.semiBold
             case .caption2: return Pretendard.medium
@@ -77,6 +83,8 @@ public enum Pretendard {
             case .body5: return 16
             case .body6: return 16
             case .body7: return 16
+            case .body8: return 15
+            case .body9: return 15
 
             case .caption1: return 14
             case .caption2: return 14
@@ -98,6 +106,8 @@ public enum Pretendard {
             case .body5: return 19
             case .body6: return 24
             case .body7: return 20
+            case .body8: return 18
+            case .body9: return 18
             case .caption1: return 20
             case .caption2: return 20
             case .caption3: return 17

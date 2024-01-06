@@ -16,7 +16,7 @@ extension ButtonStyle where Self == FullCarButtonStyle {
     }
 
     /// Basic Filter Chips는 Selected/Unselected에 따라 Default, Active 상태로 분류됩니다. Selected는 Active된 상태로 간주됩니다.
-    public static var chip: ChipButtonStyle {
-        ChipButtonStyle()
+    public static func chip(_ isSelected: Binding<Bool>) -> ChipButtonStyle {
+        ChipButtonStyle(isSelected: isSelected)
     }
 }

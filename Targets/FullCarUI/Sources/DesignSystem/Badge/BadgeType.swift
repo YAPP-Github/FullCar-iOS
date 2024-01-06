@@ -8,6 +8,7 @@
 
 import SwiftUI
 
+/// Badge를 구성하는 Style과 Configurable 타입
 protocol BadgeStyleConfiguration {
     var title: String? { get }
     var icon: Image? { get }

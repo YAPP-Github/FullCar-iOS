@@ -9,21 +9,32 @@
 import SwiftUI
 
 public struct ChipButtonStyle: ButtonStyle {
-    @Environment(\.isSelected) private var isSelected
+    @Binding private var isSelected: Bool
+
+    public init(isSelected: Binding<Bool>) {
+        self._isSelected = isSelected
+    }
 
     public func makeBody(configuration: Configuration) -> some View {
         configuration.label
-            .font(pretendard: isSelected ? .body6 : .body7)
+            .font(pretendard: isSelected ? .body8 : .body9)
             .padding(.vertical, Constants.verticalPadding)
             .padding(.horizontal, Constants.horizontalPadding)
-            .foregroundStyle(isSelected ? Colors.font : Colors.deselectedFont)
-            .background(isSelected ? Colors.background : Colors.deselectedBackground)
+            .foregroundStyle(style.main)
+            .background(style.background)
             .cornerRadius(radius: Constants.radius, corners: .allCorners)
             .overlay(
                 RoundedRectangle(cornerRadius: Constants.radius)
                     .inset(by: 0.5)
-                    .stroke(isSelected ? Color.fullCar_primary : Color.gray30, lineWidth: 1)
+                    .stroke(style.border, lineWidth: 1)
             )
+    }
+
+    private var style: ColorStyle {
+        switch isSelected {
+        case true: return .palette(.primary)
+        case false: return .palette(.black)
+        }
     }
 }
 
@@ -33,30 +44,29 @@ extension ChipButtonStyle {
         static let horizontalPadding: CGFloat = 14
         static let radius: CGFloat = 50
     }
-
-    enum Colors {
-        static let text: Color = .white
-        static let background: Color = .fullCar_secondary
-        static let deselectedBackground: Color = .white
-        static let font: Color = .fullCar_primary
-        static let deselectedFont: Color = .black80
-    }
 }
 
 struct ChipButtonStylePreviews: PreviewProvider {
+
+    @State static var isSelected_firstButton: Bool = true
+    @State static var isSelected_secondButton: Bool = false
+
     static var previews: some View {
         VStack {
-            Button(action: {}, label: {
+            Button(action: {
+                self.isSelected_firstButton.toggle()
+            }, label: {
                 Text("여성")
             })
-            .buttonStyle(.chip)
-            .isSelected(false)
+            .buttonStyle(.chip($isSelected_firstButton))
 
-            Button(action: {}, label: {
+
+            Button(action: {
+                self.isSelected_secondButton.toggle()
+            }, label: {
                 Text("공개안함")
             })
-            .buttonStyle(.chip)
-            .isSelected(true)
+            .buttonStyle(.chip($isSelected_secondButton))
         }
     }
 }
