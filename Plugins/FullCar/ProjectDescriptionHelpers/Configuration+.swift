@@ -19,12 +19,10 @@ public extension [Configuration] {
                 "SWIFT_ACTIVE_COMPILATION_CONDITIONS": "APP $(inherited)",
                 "OTHER_LDFLAGS": "-Objc $(inherited)",
                 "ASSETCATALOG_COMPILER_APPICON_NAME": "AppIcon",
-//                "CODE_SIGN_ENTITLEMENTS": "FullCar_Sandbox.entitlements",
-//                "CODE_SIGN_IDENTITY": "Apple Development", 
-//                // 병윤이가 추가 필요
+                "CODE_SIGN_ENTITLEMENTS": "FullCar_Sandbox.entitlements",
+                "CODE_SIGN_IDENTITY": "Apple Development",
                 "DEVELOPMENT_TEAM": "ZMXTCSPNUZ",
-//                "PROVISIONING_PROFILE_SPECIFIER": "FullCar Development",
-//                // 아직 없는데 추가해야하는 아이들
+                "PROVISIONING_PROFILE_SPECIFIER": "FullCar Development",
 //                "APP_UNIVERSAL_LINKS": "",
             ]
         ),
@@ -37,13 +35,11 @@ public extension [Configuration] {
                 "PRODUCT_BUNDLE_IDENTIFIER": "com.fullcar.app.store",
                 "SWIFT_ACTIVE_COMPILATION_CONDITIONS": "APP $(inherited)",
                 "OTHER_LDFLAGS": "-Objc $(inherited)",
-//                /// 확인 및 추가 필요
                 "ASSETCATALOG_COMPILER_APPICON_NAME": "AppIcon",
-//                "CODE_SIGN_ENTITLEMENTS": "FullCar_Store.entitlements",
-//                "CODE_SIGN_IDENTITY": "Apple Distribution", 
-//                /// 병윤이가 추가 필요
+                "CODE_SIGN_ENTITLEMENTS": "FullCar_Store.entitlements",
+                "CODE_SIGN_IDENTITY": "Apple Distribution",
                 "DEVELOPMENT_TEAM": "ZMXTCSPNUZ",
-//                "PROVISIONING_PROFILE_SPECIFIER": "FullCar Distribution",
+                "PROVISIONING_PROFILE_SPECIFIER": "FullCar Distribution",
 //                /// 아직 없는데 추가해야하는 아이들
 //                "APP_UNIVERSAL_LINKS": "",
             ]
