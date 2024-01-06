@@ -20,13 +20,13 @@ public struct ChipButtonStyle: ButtonStyle {
             .font(pretendard: isSelected ? .body8 : .body9)
             .padding(.vertical, Constants.verticalPadding)
             .padding(.horizontal, Constants.horizontalPadding)
-            .foregroundStyle(style.main)
+            .foregroundStyle(style.foreground)
             .background(style.background)
             .cornerRadius(radius: Constants.radius, corners: .allCorners)
             .overlay(
                 RoundedRectangle(cornerRadius: Constants.radius)
                     .inset(by: 0.5)
-                    .stroke(style.border, lineWidth: 1)
+                    .stroke(style.extra, lineWidth: 1)
             )
     }
 

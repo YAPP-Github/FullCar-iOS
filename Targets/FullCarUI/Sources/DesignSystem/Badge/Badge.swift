@@ -24,7 +24,7 @@ public struct Badge<LeadingIcon: View, Label: View, TrailingIcon: View>: View {
 
             label
                 .font(pretendard: configurable.font)
-                .foregroundStyle(style.main)
+                .foregroundStyle(style.foreground)
 
             trailingIcon
                 .frame(width: configurable.iconSize, height: configurable.iconSize)
