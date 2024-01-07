@@ -26,7 +26,7 @@ public struct ColorStyle {
 }
 
 public extension ColorStyle {
-    /// foreground color로 case 설정
+    /// dark color로 case 설정
     enum Palette {
         case primary_secondary
         case primary_white

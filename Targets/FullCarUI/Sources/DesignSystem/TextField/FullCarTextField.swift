@@ -66,7 +66,7 @@ public extension FullCarTextField {
         state: Binding<InputState>,
         headerText: String? = nil,
         isHeaderRequired: Bool = false,
-        headerFont: Pretendard.Style = .body4,
+        headerFont: Pretendard.Style = .semibold16,
         headerPadding: CGFloat = 12,
         footerMessage: Message? = nil
     ) {

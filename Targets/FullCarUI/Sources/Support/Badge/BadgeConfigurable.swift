@@ -34,7 +34,7 @@ public struct BadgeConfigurable {
     }
 
     public static var standard: Self = BadgeConfigurable(
-        font: .caption5,
+        font: .bold12,
         iconSpacing: 0,
         iconSize: 16,
         horizontalPadding: 8,

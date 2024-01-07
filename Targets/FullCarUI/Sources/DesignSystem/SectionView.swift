@@ -69,7 +69,7 @@ struct SectionViewPreviews: PreviewProvider {
                     HeaderLabel(
                         title: "희망 접선 장소",
                         isRequired: true,
-                        font: .body4
+                        font: .semibold16
                     )
                 }
             )
@@ -82,7 +82,7 @@ struct SectionViewPreviews: PreviewProvider {
                     HeaderLabel(
                         title: "회사 메일을 입력해 주세요.",
                         isRequired: false,
-                        font: .heading1
+                        font: .bold22
                     )
                 },
                 headerBottomPadding: 24

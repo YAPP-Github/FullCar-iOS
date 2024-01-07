@@ -25,14 +25,14 @@ public struct NavigationTitle: View {
         switch type {
         case .title:
             Text(title)
-                .font(pretendard: .heading2)
+                .font(pretendard: .bold18)
         case .destination:
             HStack(spacing: Constants.destinationSpacing) {
                 Icon.image(type: .car)
                     .frame(width: Constants.destinationIconSize)
 
                 Text(title)
-                    .font(pretendard: .heading2)
+                    .font(pretendard: .bold18)
             }
         }
     }

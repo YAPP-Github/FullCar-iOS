@@ -130,7 +130,7 @@ public extension Badge where Label == Text, LeadingIcon == Image?, TrailingIcon 
 
             Badge(
                 title: "테스트",
-                configurable: .init(font: .body2, iconSpacing: 5), 
+                configurable: .init(font: .semibold17, iconSpacing: 5), 
                 style: .palette(.red),
                 leading: {
                     Icon.image(type: .car)?

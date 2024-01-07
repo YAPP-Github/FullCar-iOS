@@ -109,7 +109,7 @@ public extension FullCarButtonStyle {
             Text("검색")
         })
         .buttonStyle(.fullCar(
-            font: .body4,
+            font: .semibold16,
             horizontalPadding: 14,
             verticalPadding: 15,
             style: .primary_secondary
