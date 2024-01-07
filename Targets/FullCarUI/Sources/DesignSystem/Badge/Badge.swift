@@ -18,7 +18,7 @@ public struct Badge<LeadingIcon: View, Label: View, TrailingIcon: View>: View {
     @ViewBuilder private let trailingIcon: TrailingIcon
 
     public var body: some View {
-        HStack(spacing: configurable.iconSpacing) {
+        HStack(spacing: configurable.spacing) {
             leadingIcon
                 .frame(width: configurable.iconSize, height: configurable.iconSize)
 
@@ -140,7 +140,7 @@ public extension Badge where Label == Text, LeadingIcon == Image?, TrailingIcon 
 
             Badge(
                 title: "테스트",
-                configurable: .init(font: .semibold17, iconSpacing: 5),
+                configurable: .init(font: .semibold17, spacing: 5),
                 style: .palette(.red),
                 leading: {
                     Icon.image(type: .car)?

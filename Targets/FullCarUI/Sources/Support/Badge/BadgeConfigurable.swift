@@ -11,7 +11,7 @@ import Foundation
 /// Badge의 구성 가능한 특성을 나타낸 타입입니다.
 public struct BadgeConfigurable {
     var font: Pretendard.Style
-    var iconSpacing: CGFloat
+    var spacing: CGFloat
     let iconSize: CGFloat
     let horizontalPadding: CGFloat
     let verticalPadding: CGFloat
@@ -19,14 +19,14 @@ public struct BadgeConfigurable {
 
     init(
         font: Pretendard.Style,
-        iconSpacing: CGFloat = 0,
+        spacing: CGFloat = 0,
         iconSize: CGFloat = 16,
         horizontalPadding: CGFloat = 8,
         verticalPadding: CGFloat = 5,
         cornerRadius: CGFloat = 3
     ) {
         self.font = font
-        self.iconSpacing = iconSpacing
+        self.spacing = spacing
         self.iconSize = iconSize
         self.horizontalPadding = horizontalPadding
         self.verticalPadding = verticalPadding
@@ -35,7 +35,7 @@ public struct BadgeConfigurable {
 
     public static var standard: Self = BadgeConfigurable(
         font: .bold12,
-        iconSpacing: 0,
+        spacing: 0,
         iconSize: 16,
         horizontalPadding: 8,
         verticalPadding: 5,

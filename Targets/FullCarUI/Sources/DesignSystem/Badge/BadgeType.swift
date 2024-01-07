@@ -83,7 +83,7 @@ extension Driver.Gender: BadgeStyleConfiguration {
     var configurable: BadgeConfigurable {
         var configurable: BadgeConfigurable = .standard
         configurable.font = .semibold12
-        configurable.iconSpacing = 2
+        configurable.spacing = 2
         return configurable
     }
 
@@ -101,7 +101,7 @@ extension Driver.Mood: BadgeStyleConfiguration {
     var configurable: BadgeConfigurable {
         var configurable: BadgeConfigurable = .standard
         configurable.font = .semibold12
-        configurable.iconSpacing = 4
+        configurable.spacing = 4
         return configurable
     }
 
