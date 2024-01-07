@@ -71,7 +71,7 @@ public extension Badge where Label == Text {
 public extension Badge where Label == Text, LeadingIcon == EmptyView, TrailingIcon == EmptyView {
     /// 게시글의 상태값을 알려주는 배지입니다.
     init(
-        _ postState: BadgeType.PostState
+        postState: PostState
     ) {
         self.init(
             title: postState.rawValue,
@@ -82,7 +82,7 @@ public extension Badge where Label == Text, LeadingIcon == EmptyView, TrailingIc
 
     /// 카풀 매칭의 상태값을 알려주는 배지입니다.
     init(
-        _ matching: BadgeType.Matching
+        matching: Matching
     ) {
         self.init(
             title: matching.rawValue,
@@ -95,42 +95,52 @@ public extension Badge where Label == Text, LeadingIcon == EmptyView, TrailingIc
 public extension Badge where Label == Text, LeadingIcon == Image?, TrailingIcon == EmptyView {
     /// 운전자의 정보를 알려주는 배지입니다.
     init(
-        _ driver: BadgeType.Driver
+        driver: Driver
     ) {
-        self.init(
-            title: driver.rawValue,
-            configurable: driver.configurable,
-            style: driver.style,
-            leading: { driver.icon?.resizable() }
-        )
+        switch driver {
+        case .gender(let gender):
+            self.init(
+                title: gender.rawValue,
+                configurable: gender.configurable,
+                style: gender.style,
+                leading: { gender.icon?.resizable() }
+            )
+        case .mood(let mood):
+            self.init(
+                title: mood.rawValue,
+                configurable: mood.configurable,
+                style: mood.style,
+                leading: { mood.icon?.resizable() }
+            )
+        }
     }
 }
 
 #Preview {
     VStack(spacing: 30) {
         VStack {
-            Badge(.recruite)
-            Badge(.request)
-            Badge(.close)
+            Badge(postState: .recruite)
+            Badge(postState: .request)
+            Badge(postState: .close)
         }
 
         VStack {
-            Badge(.success)
-            Badge(.cancel)
+            Badge(matching: .success)
+            Badge(matching: .cancel)
         }
 
         VStack {
-            Badge(.female)
-            Badge(.male)
+            Badge(driver: .gender(.female))
+            Badge(driver: .gender(.male))
         }
 
         VStack {
-            Badge(.quiet)
-            Badge(.talk)
+            Badge(driver: .mood(.quiet))
+            Badge(driver: .mood(.talk))
 
             Badge(
                 title: "테스트",
-                configurable: .init(font: .semibold17, iconSpacing: 5), 
+                configurable: .init(font: .semibold17, iconSpacing: 5),
                 style: .palette(.red),
                 leading: {
                     Icon.image(type: .car)?
