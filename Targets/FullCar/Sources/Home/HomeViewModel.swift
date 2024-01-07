@@ -1,12 +1,12 @@
 //
-//  Home.swift
+//  HomeViewModel.swift
 //  FullCar
 //
-//  Created by 한상진 on 12/2/23.
-//  Copyright © 2023 com.fullcar. All rights reserved.
+//  Created by 한상진 on 12/31/23.
+//  Copyright © 2023 FullCar Corp. All rights reserved.
 //
 
-import SwiftUI
+import Foundation
 import FullCarKit
 import Observation
 import Dependencies
@@ -16,24 +16,20 @@ import Dependencies
 final class HomeViewModel {
     @ObservationIgnored
     @Dependency(\.homeAPI) private var homeAPI
+    var homeResponse: Home.Model.Response?
     
-    func fetchHome() async {
+    func onFirstTask() async {
         do {
             let response = try await homeAPI.fetch(id: "id", name: "name")
+            self.homeResponse = response
         }
         catch {
             // some error handling
         }
     }
-} 
-
-struct HomeView: View {
-    let viewModel: HomeViewModel
-    var body: some View {
-        Color.green
+    
+    @Sendable
+    func refreshable() async {
+        
     }
-}
-
-#Preview {
-    HomeView(viewModel: .init())
 }
