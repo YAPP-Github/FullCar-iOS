@@ -9,71 +9,65 @@
 import SwiftUI
 
 /// 아이콘 + 라벨 + 아이콘 조합의 배지입니다.
-public struct Badge<LeadingIcon: View, Label: View, TrailingIcon: View>: View {
-    private let configurable: BadgeConfigurable
-    private let style: ColorStyle
-
+public struct Badge<LeadingIcon: View, TrailingIcon: View>: View {
     @ViewBuilder private let leadingIcon: LeadingIcon
-    @ViewBuilder private let label: Label
     @ViewBuilder private let trailingIcon: TrailingIcon
 
-    public var body: some View {
-        HStack(spacing: configurable.spacing) {
-            leadingIcon
+    private let title: String
+    private let badgeConfigurable: BadgeConfigurable
+    private let iconSize: Icon.Size
+    private let iconColor: Color
+    private let style: ColorStyle
 
-            label
-                .font(pretendard: configurable.font)
+    public var body: some View {
+        HStack(spacing: badgeConfigurable.spacing) {
+            leadingIcon
+                .frame(iconSize: iconSize)
+                .foregroundStyle(iconColor)
+
+            Text(title)
+                .font(pretendard: badgeConfigurable.font)
                 .foregroundStyle(style.dark)
 
             trailingIcon
+                .frame(iconSize: iconSize)
+                .foregroundStyle(iconColor)
         }
-        .padding(.horizontal, configurable.horizontalPadding)
-        .padding(.vertical, configurable.verticalPadding)
+        .padding(.horizontal, badgeConfigurable.horizontalPadding)
+        .padding(.vertical, badgeConfigurable.verticalPadding)
         .background(style.light)
-        .cornerRadius(radius: configurable.cornerRadius, corners: .allCorners)
+        .cornerRadius(radius: badgeConfigurable.cornerRadius, corners: .allCorners)
     }
 }
 
-extension Badge {
-    private init(
-        configurable: BadgeConfigurable,
-        style: ColorStyle,
-        @ViewBuilder leading: () -> LeadingIcon = { EmptyView() },
-        @ViewBuilder label: () -> Label = { EmptyView() },
-        @ViewBuilder trailing: () -> TrailingIcon = { EmptyView() }
-    ) {
-        self.configurable = configurable
-        self.style = style
-        self.leadingIcon = leading()
-        self.label = label()
-        self.trailingIcon = trailing()
-    }
-}
-
-public extension Badge where Label == Text {
+public extension Badge {
     init(
-        title: String,
-        configurable: BadgeConfigurable,
-        style: ColorStyle,
         @ViewBuilder leading: () -> LeadingIcon = { EmptyView() },
-        @ViewBuilder trailing: () -> TrailingIcon = { EmptyView() }
+        @ViewBuilder trailing: () -> TrailingIcon = { EmptyView() },
+        title: String,
+        badgeConfigurable: BadgeConfigurable,
+        iconSize: Icon.Size = ._0,
+        iconColor: Color = .clear,
+        style: ColorStyle
     ) {
-        self.configurable = configurable
-        self.style = style
         self.leadingIcon = leading()
-        self.label = { Text(title) }()
         self.trailingIcon = trailing()
+        self.title = title
+        self.badgeConfigurable = badgeConfigurable
+        self.iconSize = iconSize
+        self.iconColor = iconColor
+        self.style = style
     }
 }
 
-public extension Badge where Label == Text, LeadingIcon == EmptyView, TrailingIcon == EmptyView {
+public extension Badge where LeadingIcon == EmptyView, TrailingIcon == EmptyView {
     /// 게시글의 상태값을 알려주는 배지입니다.
     init(
         postState: PostState
     ) {
         self.init(
             title: postState.rawValue,
-            configurable: postState.configurable,
+            badgeConfigurable: postState.badgeConfigurable,
             style: postState.style
         )
     }
@@ -84,13 +78,13 @@ public extension Badge where Label == Text, LeadingIcon == EmptyView, TrailingIc
     ) {
         self.init(
             title: matching.rawValue,
-            configurable: matching.configurable,
+            badgeConfigurable: matching.badgeConfigurable,
             style: matching.style
         )
     }
 }
 
-public extension Badge where Label == Text, LeadingIcon == Icon, TrailingIcon == EmptyView {
+public extension Badge where LeadingIcon == Image, TrailingIcon == EmptyView {
     /// 운전자의 정보를 알려주는 배지입니다.
     init(
         driver: Driver
@@ -98,17 +92,29 @@ public extension Badge where Label == Text, LeadingIcon == Icon, TrailingIcon ==
         switch driver {
         case .gender(let gender):
             self.init(
+                leading: {
+                    Image(icon: gender.icon)
+                        .resizable()
+                        .renderingMode(.template)
+                }, 
                 title: gender.rawValue,
-                configurable: gender.configurable,
-                style: gender.style,
-                leading: { Icon(configuration: gender.iconConfiguration) }
-                )
+                badgeConfigurable: gender.badgeConfigurable,
+                iconSize: driver.iconSize,
+                iconColor: driver.iconColor,
+                style: gender.style
+            )
         case .mood(let mood):
             self.init(
+                leading: {
+                    Image(icon: mood.icon)
+                        .resizable()
+                        .renderingMode(.template)
+                }, 
                 title: mood.rawValue,
-                configurable: mood.configurable,
-                style: mood.style,
-                leading: { Icon(configuration: mood.iconConfiguration) }
+                badgeConfigurable: mood.badgeConfigurable,
+                iconSize: driver.iconSize,
+                iconColor: driver.iconColor,
+                style: mood.style
             )
         }
     }
@@ -137,16 +143,15 @@ public extension Badge where Label == Text, LeadingIcon == Icon, TrailingIcon ==
             Badge(driver: .mood(.talk))
 
             Badge(
-                title: "테스트",
-                configurable: .init(font: .semibold17, spacing: 5),
-                style: .palette(.red),
                 leading: {
-                    Icon.image(type: .car)?
-                        .frame(height: 20)
+                    Image(icon: .user)
+                        .resizable()
                 },
-                trailing: {
-                    Icon.image(type: .user)
-                }
+                trailing: { }, 
+                title: "테스트",
+                badgeConfigurable: .init(font: .bold17, spacing: 5),
+                iconSize: ._20,
+                style: .palette(.red)
             )
         }
     }

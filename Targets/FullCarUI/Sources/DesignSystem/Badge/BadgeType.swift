@@ -10,14 +10,12 @@ import SwiftUI
 
 /// Badge를 구성하는 Style과 Configurable 타입
 protocol BadgeStyleConfiguration {
-    var iconConfiguration: Icon.Configuration { get }
-    var configurable: BadgeConfigurable { get }
+    var badgeConfigurable: BadgeConfigurable { get }
     var style: ColorStyle { get }
 }
 
 extension BadgeStyleConfiguration {
-    var iconConfiguration: Icon.Configuration { return .init(symbol: .nil, size: 0, color: .clear) }
-    var configurable: BadgeConfigurable { return .standard }
+    var badgeConfigurable: BadgeConfigurable { return .standard }
 }
 
 /// 게시글의 상태값
@@ -70,50 +68,38 @@ public enum Driver {
         /// 대화하며 가기
         case talk = "대화하며 가기"
     }
+
+    var iconColor: Color { return .gray60 }
+
+    var iconSize: Icon.Size { return ._16 }
 }
 
 extension Driver.Gender: BadgeStyleConfiguration {
-    public var iconConfiguration: Icon.Configuration {
-        return .init(
-            symbol: .user,
-            size: 16,
-            color: .gray60
-        )
-    }
-
-    var configurable: BadgeConfigurable {
+    var badgeConfigurable: BadgeConfigurable {
         var configurable: BadgeConfigurable = .standard
         configurable.font = .semibold12
         configurable.spacing = 2
         return configurable
     }
 
+    var icon: Icon.Symbol { .user }
+
     var style: ColorStyle { return .palette(.gray60) }
 }
 
 extension Driver.Mood: BadgeStyleConfiguration {
-    var iconConfiguration: Icon.Configuration {
-        switch self {
-        case .quiet:
-            return .init(
-                symbol: .quite,
-                size: 16,
-                color: .gray60
-            )
-        case .talk: 
-            return .init(
-                symbol: .talk,
-                size: 16,
-                color: .gray60
-            )
-        }
-    }
-
-    var configurable: BadgeConfigurable {
+    var badgeConfigurable: BadgeConfigurable {
         var configurable: BadgeConfigurable = .standard
         configurable.font = .semibold12
         configurable.spacing = 4
         return configurable
+    }
+
+    var icon: Icon.Symbol {
+        switch self {
+        case .quiet: return .quite
+        case .talk: return .talk
+        }
     }
 
     var style: ColorStyle { return .palette(.gray60) }
