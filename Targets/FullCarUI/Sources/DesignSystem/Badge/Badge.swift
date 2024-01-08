@@ -145,7 +145,7 @@ public extension Badge where Label == Text, LeadingIcon == Icon, TrailingIcon ==
                         .frame(height: 20)
                 },
                 trailing: {
-                    Icon.image(type: .female)
+                    Icon.image(type: .user)
                 }
             )
         }

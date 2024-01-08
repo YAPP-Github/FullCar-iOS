@@ -74,20 +74,11 @@ public enum Driver {
 
 extension Driver.Gender: BadgeStyleConfiguration {
     public var iconConfiguration: Icon.Configuration {
-        switch self {
-        case .female: 
-            return .init(
-                symbol: .female,
-                size: 16,
-                color: .gray60
-            )
-        case .male:
-            return .init(
-                symbol: .male,
-                size: 16,
-                color: .gray60
-            )
-        }
+        return .init(
+            symbol: .user,
+            size: 16,
+            color: .gray60
+        )
     }
 
     var configurable: BadgeConfigurable {
