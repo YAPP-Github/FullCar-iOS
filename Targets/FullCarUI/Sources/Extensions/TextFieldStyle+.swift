@@ -8,21 +8,47 @@
 
 import SwiftUI
 
-extension TextFieldStyle where Self == CheckTextFieldStyle {
-    public static func check(
-        isChecked: Binding<Bool>,
-        padding: CGFloat = 16,
-        backgroundColor: Color = .gray5,
-        borderColor: Color,
-        borderWidth: CGFloat = 1,
+extension TextFieldStyle where Self == FCTextFieldStyle {
+    public static func fullCar(
+        type: FCTextFieldStyle.AccessoryType,
+        state: Binding<InputState>,
         cornerRadius: CGFloat = 10
-    ) -> CheckTextFieldStyle {
-        return CheckTextFieldStyle(
-            isChecked: isChecked,
+    ) -> FCTextFieldStyle {
+        var padding: CGFloat {
+            switch type {
+            case .check(let binding): return 16
+            case .won: return 14
+            }
+        }
+
+        var backgroundColor: Color {
+            switch type {
+            case .check(let binding): return .gray5
+            case .won: return .white
+            }
+        }
+
+        return FCTextFieldStyle(
+            state: state,
+            accessoryType: type,
             padding: padding,
             backgroundColor: backgroundColor,
-            borderColor: borderColor,
-            borderWidth: borderWidth,
+            radius: cornerRadius
+        )
+    }
+
+    public static func fullCar(
+        type: FCTextFieldStyle.AccessoryType,
+        state: Binding<InputState>,
+        padding: CGFloat,
+        backgroundColor: Color,
+        cornerRadius: CGFloat
+    ) -> FCTextFieldStyle {
+        return FCTextFieldStyle(
+            state: state,
+            accessoryType: type,
+            padding: padding,
+            backgroundColor: backgroundColor,
             radius: cornerRadius
         )
     }

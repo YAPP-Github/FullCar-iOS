@@ -9,9 +9,8 @@
 import SwiftUI
 
 /// Header, TextField, Footer로 구성되어있는 View입니다. Footer는 Message 타입으로 error, information 등의 정보를 나타냅니다.
-public struct FCTextField<TextField: View>: View {
+public struct FCTextFieldView<TextField: View>: View {
     @ViewBuilder private let textField: TextField
-    @FocusState private var isFocused: Bool
     @Binding private var state: InputState
 
     /// header 관련 속성
@@ -62,7 +61,7 @@ public struct FCTextField<TextField: View>: View {
             icon: {
                 if let icon = message.icon {
                     Image(icon: icon)
-                        .frame(width: labelIconSize)
+                        .frame(iconSize: ._20)
                 }
             }
         )
@@ -70,7 +69,7 @@ public struct FCTextField<TextField: View>: View {
     }
 }
 
-public extension FCTextField {
+public extension FCTextFieldView {
     init(
         @ViewBuilder textField: () -> TextField,
         state: Binding<InputState>,
@@ -88,8 +87,6 @@ public extension FCTextField {
         self.headerBottomPadding = headerPadding
         self.footerMessage = footerMessage
     }
-
-    private var labelIconSize: CGFloat { return 20 }
 
     private var labelLineSpacing: CGFloat { return 4 }
 
@@ -110,12 +107,17 @@ struct FullCarTextFieldPreviews: PreviewProvider {
 
     @State static var inputState_error: InputState = .error("일치하는 메일 정보가 없습니다.\n회사 메일이 없는 경우 명함으로 인증하기를 이용해 주세요!")
 
+    @FocusState static var isFocused: Bool
+
     static var previews: some View {
         VStack(spacing: 30) {
-            FCTextField(
+            FCTextFieldView(
                 textField: {
                     TextField("회사, 주소 검색", text: $text)
-                        .textFieldStyle(.check(isChecked: $isChecked, borderColor: inputState.borderColor))
+                        .textFieldStyle(.fullCar(
+                            type: .check($isChecked),
+                            state: $inputState)
+                        )
                 },
                 state: $inputState,
                 headerText: "회사 입력",
@@ -123,21 +125,41 @@ struct FullCarTextFieldPreviews: PreviewProvider {
                 headerPadding: 5
             )
 
-            FCTextField(
+            FCTextFieldView(
                 textField: {
                     TextField("Placeholder", text: $text)
-                        .textFieldStyle(.check(isChecked: $isChecked_false, borderColor: inputState_error.borderColor))
+                        .textFieldStyle(.fullCar(
+                            type: .check($isChecked_false),
+                            state: $inputState_error
+                        ))
                 },
                 state: $inputState_error
             )
 
-            FCTextField(
+            FCTextFieldView(
                 textField: {
                     TextField("Placeholder", text: $text)
-                        .textFieldStyle(.check(isChecked: $isChecked_false, borderColor: inputState.borderColor))
+                        .textFieldStyle(.fullCar(
+                            type: .check($isChecked_false),
+                            state: $inputState
+                        ))
                 },
                 state: $inputState,
                 footerMessage: .information("이건 정보성 메세지에요.")
+            )
+
+            FCTextFieldView(
+                textField: {
+                    TextField("ex) 30,000", text: $text)
+                        .textFieldStyle(.fullCar(
+                            type: .won,
+                            state: $inputState
+                        ))
+                },
+                state: $inputState,
+                headerText: "회사 입력",
+                isHeaderRequired: true,
+                headerPadding: 5
             )
         }
         .padding()
