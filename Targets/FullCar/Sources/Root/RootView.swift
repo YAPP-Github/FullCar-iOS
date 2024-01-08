@@ -9,6 +9,7 @@
 import SwiftUI
 import FullCarUI
 import FullCarKit
+import Firebase
 import Observation
 import Dependencies
 import KakaoSDKAuth
@@ -34,6 +35,10 @@ final class RootViewModel {
         }
     }
 
+    func setupFirebase() async {
+        FirebaseApp.configure()
+    }
+    
     func setupKakaoSDK() async {
         guard let kakaoNativeAppKey = Bundle.main.kakaoNativeAppKey else { return }
         KakaoSDK.initSDK(appKey: kakaoNativeAppKey)
@@ -55,6 +60,7 @@ struct RootView: View {
                 viewModel.handleKakaoURL(url)
             }
             .onFirstTask {
+                await viewModel.setupFirebase()
                 await viewModel.setupKakaoSDK()
                 await viewModel.onFirstTask()
             }

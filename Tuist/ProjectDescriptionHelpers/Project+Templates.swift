@@ -100,6 +100,15 @@ extension Project {
             infoPlist: .extendingDefault(with: infoPlist),
             sources: ["Targets/\(name)/Sources/**"],
             resources: ["Targets/\(name)/Resources/**"],
+            scripts: [
+                TargetScript.pre(path: "./Scripts/FBCrashlyticsRunScript.sh", name: "Firebase Crashlystics",inputFileListPaths: [
+                    Path("${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}"),
+                    Path("${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}/Contents/Resources/DWARF/${PRODUCT_NAME}"),
+                    Path("${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}/Contents/Info.plist"),
+                    Path("$(TARGET_BUILD_DIR)/$(UNLOCALIZED_RESOURCES_FOLDER_PATH)/GoogleService-Info.plist"),
+                    Path("$(TARGET_BUILD_DIR)/$(EXECUTABLE_PATH)")
+                ])
+            ],
             dependencies: dependencies
         )
         
