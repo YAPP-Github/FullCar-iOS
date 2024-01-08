@@ -30,6 +30,10 @@ final class HomeViewModel {
     
     @Sendable
     func refreshable() async {
+        print(#function)
+    }
+    
+    func onCardTapped(_ carpull: Home.Model.TempCarPull) async {
         
     }
 }

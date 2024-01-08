@@ -76,7 +76,7 @@ extension Home.API: DependencyKey {
     static let testValue: Home.API = unimplemented("homeapi")
     static let previewValue: Home.API = .init(
         fetch: { _, _ in 
-            return .init(list: [.mock, .mock, .mock])
+            return .init(list: [.mock, .mock, .mock, .mock, .mock, .mock])
         }
     )
     #endif

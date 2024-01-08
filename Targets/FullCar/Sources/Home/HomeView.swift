@@ -26,17 +26,14 @@ struct HomeView: View {
             Text("야놀자")
                 .font(pretendard: .heading2)
                 .foregroundStyle(Color.black80)
-                .debug()
             Spacer()
             Image("FCHomeTopTrailingImage", bundle: .main)
-                .debug()
         }
         .padding(.leading, 20)
         .padding(.trailing, 15.48)
         .frame(height: 61)
         .frame(maxWidth: .infinity)
         .background(Color.white)
-        .debug(color: .red)
     }
     @ViewBuilder
     private var bodyView: some View {
@@ -47,10 +44,18 @@ struct HomeView: View {
         }
     }
     private func carPullList(_ list: [Home.Model.TempCarPull]) -> some View {
-        ForEach(list) { carpull in
-            HomeCard(carPull: carpull)
-                .padding(.bottom, 8)
+        ScrollView(.vertical) { 
+            ForEach(list) { carpull in
+                Button {
+                    Task { await viewModel.onCardTapped(carpull) }
+                } label: {
+                    HomeCard(carPull: carpull)
+                        .padding(.bottom, 8)
+                }
+                .buttonStyle(.plain)
+            }
         }
+        .scrollIndicators(.hidden)
         .refreshable(action: viewModel.refreshable)
     }
     private var emptyView: some View {
@@ -58,8 +63,15 @@ struct HomeView: View {
     }
 }
 
+#if DEBUG
 #Preview {
-    NavigationStack {
-        HomeView(viewModel: .init())
+    TabView {
+        NavigationStack {
+            HomeView(viewModel: .init())
+        }
+        .tabItem { 
+            Text("home")
+        }
     }
 }
+#endif
