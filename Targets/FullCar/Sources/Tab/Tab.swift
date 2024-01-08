@@ -35,3 +35,7 @@ struct FullCarTabView: View {
         }
     }
 }
+
+#Preview {
+    FullCarTabView(viewModel: .init())
+}
