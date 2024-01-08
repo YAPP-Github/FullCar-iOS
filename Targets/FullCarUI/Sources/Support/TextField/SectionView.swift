@@ -10,12 +10,12 @@ import SwiftUI
 
 /// HeaderView, Content, FooterView로 나눠져있는 View입니다.
 public struct SectionView<Header: View, Content: View, Footer: View>: View {
-    private let headerPadding: CGFloat
-    private let footerPadding: CGFloat
-
     @ViewBuilder private let header: Header
     @ViewBuilder private let content: Content
     @ViewBuilder private let footer: Footer
+
+    private let headerPadding: CGFloat
+    private let footerPadding: CGFloat
 
     public var body: some View {
         VStack(alignment: .leading, spacing: 0) {

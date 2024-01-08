@@ -6,7 +6,7 @@
 //  Copyright © 2024 FullCar Corp. All rights reserved.
 //
 
-import Foundation
+import SwiftUI
 
 /// Badge의 구성 가능한 특성을 나타낸 타입입니다.
 public struct BadgeConfigurable {
@@ -15,26 +15,44 @@ public struct BadgeConfigurable {
     let horizontalPadding: CGFloat
     let verticalPadding: CGFloat
     let cornerRadius: CGFloat
+    let style: ColorStyle
 
-    init(
+    public init(
         font: Pretendard.Style,
         spacing: CGFloat = 0,
         horizontalPadding: CGFloat = 8,
         verticalPadding: CGFloat = 5,
-        cornerRadius: CGFloat = 3
+        cornerRadius: CGFloat = 3,
+        style: ColorStyle.Palette
     ) {
         self.font = font
         self.spacing = spacing
         self.horizontalPadding = horizontalPadding
         self.verticalPadding = verticalPadding
         self.cornerRadius = cornerRadius
+        self.style = .palette(style)
+    }
+}
+
+/// Badge 아이콘의 구성 가능한 특성을 나타낸 타입입니다.
+public struct IconConfigurable {
+    let location: Location
+    let size: Icon.Size
+    let color: Color
+
+    public enum Location {
+        case leading(Icon.Symbol)
+        case trailing(Icon.Symbol)
+        case none
     }
 
-    public static var standard: Self = BadgeConfigurable(
-        font: .bold12,
-        spacing: 0,
-        horizontalPadding: 8,
-        verticalPadding: 5,
-        cornerRadius: 3
-    )
+    public init(
+        location: Location,
+        size: Icon.Size = ._0,
+        color: Color = .clear
+    ) {
+        self.location = location
+        self.size = size
+        self.color = color
+    }
 }

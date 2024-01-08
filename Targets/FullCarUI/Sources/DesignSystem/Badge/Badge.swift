@@ -8,67 +8,66 @@
 
 import SwiftUI
 
-/// 아이콘 + 라벨 + 아이콘 조합의 배지입니다.
-public struct Badge<LeadingIcon: View, TrailingIcon: View>: View {
-    @ViewBuilder private let leadingIcon: LeadingIcon
-    @ViewBuilder private let trailingIcon: TrailingIcon
-
-    private let title: String
+/// 아이콘 + 라벨 조합의 배지입니다. 아이콘은 leading, none, trailing으로 위치를 선택할 수 있습니다.
+public struct Badge: View {
+    private let label: String
     private let badgeConfigurable: BadgeConfigurable
-    private let iconSize: Icon.Size
-    private let iconColor: Color
-    private let style: ColorStyle
+    private let iconConfigurable: IconConfigurable
 
     public var body: some View {
         HStack(spacing: badgeConfigurable.spacing) {
-            leadingIcon
-                .frame(iconSize: iconSize)
-                .foregroundStyle(iconColor)
+            if case let .leading(symbol) = iconConfigurable.location {
+                icon(symbol: symbol)
+            }
 
-            Text(title)
+            Text(label)
                 .font(pretendard: badgeConfigurable.font)
-                .foregroundStyle(style.dark)
+                .foregroundStyle(badgeConfigurable.style.dark)
 
-            trailingIcon
-                .frame(iconSize: iconSize)
-                .foregroundStyle(iconColor)
+            if case let .trailing(symbol) = iconConfigurable.location {
+                icon(symbol: symbol)
+            }
         }
         .padding(.horizontal, badgeConfigurable.horizontalPadding)
         .padding(.vertical, badgeConfigurable.verticalPadding)
-        .background(style.light)
+        .background(badgeConfigurable.style.light)
         .cornerRadius(radius: badgeConfigurable.cornerRadius, corners: .allCorners)
+    }
+
+    @ViewBuilder
+    private func icon(symbol: Icon.Symbol) -> some View {
+        Image(icon: symbol)
+            .renderingMode(.template)
+            .resizable()
+            .frame(iconSize: iconConfigurable.size)
+            .foregroundStyle(iconConfigurable.color)
     }
 }
 
 public extension Badge {
     init(
-        @ViewBuilder leading: () -> LeadingIcon = { EmptyView() },
-        @ViewBuilder trailing: () -> TrailingIcon = { EmptyView() },
         title: String,
         badgeConfigurable: BadgeConfigurable,
-        iconSize: Icon.Size = ._0,
-        iconColor: Color = .clear,
-        style: ColorStyle
+        iconConfigurable: IconConfigurable
     ) {
-        self.leadingIcon = leading()
-        self.trailingIcon = trailing()
-        self.title = title
+        self.label = title
         self.badgeConfigurable = badgeConfigurable
-        self.iconSize = iconSize
-        self.iconColor = iconColor
-        self.style = style
+        self.iconConfigurable = iconConfigurable
     }
 }
 
-public extension Badge where LeadingIcon == EmptyView, TrailingIcon == EmptyView {
+public extension Badge {
     /// 게시글의 상태값을 알려주는 배지입니다.
     init(
         postState: PostState
     ) {
         self.init(
             title: postState.rawValue,
-            badgeConfigurable: postState.badgeConfigurable,
-            style: postState.style
+            badgeConfigurable: .init(
+                font: .bold12,
+                style: postState.style
+            ),
+            iconConfigurable: .init(location: .none)
         )
     }
 
@@ -78,13 +77,14 @@ public extension Badge where LeadingIcon == EmptyView, TrailingIcon == EmptyView
     ) {
         self.init(
             title: matching.rawValue,
-            badgeConfigurable: matching.badgeConfigurable,
-            style: matching.style
+            badgeConfigurable: .init(
+                font: .bold12,
+                style: matching.style
+            ),
+            iconConfigurable: .init(location: .none)
         )
     }
-}
 
-public extension Badge where LeadingIcon == Image, TrailingIcon == EmptyView {
     /// 운전자의 정보를 알려주는 배지입니다.
     init(
         driver: Driver
@@ -92,29 +92,31 @@ public extension Badge where LeadingIcon == Image, TrailingIcon == EmptyView {
         switch driver {
         case .gender(let gender):
             self.init(
-                leading: {
-                    Image(icon: gender.icon)
-                        .resizable()
-                        .renderingMode(.template)
-                }, 
                 title: gender.rawValue,
-                badgeConfigurable: gender.badgeConfigurable,
-                iconSize: driver.iconSize,
-                iconColor: driver.iconColor,
-                style: gender.style
+                badgeConfigurable: .init(
+                    font: driver.font,
+                    spacing: gender.spacing,
+                    style: driver.style
+                ),
+                iconConfigurable: .init(
+                    location: .leading(gender.icon),
+                    size: driver.iconSize,
+                    color: driver.iconColor
+                )
             )
         case .mood(let mood):
             self.init(
-                leading: {
-                    Image(icon: mood.icon)
-                        .resizable()
-                        .renderingMode(.template)
-                }, 
                 title: mood.rawValue,
-                badgeConfigurable: mood.badgeConfigurable,
-                iconSize: driver.iconSize,
-                iconColor: driver.iconColor,
-                style: mood.style
+                badgeConfigurable: .init(
+                    font: driver.font,
+                    spacing: mood.spacing,
+                    style: driver.style
+                ),
+                iconConfigurable: .init(
+                    location: .leading(mood.icon),
+                    size: driver.iconSize,
+                    color: driver.iconColor
+                )
             )
         }
     }
@@ -143,17 +145,18 @@ public extension Badge where LeadingIcon == Image, TrailingIcon == EmptyView {
             Badge(driver: .mood(.talk))
 
             Badge(
-                leading: {
-                    Image(icon: .user)
-                        .resizable()
-                },
-                trailing: { }, 
                 title: "테스트",
-                badgeConfigurable: .init(font: .bold17, spacing: 5),
-                iconSize: ._20,
-                style: .palette(.red)
+                badgeConfigurable: .init(
+                    font: .bold17, 
+                    spacing: 5,
+                    style: .primary_secondary
+                ),
+                iconConfigurable: .init(
+                    location: .trailing(.user),
+                    size: ._20,
+                    color: .red
+                )
             )
         }
     }
 }
-

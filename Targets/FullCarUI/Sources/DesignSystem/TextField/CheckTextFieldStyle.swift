@@ -9,13 +9,13 @@
 import SwiftUI
 
 public struct CheckTextFieldStyle: TextFieldStyle {
+    @Binding private var isChecked: Bool
+    
     private let padding: CGFloat
     private let backgroundColor: Color
     private let borderColor: Color
     private let borderWidth: CGFloat
     private let cornerRadius: CGFloat
-
-    @Binding private var isChecked: Bool
 
     public typealias Configuration = TextField<Self._Label>
 

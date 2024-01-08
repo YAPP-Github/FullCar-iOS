@@ -8,18 +8,8 @@
 
 import SwiftUI
 
-/// Badge를 구성하는 Style과 Configurable 타입
-protocol BadgeStyleConfiguration {
-    var badgeConfigurable: BadgeConfigurable { get }
-    var style: ColorStyle { get }
-}
-
-extension BadgeStyleConfiguration {
-    var badgeConfigurable: BadgeConfigurable { return .standard }
-}
-
 /// 게시글의 상태값
-public enum PostState: String, BadgeStyleConfiguration {
+public enum PostState: String {
     /// 모집중
     case recruite = "모집중"
     /// 요청중
@@ -27,25 +17,25 @@ public enum PostState: String, BadgeStyleConfiguration {
     /// 마감
     case close = "마감"
 
-    var style: ColorStyle {
+    var style: ColorStyle.Palette {
         switch self {
-        case .recruite, .request: return .palette(.primary_secondary)
-        case .close: return .palette(.gray60)
+        case .recruite, .request: return .primary_secondary
+        case .close: return .gray60
         }
     }
 }
 
 /// 카풀 매칭 결과
-public enum Matching: String, BadgeStyleConfiguration {
+public enum Matching: String {
     /// 매칭 성공
     case success = "매칭 성공"
     /// 매칭 취소
     case cancel = "매칭 취소"
 
-    var style: ColorStyle {
+    var style: ColorStyle.Palette {
         switch self {
-        case .success: return .palette(.green)
-        case .cancel: return .palette(.red)
+        case .success: return .green
+        case .cancel: return .red
         }
     }
 }
@@ -69,31 +59,23 @@ public enum Driver {
         case talk = "대화하며 가기"
     }
 
+    var font: Pretendard.Style { return .semibold12 }
+
     var iconColor: Color { return .gray60 }
 
     var iconSize: Icon.Size { return ._16 }
+
+    var style: ColorStyle.Palette { return .gray60 }
 }
 
-extension Driver.Gender: BadgeStyleConfiguration {
-    var badgeConfigurable: BadgeConfigurable {
-        var configurable: BadgeConfigurable = .standard
-        configurable.font = .semibold12
-        configurable.spacing = 2
-        return configurable
-    }
+extension Driver.Gender {
+    var spacing: CGFloat { return 2 }
 
-    var icon: Icon.Symbol { .user }
-
-    var style: ColorStyle { return .palette(.gray60) }
+    var icon: Icon.Symbol { return .user }
 }
 
-extension Driver.Mood: BadgeStyleConfiguration {
-    var badgeConfigurable: BadgeConfigurable {
-        var configurable: BadgeConfigurable = .standard
-        configurable.font = .semibold12
-        configurable.spacing = 4
-        return configurable
-    }
+extension Driver.Mood {
+    var spacing: CGFloat { return 4 }
 
     var icon: Icon.Symbol {
         switch self {
@@ -101,6 +83,4 @@ extension Driver.Mood: BadgeStyleConfiguration {
         case .talk: return .talk
         }
     }
-
-    var style: ColorStyle { return .palette(.gray60) }
 }

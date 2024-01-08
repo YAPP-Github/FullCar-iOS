@@ -29,13 +29,6 @@ public struct ChipButtonStyle: ButtonStyle {
                     .stroke(style.extra, lineWidth: 1)
             )
     }
-
-    private var style: ColorStyle {
-        switch isSelected {
-        case true: return .palette(.primary_secondary)
-        case false: return .palette(.black)
-        }
-    }
 }
 
 extension ChipButtonStyle {
@@ -43,6 +36,13 @@ extension ChipButtonStyle {
         static let verticalPadding: CGFloat = 11
         static let horizontalPadding: CGFloat = 14
         static let radius: CGFloat = 50
+    }
+
+    private var style: ColorStyle {
+        switch isSelected {
+        case true: return .palette(.primary_secondary)
+        case false: return .palette(.black)
+        }
     }
 }
 

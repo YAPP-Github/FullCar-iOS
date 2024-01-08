@@ -26,28 +26,6 @@ public struct FCarButtonStyle: ButtonStyle {
             .background(backgroundColor)
             .cornerRadius(radius: cornerRadius, corners: .allCorners)
     }
-
-    private var foregroundColor: Color {
-        if colorStyle == ColorStyle.Palette.primary_white {
-            switch isEnabled {
-            case true: return ColorStyle.palette(.primary_white).light
-            case false: return ColorStyle.palette(.gray30).light
-            }
-        } else {
-            return ColorStyle.palette(colorStyle).dark
-        }
-    }
-
-    private var backgroundColor: Color {
-        if colorStyle == ColorStyle.Palette.primary_white {
-            switch isEnabled {
-            case true: return ColorStyle.palette(.primary_white).dark
-            case false: return ColorStyle.palette(.gray30).dark
-            }
-        } else {
-            return ColorStyle.palette(colorStyle).light
-        }
-    }
 }
 
 public extension FCarButtonStyle {
@@ -63,6 +41,28 @@ public extension FCarButtonStyle {
         self.verticalPadding = verticalPadding
         self.cornerRadius = radius
         self.colorStyle = colorStyle
+    }
+
+    private var foregroundColor: Color {
+        if colorStyle == .primary_white {
+            switch isEnabled {
+            case true: return ColorStyle.palette(.primary_white).light
+            case false: return ColorStyle.palette(.gray30).light
+            }
+        } else {
+            return ColorStyle.palette(colorStyle).dark
+        }
+    }
+
+    private var backgroundColor: Color {
+        if colorStyle == .primary_white {
+            switch isEnabled {
+            case true: return ColorStyle.palette(.primary_white).dark
+            case false: return ColorStyle.palette(.gray30).dark
+            }
+        } else {
+            return ColorStyle.palette(colorStyle).light
+        }
     }
 }
 

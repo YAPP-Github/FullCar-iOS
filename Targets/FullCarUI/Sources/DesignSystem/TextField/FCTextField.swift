@@ -1,5 +1,5 @@
 //
-//  FullCarTextField.swift
+//  FCTextField.swift
 //  FullCarUI
 //
 //  Created by Sunny on 1/1/24.
@@ -9,7 +9,7 @@
 import SwiftUI
 
 /// Header, TextField, Footer로 구성되어있는 View입니다. Footer는 Message 타입으로 error, information 등의 정보를 나타냅니다.
-public struct FullCarTextField<TextField: View>: View {
+public struct FCTextField<TextField: View>: View {
     @ViewBuilder private let textField: TextField
     @FocusState private var isFocused: Bool
     @Binding private var state: InputState
@@ -68,20 +68,9 @@ public struct FullCarTextField<TextField: View>: View {
         )
         .foregroundStyle(message.fontColor)
     }
-
-    private var labelIconSize: CGFloat { return 20 }
-
-    private var labelLineSpacing: CGFloat { return 4 }
-
-    private var footerTopPadding: CGFloat {
-        switch state {
-        case .default, .focus: return 10
-        case .error: return 8
-        }
-    }
 }
 
-public extension FullCarTextField {
+public extension FCTextField {
     init(
         @ViewBuilder textField: () -> TextField,
         state: Binding<InputState>,
@@ -99,6 +88,17 @@ public extension FullCarTextField {
         self.headerBottomPadding = headerPadding
         self.footerMessage = footerMessage
     }
+
+    private var labelIconSize: CGFloat { return 20 }
+
+    private var labelLineSpacing: CGFloat { return 4 }
+
+    private var footerTopPadding: CGFloat {
+        switch state {
+        case .default, .focus: return 10
+        case .error: return 8
+        }
+    }
 }
 
 struct FullCarTextFieldPreviews: PreviewProvider {
@@ -112,7 +112,7 @@ struct FullCarTextFieldPreviews: PreviewProvider {
 
     static var previews: some View {
         VStack(spacing: 30) {
-            FullCarTextField(
+            FCTextField(
                 textField: {
                     TextField("회사, 주소 검색", text: $text)
                         .textFieldStyle(.check(isChecked: $isChecked, borderColor: inputState.borderColor))
@@ -123,7 +123,7 @@ struct FullCarTextFieldPreviews: PreviewProvider {
                 headerPadding: 5
             )
 
-            FullCarTextField(
+            FCTextField(
                 textField: {
                     TextField("Placeholder", text: $text)
                         .textFieldStyle(.check(isChecked: $isChecked_false, borderColor: inputState_error.borderColor))
@@ -131,7 +131,7 @@ struct FullCarTextFieldPreviews: PreviewProvider {
                 state: $inputState_error
             )
 
-            FullCarTextField(
+            FCTextField(
                 textField: {
                     TextField("Placeholder", text: $text)
                         .textFieldStyle(.check(isChecked: $isChecked_false, borderColor: inputState.borderColor))
