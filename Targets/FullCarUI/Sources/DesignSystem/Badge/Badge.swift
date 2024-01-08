@@ -20,14 +20,12 @@ public struct Badge<LeadingIcon: View, Label: View, TrailingIcon: View>: View {
     public var body: some View {
         HStack(spacing: configurable.spacing) {
             leadingIcon
-                .frame(width: configurable.iconSize, height: configurable.iconSize)
 
             label
                 .font(pretendard: configurable.font)
                 .foregroundStyle(style.dark)
 
             trailingIcon
-                .frame(width: configurable.iconSize, height: configurable.iconSize)
         }
         .padding(.horizontal, configurable.horizontalPadding)
         .padding(.vertical, configurable.verticalPadding)
@@ -92,7 +90,7 @@ public extension Badge where Label == Text, LeadingIcon == EmptyView, TrailingIc
     }
 }
 
-public extension Badge where Label == Text, LeadingIcon == Image?, TrailingIcon == EmptyView {
+public extension Badge where Label == Text, LeadingIcon == Icon, TrailingIcon == EmptyView {
     /// 운전자의 정보를 알려주는 배지입니다.
     init(
         driver: Driver
@@ -103,14 +101,14 @@ public extension Badge where Label == Text, LeadingIcon == Image?, TrailingIcon 
                 title: gender.rawValue,
                 configurable: gender.configurable,
                 style: gender.style,
-                leading: { gender.icon?.resizable() }
-            )
+                leading: { Icon(configuration: gender.iconConfiguration) }
+                )
         case .mood(let mood):
             self.init(
                 title: mood.rawValue,
                 configurable: mood.configurable,
                 style: mood.style,
-                leading: { mood.icon?.resizable() }
+                leading: { Icon(configuration: mood.iconConfiguration) }
             )
         }
     }
@@ -144,7 +142,7 @@ public extension Badge where Label == Text, LeadingIcon == Image?, TrailingIcon 
                 style: .palette(.red),
                 leading: {
                     Icon.image(type: .car)?
-                        .resizable()
+                        .frame(height: 20)
                 },
                 trailing: {
                     Icon.image(type: .female)

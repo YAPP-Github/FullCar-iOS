@@ -12,7 +12,6 @@ import Foundation
 public struct BadgeConfigurable {
     var font: Pretendard.Style
     var spacing: CGFloat
-    let iconSize: CGFloat
     let horizontalPadding: CGFloat
     let verticalPadding: CGFloat
     let cornerRadius: CGFloat
@@ -20,14 +19,12 @@ public struct BadgeConfigurable {
     init(
         font: Pretendard.Style,
         spacing: CGFloat = 0,
-        iconSize: CGFloat = 16,
         horizontalPadding: CGFloat = 8,
         verticalPadding: CGFloat = 5,
         cornerRadius: CGFloat = 3
     ) {
         self.font = font
         self.spacing = spacing
-        self.iconSize = iconSize
         self.horizontalPadding = horizontalPadding
         self.verticalPadding = verticalPadding
         self.cornerRadius = cornerRadius
@@ -36,7 +33,6 @@ public struct BadgeConfigurable {
     public static var standard: Self = BadgeConfigurable(
         font: .bold12,
         spacing: 0,
-        iconSize: 16,
         horizontalPadding: 8,
         verticalPadding: 5,
         cornerRadius: 3

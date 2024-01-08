@@ -39,18 +39,39 @@ public struct FullCarTextField<TextField: View>: View {
             footer: {
                 /// 에러 상태일 때, 에러 메세지 띄우는 경우
                 if case .error(let errorMessage) = state {
-                    MessageLabel(.error(errorMessage))
+                    label(message: .error(errorMessage))
                 }
 
                 /// 안내 문구 띄우는 경우
                 if case .information(let description, _) = footerMessage {
-                    MessageLabel(.information(description))
+                    label(message: .information(description))
                 }
             },
             headerBottomPadding: headerBottomPadding,
             footerTopPadding: footerTopPadding
         )
     }
+
+    private func label(message: Message) -> some View {
+        Label(
+            title: { 
+                Text(message.description)
+                    .lineSpacing(labelLineSpacing)
+                    .font(pretendard: .semibold14)
+            },
+            icon: {
+                if let icon = message.icon, let image = icon.image {
+                    image
+                        .frame(width: labelIconSize)
+                }
+            }
+        )
+        .foregroundStyle(message.fontColor)
+    }
+
+    private var labelIconSize: CGFloat { return 20 }
+
+    private var labelLineSpacing: CGFloat { return 4 }
 
     private var footerTopPadding: CGFloat {
         switch state {

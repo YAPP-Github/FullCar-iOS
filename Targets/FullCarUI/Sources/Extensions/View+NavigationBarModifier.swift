@@ -30,4 +30,20 @@ public extension View {
     ) -> some View {
         modifier(FullCarNavigationBarModifier(destination: destination))
     }
+
+    func fullCarNavigationBar<Leading: View, Center: View, Trailing: View>(
+        @ViewBuilder leadingView: () -> Leading,
+        @ViewBuilder centerView: () -> Center,
+        @ViewBuilder trailingView: () -> Trailing,
+        barHeight: CGFloat
+    ) -> some View {
+        modifier(
+            FullCarNavigationBarModifier(
+                leadingView: leadingView,
+                centerView: centerView,
+                trailingView: trailingView,
+                barHeight: barHeight
+            )
+        )
+    }
 }

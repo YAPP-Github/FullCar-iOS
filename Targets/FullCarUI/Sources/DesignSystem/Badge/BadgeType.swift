@@ -10,13 +10,13 @@ import SwiftUI
 
 /// Badge를 구성하는 Style과 Configurable 타입
 protocol BadgeStyleConfiguration {
-    var icon: Image? { get }
+    var iconConfiguration: Icon.Configuration { get }
     var configurable: BadgeConfigurable { get }
     var style: ColorStyle { get }
 }
 
 extension BadgeStyleConfiguration {
-    var icon: Image? { return nil }
+    var iconConfiguration: Icon.Configuration { return .init(symbol: .nil, size: 0, color: .clear) }
     var configurable: BadgeConfigurable { return .standard }
 }
 
@@ -73,10 +73,20 @@ public enum Driver {
 }
 
 extension Driver.Gender: BadgeStyleConfiguration {
-    var icon: Image? {
+    public var iconConfiguration: Icon.Configuration {
         switch self {
-        case .female: return Icon.image(type: .female)
-        case .male: return Icon.image(type: .male)
+        case .female: 
+            return .init(
+                symbol: .female,
+                size: 16,
+                color: .gray60
+            )
+        case .male:
+            return .init(
+                symbol: .male,
+                size: 16,
+                color: .gray60
+            )
         }
     }
 
@@ -91,10 +101,20 @@ extension Driver.Gender: BadgeStyleConfiguration {
 }
 
 extension Driver.Mood: BadgeStyleConfiguration {
-    var icon: Image? {
+    var iconConfiguration: Icon.Configuration {
         switch self {
-        case .quiet: return Icon.image(type: .quite)
-        case .talk: return Icon.image(type: .talk)
+        case .quiet:
+            return .init(
+                symbol: .quite,
+                size: 16,
+                color: .gray60
+            )
+        case .talk: 
+            return .init(
+                symbol: .talk,
+                size: 16,
+                color: .gray60
+            )
         }
     }
 

@@ -28,13 +28,20 @@ public struct NavigationTitle: View {
                 .font(pretendard: .bold18)
         case .destination:
             HStack(spacing: Constants.destinationSpacing) {
-                Icon.image(type: .car)
-                    .frame(width: Constants.destinationIconSize)
+                Icon(configuration: iconConfiguration)
 
                 Text(title)
                     .font(pretendard: .bold18)
             }
         }
+    }
+
+    private var iconConfiguration: Icon.Configuration {
+        return .init(
+            symbol: .car,
+            size: Constants.destinationIconSize,
+            color: .green100
+        )
     }
 }
 

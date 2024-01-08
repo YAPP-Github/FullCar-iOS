@@ -24,7 +24,7 @@ public struct CheckTextFieldStyle: TextFieldStyle {
             configuration
 
             if isChecked {
-                icon
+                Icon(configuration: iconConfiguration)
             }
         }
         .padding(padding)
@@ -35,18 +35,12 @@ public struct CheckTextFieldStyle: TextFieldStyle {
         )
     }
 
-    private var icon: some View {
-        IconConfiguration.image?
-            .frame(width: IconConfiguration.size)
-            .foregroundStyle(IconConfiguration.color)
-    }
-}
-
-extension CheckTextFieldStyle {
-    enum IconConfiguration {
-        static let image: Image? = Icon.image(type: .check)
-        static let size: CGFloat = 24
-        static let color: Color = .green100
+    private var iconConfiguration: Icon.Configuration {
+        return .init(
+            symbol: .check,
+            size: 24,
+            color: .green100
+        )
     }
 }
 

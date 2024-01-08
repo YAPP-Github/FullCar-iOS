@@ -9,12 +9,13 @@
 import SwiftUI
 
 /// FullCar에서 사용되는 NavigationBar입니다. NavigationBar는 화면 내용에 따라 타이틀과 아이콘이 변경됩니다.
-public struct FullCarNavigationBarModifier<Title: View, Leading: View>: ViewModifier {
-    @ViewBuilder private let title: Title
+public struct FullCarNavigationBarModifier<Leading: View, Center: View, Trailing: View>: ViewModifier {
+    @ViewBuilder private let title: Center
     @ViewBuilder private let leading: Leading
+    @ViewBuilder private let trailing: Trailing
 
     private let navigationBarHeight: CGFloat
-    private let leadingPadding: CGFloat = 20
+    private let horizontalPadding: CGFloat = 20
 
     public func body(content: Content) -> some View {
         VStack {
@@ -22,6 +23,8 @@ public struct FullCarNavigationBarModifier<Title: View, Leading: View>: ViewModi
                 leadingView
 
                 titleView
+
+                trailingView
             }
             .frame(height: navigationBarHeight)
             .frame(maxWidth: .infinity)
@@ -41,7 +44,7 @@ public struct FullCarNavigationBarModifier<Title: View, Leading: View>: ViewModi
 
             Spacer()
         }
-        .padding(.leading, leadingPadding)
+        .padding(.leading, horizontalPadding)
     }
 
     private var titleView: some View {
@@ -53,60 +56,68 @@ public struct FullCarNavigationBarModifier<Title: View, Leading: View>: ViewModi
             Spacer()
         }
     }
-}
 
-extension FullCarNavigationBarModifier {
-    init(
-        @ViewBuilder titleView: () -> Title = { EmptyView() } ,
-        @ViewBuilder leadingView: () -> Leading = { EmptyView() },
-        navigationBarHeight: CGFloat = 48
-    ) {
-        self.title = titleView()
-        self.leading = leadingView()
-        self.navigationBarHeight = navigationBarHeight
+    private var trailingView: some View {
+        HStack {
+            Spacer()
+
+            trailing
+        }
+        .padding(.trailing, horizontalPadding)
     }
 }
 
-public extension FullCarNavigationBarModifier where Title == NavigationTitle, Leading == NavigationBackButton {
+public extension FullCarNavigationBarModifier {
+    init(
+        @ViewBuilder leadingView: () -> Leading = { EmptyView() },
+        @ViewBuilder centerView: () -> Center = { EmptyView() } ,
+        @ViewBuilder trailingView: () -> Trailing = { EmptyView() },
+        barHeight: CGFloat = 48
+    ) {
+        self.leading = leadingView()
+        self.title = centerView()
+        self.trailing = trailingView()
+        self.navigationBarHeight = barHeight
+    }
+}
+
+public extension FullCarNavigationBarModifier where Center == NavigationTitle, Leading == NavigationButton, Trailing == EmptyView {
     init(
         title: String,
         action: @escaping () -> Void
     ) {
         self.init(
-            titleView: {
-                NavigationTitle(type: .title, title: title)
-            },
             leadingView: {
-                NavigationBackButton(action: action)
-            }
+                NavigationButton(symbol: .back, action: action)
+            },
+            centerView: { NavigationTitle(type: .title, title: title) },
+            trailingView: { }
         )
     }
 }
 
-public extension FullCarNavigationBarModifier where Title == NavigationTitle, Leading == EmptyView {
+public extension FullCarNavigationBarModifier where Center == NavigationTitle, Leading == EmptyView, Trailing == EmptyView {
     init(
         title: String
     ) {
         self.init(
-            titleView: {
-                NavigationTitle(type: .title, title: title)
-            },
-            leadingView: { }
+            leadingView: { }, 
+            centerView: { NavigationTitle(type: .title, title: title) },
+            trailingView: { }
         )
     }
 }
 
-public extension FullCarNavigationBarModifier where Title == EmptyView, Leading == NavigationTitle {
+public extension FullCarNavigationBarModifier where Center == EmptyView, Leading == NavigationTitle, Trailing == EmptyView {
     init(
         destination: String,
         navigationBarHeight: CGFloat = 61
     ) {
         self.init(
-            titleView: { },
-            leadingView: {
-                NavigationTitle(type: .destination, title: destination)
-            },
-            navigationBarHeight: navigationBarHeight
+            leadingView: { NavigationTitle(type: .destination, title: destination) },
+            centerView: { },
+            trailingView: { },
+            barHeight: navigationBarHeight
         )
     }
 }
@@ -132,7 +143,34 @@ struct FullCarNavigationBarPreviews: PreviewProvider {
                     Text("navigationBar - destination leading")
                 }
                 .fullCarNavigationBar(destination: "네이버")
+
+                VStack {
+                    Text("trailing Test")
+                }
+                .fullCarNavigationBar(
+                    leadingView: {
+                        naviLeadingView
+                    },
+                    centerView: { EmptyView() },
+                    trailingView: {
+                        naviTrailingView
+                            .background(.red)
+                    },
+                    barHeight: 61
+                )
             }
         }
+    }
+
+    @ViewBuilder
+    static var naviLeadingView: some View {
+        Icon.image(type: .car)
+            .frame(width: 28, height: 28)
+    }
+
+    @ViewBuilder
+    static var naviTrailingView: some View {
+        Icon.image(type: .car)
+            .frame(width: 28, height: 28)
     }
 }
