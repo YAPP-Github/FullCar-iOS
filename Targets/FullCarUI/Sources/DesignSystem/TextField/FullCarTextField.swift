@@ -60,8 +60,8 @@ public struct FullCarTextField<TextField: View>: View {
                     .font(pretendard: .semibold14)
             },
             icon: {
-                if let icon = message.icon, let image = icon.image {
-                    image
+                if let icon = message.icon {
+                    Image(icon: icon)
                         .frame(width: labelIconSize)
                 }
             }

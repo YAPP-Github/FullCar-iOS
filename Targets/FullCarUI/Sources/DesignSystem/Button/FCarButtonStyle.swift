@@ -1,5 +1,5 @@
 //
-//  FullCarButtonStyle.swift
+//  FCarButtonStyle.swift
 //  FullCarUI
 //
 //  Created by Sunny on 12/31/23.
@@ -8,7 +8,7 @@
 
 import SwiftUI
 
-public struct FullCarButtonStyle: ButtonStyle {
+public struct FCarButtonStyle: ButtonStyle {
     @Environment(\.isEnabled) private var isEnabled
 
     private let font: Pretendard.Style
@@ -50,7 +50,7 @@ public struct FullCarButtonStyle: ButtonStyle {
     }
 }
 
-public extension FullCarButtonStyle {
+public extension FCarButtonStyle {
     init(
         font: Pretendard.Style,
         horizontalPadding: CGFloat,

@@ -8,7 +8,7 @@
 
 import SwiftUI
 
-extension ButtonStyle where Self == FullCarButtonStyle {
+extension ButtonStyle where Self == FCarButtonStyle {
     /// 폰트, 색상, padding 등을 커스텀 할 수 있는 버튼입니다. 버튼의 색상은 ColorStyle을 사용합니다.
     public static func fullCar(
         font: Pretendard.Style = .bold17,
@@ -16,8 +16,8 @@ extension ButtonStyle where Self == FullCarButtonStyle {
         verticalPadding: CGFloat = 17,
         radius: CGFloat = 8,
         style: ColorStyle.Palette
-    ) -> FullCarButtonStyle {
-        FullCarButtonStyle(
+    ) -> FCarButtonStyle {
+        FCarButtonStyle(
             font: font,
             horizontalPadding: horizontalPadding,
             verticalPadding: verticalPadding,

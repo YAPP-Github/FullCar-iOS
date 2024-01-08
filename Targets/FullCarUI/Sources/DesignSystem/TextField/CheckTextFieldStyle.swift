@@ -24,7 +24,10 @@ public struct CheckTextFieldStyle: TextFieldStyle {
             configuration
 
             if isChecked {
-                Icon(configuration: iconConfiguration)
+                Image(icon: .check)
+                    .resizable()
+                    .frame(iconSize: ._24)
+                    .foregroundStyle(Color.green100)
             }
         }
         .padding(padding)
@@ -32,14 +35,6 @@ public struct CheckTextFieldStyle: TextFieldStyle {
         .overlay(
             RoundedRectangle(cornerRadius: cornerRadius)
                 .stroke(borderColor, lineWidth: borderWidth)
-        )
-    }
-
-    private var iconConfiguration: Icon.Configuration {
-        return .init(
-            symbol: .check,
-            size: 24,
-            color: .green100
         )
     }
 }
