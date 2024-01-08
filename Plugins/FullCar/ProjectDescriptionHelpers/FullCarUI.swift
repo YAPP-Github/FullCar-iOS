@@ -10,6 +10,16 @@ import ProjectDescription
 
 public let fullCarUI: Target = .makeModule(
     name: "FullCarUI", 
-    bundleId: "com.fullcar.ui", 
+    bundleId: "com.fullcar.ui",
+    infoPlist: .extendingDefault(
+        with: [
+            "UIAppFonts": [
+                "Pretendard-Regular.otf",
+                "Pretendard-Medium.otf",
+                "Pretendard-SemiBold.otf",
+                "Pretendard-Bold.otf"
+            ]
+        ]
+    ),
     dependencies: []
 )
