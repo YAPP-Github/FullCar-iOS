@@ -49,7 +49,7 @@ struct HomeView: View {
                 Button {
                     Task { await viewModel.onCardTapped(carpull) }
                 } label: {
-                    HomeCard(carPull: carpull)
+                    HomeCardView(carPull: carpull)
                         .padding(.bottom, 8)
                 }
                 .buttonStyle(.plain)

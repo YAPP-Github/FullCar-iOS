@@ -10,7 +10,7 @@ import SwiftUI
 import FullCarUI
 
 @MainActor
-struct HomeCard: View {
+struct HomeCardView: View {
     
     let carPull: Home.Model.TempCarPull
     
@@ -72,6 +72,6 @@ struct HomeCard: View {
 
 #if DEBUG
 #Preview {
-    HomeCard(carPull: .mock)
+    HomeCardView(carPull: .mock)
 }
 #endif
