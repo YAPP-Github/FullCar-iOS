@@ -9,12 +9,12 @@
 import SwiftUI
 
 /// FullCar에서 사용되는 NavigationBar입니다. NavigationBar는 화면 내용에 따라 타이틀과 아이콘이 변경됩니다.
-public struct FullCarNavigationBarModifier<Leading: View, Center: View, Trailing: View>: ViewModifier {
-    @ViewBuilder private let title: Center
+public struct FCNavigationBarModifier<Leading: View, Center: View, Trailing: View>: ViewModifier {
+    @ViewBuilder private let center: Center
     @ViewBuilder private let leading: Leading
     @ViewBuilder private let trailing: Trailing
 
-    private let navigationBarHeight: CGFloat
+    private let navigationBarHeight: NavigationBarHeight
     private let horizontalPadding: CGFloat = 20
 
     public func body(content: Content) -> some View {
@@ -22,11 +22,11 @@ public struct FullCarNavigationBarModifier<Leading: View, Center: View, Trailing
             ZStack {
                 leadingView
 
-                titleView
+                centerView
 
                 trailingView
             }
-            .frame(height: navigationBarHeight)
+            .frame(height: navigationBarHeight.rawValue)
             .frame(maxWidth: .infinity)
             .background(Color.white)
             .border(width: 1, edges: [.bottom], color: .gray30)
@@ -47,11 +47,11 @@ public struct FullCarNavigationBarModifier<Leading: View, Center: View, Trailing
         .padding(.leading, horizontalPadding)
     }
 
-    private var titleView: some View {
+    private var centerView: some View {
         HStack {
             Spacer()
             
-            title
+            center
 
             Spacer()
         }
@@ -67,58 +67,22 @@ public struct FullCarNavigationBarModifier<Leading: View, Center: View, Trailing
     }
 }
 
-public extension FullCarNavigationBarModifier {
+public enum NavigationBarHeight: CGFloat {
+    case _48 = 48
+    case _61 = 61
+}
+
+public extension FCNavigationBarModifier {
     init(
         @ViewBuilder leadingView: () -> Leading = { EmptyView() },
         @ViewBuilder centerView: () -> Center = { EmptyView() } ,
         @ViewBuilder trailingView: () -> Trailing = { EmptyView() },
-        barHeight: CGFloat = 48
+        barHeight: NavigationBarHeight
     ) {
         self.leading = leadingView()
-        self.title = centerView()
+        self.center = centerView()
         self.trailing = trailingView()
         self.navigationBarHeight = barHeight
-    }
-}
-
-public extension FullCarNavigationBarModifier where Center == NavigationTitle, Leading == NavigationButton, Trailing == EmptyView {
-    init(
-        title: String,
-        action: @escaping () -> Void
-    ) {
-        self.init(
-            leadingView: {
-                NavigationButton(symbol: .back, action: action)
-            },
-            centerView: { NavigationTitle(type: .title, title: title) },
-            trailingView: { }
-        )
-    }
-}
-
-public extension FullCarNavigationBarModifier where Center == NavigationTitle, Leading == EmptyView, Trailing == EmptyView {
-    init(
-        title: String
-    ) {
-        self.init(
-            leadingView: { }, 
-            centerView: { NavigationTitle(type: .title, title: title) },
-            trailingView: { }
-        )
-    }
-}
-
-public extension FullCarNavigationBarModifier where Center == EmptyView, Leading == NavigationTitle, Trailing == EmptyView {
-    init(
-        destination: String,
-        navigationBarHeight: CGFloat = 61
-    ) {
-        self.init(
-            leadingView: { NavigationTitle(type: .destination, title: destination) },
-            centerView: { },
-            trailingView: { },
-            barHeight: navigationBarHeight
-        )
     }
 }
 
@@ -130,47 +94,62 @@ struct FullCarNavigationBarPreviews: PreviewProvider {
                 VStack {
                     Text("navigationBar - back button leading")
                 }
-                .fullCarNavigationBar(title: "회원가입", action: {})
+                .navigationBarStyle(
+                    leadingView: {
+                        NavigationButton(icon: .back, action: { })
+                    },
+                    centerView: {
+                        Text("회원가입")
+                            .font(pretendard: .bold18)
+                    },
+                    trailingView: { }
+                )
 
                 //2. only title
                 VStack {
                     Text("navigationBar - only title")
                 }
-                .fullCarNavigationBar(title: "회원가입")
+                .navigationBarStyle(
+                    leadingView: { },
+                    centerView: {
+                        Text("회원가입")
+                            .font(pretendard: .bold18)
+                    },
+                    trailingView: { }
+                )
 
                 // 3. 목적지 leading
                 VStack {
                     Text("navigationBar - destination leading")
                 }
-                .fullCarNavigationBar(destination: "네이버")
+                .navigationBarStyle(
+                    leadingView: {
+                        Text("야놀자")
+                            .font(pretendard: .bold18)
+                    },
+                    centerView: { },
+                    trailingView: {
+                        Image(icon: .navigationLogo)
+                    }
+                )
 
                 VStack {
                     Text("trailing Test")
                 }
-                .fullCarNavigationBar(
+                .navigationBarStyle(
                     leadingView: {
-                        naviLeadingView
+                        NavigationButton(icon: .back, action: { })
                     },
-                    centerView: { EmptyView() },
+                    centerView: {
+                        Text("카풀 상세")
+                            .font(pretendard: .bold18)
+                    },
                     trailingView: {
-                        naviTrailingView
-                            .background(.red)
+                        NavigationButton(icon: .menu, action: { })
                     },
-                    barHeight: 61
+                    barHeight: ._61
                 )
             }
         }
-    }
-
-    @ViewBuilder
-    static var naviLeadingView: some View {
-        Icon.image(type: .car)
-            .frame(width: 28, height: 28)
-    }
-
-    @ViewBuilder
-    static var naviTrailingView: some View {
-        Icon.image(type: .car)
-            .frame(width: 28, height: 28)
     }
 }
