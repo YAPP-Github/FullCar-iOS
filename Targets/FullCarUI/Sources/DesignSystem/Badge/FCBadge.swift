@@ -17,7 +17,7 @@ public struct FCBadge: View {
     public var body: some View {
         HStack(spacing: badgeConfigurable.spacing) {
             if case let .leading(symbol) = iconConfigurable.location {
-                icon(symbol: symbol)
+                iconView(symbol)
             }
 
             Text(label)
@@ -25,7 +25,7 @@ public struct FCBadge: View {
                 .foregroundStyle(badgeConfigurable.style.dark)
 
             if case let .trailing(symbol) = iconConfigurable.location {
-                icon(symbol: symbol)
+                iconView(symbol)
             }
         }
         .padding(.horizontal, badgeConfigurable.horizontalPadding)
@@ -35,7 +35,7 @@ public struct FCBadge: View {
     }
 
     @ViewBuilder
-    private func icon(symbol: Icon.Symbol) -> some View {
+    private func iconView(_ symbol: Icon.Symbol) -> some View {
         Image(icon: symbol)
             .renderingMode(.template)
             .resizable()
