@@ -16,7 +16,9 @@ public enum PostState: String {
     case request = "요청중"
     /// 마감
     case close = "마감"
+}
 
+public extension PostState {
     var style: ColorStyle {
         switch self {
         case .recruite, .request: return .palette(.primary_secondary)
@@ -31,7 +33,9 @@ public enum Matching: String {
     case success = "매칭 성공"
     /// 매칭 취소
     case cancel = "매칭 취소"
+}
 
+public extension Matching {
     var style: ColorStyle {
         switch self {
         case .success: return .palette(.green)
@@ -58,7 +62,9 @@ public enum Driver {
         /// 대화하며 가기
         case talk = "대화하며 가기"
     }
+}
 
+public extension Driver {
     var font: Pretendard.Style { return .pretendard12(.semibold) }
 
     var iconColor: Color { return .gray60 }
@@ -68,13 +74,13 @@ public enum Driver {
     var style: ColorStyle { return .palette(.gray60) }
 }
 
-extension Driver.Gender {
+public extension Driver.Gender {
     var spacing: CGFloat { return 2 }
 
     var icon: Icon.Symbol { return .user }
 }
 
-extension Driver.Mood {
+public extension Driver.Mood {
     var spacing: CGFloat { return 4 }
 
     var icon: Icon.Symbol {
