@@ -8,28 +8,19 @@
 
 import SwiftUI
 
-public struct FCTextEditor<TextEditorView: View>: View {
-    @ViewBuilder private let textEditorView: TextEditorView
-
+public struct FCTextEditor: View {
     @FocusState private var isFocused: Bool
-    @State private var state: InputState = .default
     @Binding private var text: String
+    @State private var state: InputState = .default
 
     private let placeholder: String
+    private let font: Pretendard.Style
+    private let padding: CGFloat
     private var cornerRadius: CGFloat
 
     public var body: some View {
         ZStack(alignment: .topLeading) {
-            textEditorView
-                .font(pretendard: .semibold16)
-                .focused($isFocused)
-                .onChange(of: isFocused) { oldValue, newValue in
-                    state = newValue ? .focus : .default
-                }
-                .overlay(
-                    RoundedRectangle(cornerRadius: cornerRadius)
-                        .stroke(state.borderColor, lineWidth: 1)
-                )
+            textEditor
 
             if text.isEmpty {
                 placeholderView
@@ -37,54 +28,68 @@ public struct FCTextEditor<TextEditorView: View>: View {
         }
     }
 
+    private var textEditor: some View {
+        TextEditor(text: $text)
+            .font(pretendard: font)
+            .padding(padding)
+            .focused($isFocused)
+            .onChange(of: isFocused) { oldValue, newValue in
+                state = newValue ? .focus : .default
+            }
+            .overlay(
+                RoundedRectangle(cornerRadius: cornerRadius)
+                    .stroke(state.borderColor, lineWidth: 1)
+            )
+    }
+
     private var placeholderView: some View {
         Text(placeholder)
-            .font(pretendard: .semibold16)
+            .font(pretendard: font)
             .foregroundStyle(Color.gray45)
             .onTapGesture {
                 isFocused = true
             }
-            .padding(Pretendard.Style.semibold16.lineHeightSize - 1)
-            .padding(.vertical, 3)
+            .padding(padding)
+            .padding(.horizontal, Constants.placeholderHorizontal)
+            .padding(.vertical, Constants.placeholderVertical)
     }
 }
 
 public extension FCTextEditor {
     init(
-        @ViewBuilder textEditor: () -> TextEditorView,
         text: Binding<String>,
         placeholder: String,
+        font: Pretendard.Style = .semibold16,
+        padding: CGFloat = 16,
         radius: CGFloat = 10
     ) {
-        self.textEditorView = textEditor()
         self._text = text
         self.placeholder = placeholder
+        self.padding = padding
+        self.font = font
         self.cornerRadius = radius
+    }
+
+    enum Constants {
+        static let placeholderHorizontal: CGFloat = 5
+        static let placeholderVertical: CGFloat = 8
     }
 }
 
 struct FCTextEditorModifierPreviews: PreviewProvider {
     @State static var text: String = ""
-    @State static var text2: String = "안녕하세요. 예시 글 입니다."
+    @State static var text2: String = "안녕하세요. 예시 글 입니다"
 
     static var previews: some View {
         VStack {
             FCTextEditor(
-                textEditor: {
-                    TextEditor(text: $text)
-                        .padding(16)
-                },
                 text: $text,
                 placeholder: "placeholder 입니다."
             )
 
             FCTextEditor(
-                textEditor: {
-                    TextEditor(text: $text2)
-                        .padding(16)
-                },
                 text: $text2,
-                placeholder: "placeholder 입니다."
+                placeholder: "안녕하세요. 예시 글 입니다"
             )
         }
         .padding()
