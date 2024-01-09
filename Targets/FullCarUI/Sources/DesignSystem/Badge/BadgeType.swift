@@ -59,7 +59,7 @@ public enum Driver {
         case talk = "대화하며 가기"
     }
 
-    var font: Pretendard.Style { return .semibold12 }
+    var font: Pretendard.Style { return .pretendard12(.semibold) }
 
     var iconColor: Color { return .gray60 }
 

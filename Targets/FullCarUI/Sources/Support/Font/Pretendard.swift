@@ -9,100 +9,132 @@
 import SwiftUI
 
 public enum Pretendard {
-    public enum Style: CGFloat {
-        case bold28
-        case bold22
-        case bold18
-        case bold17
-        case bold16
-        case bold15
-        case bold13
-        case bold12
+    public enum Style {
+        case pretendard28(Weight)
+        case pretendard22(Weight)
+        case pretendard18(Weight)
+        case pretendard17(Weight)
+        case pretendard16(Weight)
+        case pretendard15(Weight)
+        case pretendard14(Weight)
+        case pretendard13(Weight)
+        case pretendard12(Weight)
+    }
 
-        case semibold17
-        case semibold16
-        case semibold14
-        case semibold13
-        case semibold12
+    public enum Weight {
+        case bold
+        case semibold
+        case regular
+        case medium
 
-        case regular16
-
-        case medium16
-        case medium15
-        case medium14
+        var fontConvertible: FontConvertible {
+            switch self {
+            case .bold: return Pretendard.bold
+            case .semibold: return Pretendard.semibold
+            case .regular: return Pretendard.regular
+            case .medium: return Pretendard.medium
+            }
+        }
     }
 }
 
 extension Pretendard.Style {
-    var fontConvertible: FontConvertible {
-        switch self {
-        case .bold28, .bold22, .bold18, .bold17, .bold16, .bold15, .bold13, .bold12:
-            return FontConvertible(
-                name: "Pretendard-Bold",
-                family: "Pretendard",
-                path: "Pretendard-Bold.otf"
-            )
-        case .semibold17, .semibold16, .semibold14, .semibold13, .semibold12:
-            return FontConvertible(
-                name: "Pretendard-SemiBold",
-                family: "Pretendard",
-                path: "Pretendard-SemiBold.otf"
-            )
-        case .medium16, .medium15, .medium14:
-            return FontConvertible(
-                name: "Pretendard-Medium",
-                family: "Pretendard",
-                path: "Pretendard-Medium.otf"
-            )
-        case .regular16: 
-            return FontConvertible(
-                name: "Pretendard-Regular",
-                family: "Pretendard",
-                path: "Pretendard-Regular.otf"
-            )
-        }
-    }
-
     var size: CGFloat {
         switch self {
-        case .bold28: return 28
-        case .bold22: return 22
-        case .bold18: return 18
-        case .bold17, .semibold17: return 17
-        case .bold16, .semibold16, .regular16, .medium16: return 16
-        case .bold15, .medium15: return 15
-        case .semibold14, .medium14: return 14
-        case .bold13, .semibold13: return 13
-        case .bold12, .semibold12: return 12
+        case .pretendard28: return 28
+        case .pretendard22: return 22
+        case .pretendard18: return 18
+        case .pretendard17: return 17
+        case .pretendard16: return 16
+        case .pretendard15: return 15
+        case .pretendard14: return 14
+        case .pretendard13: return 13
+        case .pretendard12: return 12
         }
     }
 
     public var lineHeightSize: CGFloat {
         switch self {
-        case .bold28: return 28
-        case .bold22: return 34
-        case .bold18: return 24
-        case .bold17: return 20
-        case .bold16: return 20
-        case .bold15: return 18
-        case .bold13: return 17
-        case .bold12: return 14
-        case .semibold17: return 20
-        case .semibold16: return 22
-        case .semibold14: return 20
-        case .semibold13: return 20
-        case .semibold12: return 14
-        case .regular16: return 24
-        case .medium16: return 20
-        case .medium15: return 18
-        case .medium14: return 20
+        case .pretendard28: return 28
+        case .pretendard22: return 34
+        case .pretendard18: return 24
+        case .pretendard17: return 20
+        case .pretendard16(let weight):
+            switch weight {
+            case .bold: return 20
+            case .semibold: return 22
+            case .regular: return 24
+            case .medium: return 20
+            }
+        case .pretendard15(let weight):
+            switch weight {
+            case .bold: return 18
+            case .medium: return 18
+            default: return self.size
+            }
+        case .pretendard14(let weight):
+            switch weight {
+            case .semibold: return 20
+            case .medium: return 20
+            default: return self.size
+            }
+        case .pretendard13(let weight):
+            switch weight {
+            case .bold: return 17
+            case .semibold: return 20
+            default: return self.size
+            }
+        case .pretendard12(let weight):
+            switch weight {
+            case .bold: return 14
+            case .semibold: return 14
+            default: return self.size
+            }
         }
     }
 }
 
+extension Pretendard {
+    static let bold: FontConvertible = .init(
+        name: "Pretendard-Bold",
+        family: "Pretendard",
+        path: "Pretendard-Bold.otf"
+    )
+
+    static let semibold: FontConvertible = .init(
+        name: "Pretendard-SemiBold",
+        family: "Pretendard",
+        path: "Pretendard-SemiBold.otf"
+    )
+
+    static let regular: FontConvertible = .init(
+        name: "Pretendard-Regular",
+        family: "Pretendard",
+        path: "Pretendard-Regular.otf"
+    )
+
+    static let medium: FontConvertible = .init(
+        name: "Pretendard-Medium",
+        family: "Pretendard",
+        path: "Pretendard-Medium.otf"
+    )
+}
+
+
 extension Pretendard.Style: FontLineHeightConfigurable {
     public var font: UIFont {
-        return fontConvertible.font(size: size)
+        switch self {
+        case .pretendard28(let weight),
+                .pretendard22(let weight),
+                .pretendard18(let weight),
+                .pretendard17(let weight),
+                .pretendard16(let weight),
+                .pretendard15(let weight),
+                .pretendard14(let weight),
+                .pretendard13(let weight),
+                .pretendard12(let weight):
+            return weight.fontConvertible.font(size: size)
+        }
     }
 
     public var lineHeight: CGFloat {

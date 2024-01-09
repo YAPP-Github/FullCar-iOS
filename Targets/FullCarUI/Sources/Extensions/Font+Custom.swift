@@ -25,7 +25,7 @@ struct FontWithLineHeight: ViewModifier {
 }
 
 extension View {
-    public func font(pretendard: Pretendard.Style) -> some View {
+    public func font(_ pretendard: Pretendard.Style) -> some View {
         return modifier(FontWithLineHeight(fontConfigurable: pretendard as FontLineHeightConfigurable))
     }
 }

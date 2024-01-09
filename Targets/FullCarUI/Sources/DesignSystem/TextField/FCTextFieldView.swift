@@ -56,7 +56,7 @@ public struct FCTextFieldView<TextField: View>: View {
             title: { 
                 Text(message.description)
                     .lineSpacing(labelLineSpacing)
-                    .font(pretendard: .semibold14)
+                    .font(.pretendard14(.semibold))
             },
             icon: {
                 if let icon = message.icon {
@@ -75,7 +75,7 @@ public extension FCTextFieldView {
         state: Binding<InputState>,
         headerText: String? = nil,
         isHeaderRequired: Bool = false,
-        headerFont: Pretendard.Style = .semibold16,
+        headerFont: Pretendard.Style = .pretendard16(.semibold),
         headerPadding: CGFloat = 12,
         footerMessage: Message? = nil
     ) {

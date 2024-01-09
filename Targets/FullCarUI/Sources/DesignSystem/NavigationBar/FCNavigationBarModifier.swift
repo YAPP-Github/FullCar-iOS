@@ -100,7 +100,7 @@ struct FullCarNavigationBarPreviews: PreviewProvider {
                     },
                     centerView: {
                         Text("회원가입")
-                            .font(pretendard: .bold18)
+                            .font(.pretendard18(.bold))
                     },
                     trailingView: { }
                 )
@@ -113,7 +113,7 @@ struct FullCarNavigationBarPreviews: PreviewProvider {
                     leadingView: { },
                     centerView: {
                         Text("회원가입")
-                            .font(pretendard: .bold18)
+                            .font(.pretendard18(.bold))
                     },
                     trailingView: { }
                 )
@@ -125,7 +125,7 @@ struct FullCarNavigationBarPreviews: PreviewProvider {
                 .navigationBarStyle(
                     leadingView: {
                         Text("야놀자")
-                            .font(pretendard: .bold18)
+                            .font(.pretendard18(.bold))
                     },
                     centerView: { },
                     trailingView: {
@@ -142,7 +142,7 @@ struct FullCarNavigationBarPreviews: PreviewProvider {
                     },
                     centerView: {
                         Text("카풀 상세")
-                            .font(pretendard: .bold18)
+                            .font(.pretendard18(.bold))
                     },
                     trailingView: {
                         NavigationButton(icon: .menu, action: { })

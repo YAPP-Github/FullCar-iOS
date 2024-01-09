@@ -21,7 +21,7 @@ public struct FCBadge: View {
             }
 
             Text(label)
-                .font(pretendard: badgeConfigurable.font)
+                .font(badgeConfigurable.font)
                 .foregroundStyle(badgeConfigurable.style.dark)
 
             if case let .trailing(symbol) = iconConfigurable.location {
@@ -64,7 +64,7 @@ public extension FCBadge {
         self.init(
             title: postState.rawValue,
             badgeConfigurable: .init(
-                font: .bold12,
+                font: .pretendard12(.bold),
                 style: postState.style
             ),
             iconConfigurable: .init(location: .none)
@@ -78,7 +78,7 @@ public extension FCBadge {
         self.init(
             title: matching.rawValue,
             badgeConfigurable: .init(
-                font: .bold12,
+                font: .pretendard12(.bold),
                 style: matching.style
             ),
             iconConfigurable: .init(location: .none)
@@ -147,7 +147,7 @@ public extension FCBadge {
             FCBadge(
                 title: "테스트",
                 badgeConfigurable: .init(
-                    font: .bold17, 
+                    font: .pretendard17(.bold), 
                     spacing: 5,
                     style: .primary_secondary
                 ),

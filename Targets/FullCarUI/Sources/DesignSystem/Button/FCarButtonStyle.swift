@@ -19,7 +19,7 @@ public struct FCarButtonStyle: ButtonStyle {
 
     public func makeBody(configuration: Configuration) -> some View {
         configuration.label
-            .font(pretendard: font)
+            .font(font)
             .padding(.horizontal, horizontalPadding)
             .padding(.vertical, verticalPadding)
             .foregroundStyle(foregroundColor)
@@ -109,7 +109,7 @@ public extension FCarButtonStyle {
             Text("검색")
         })
         .buttonStyle(.fullCar(
-            font: .semibold16,
+            font: .pretendard16(.semibold),
             horizontalPadding: 14,
             verticalPadding: 15,
             style: .primary_secondary

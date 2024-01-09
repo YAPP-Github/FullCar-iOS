@@ -22,7 +22,7 @@ public struct FCTextFieldStyle: TextFieldStyle {
     public func _body(configuration: Configuration) -> some View {
         HStack {
             configuration
-                .font(pretendard: .semibold16)
+                .font(.pretendard16(.semibold))
                 .focused($isFocused)
                 // 에러 상태일 땐, focus상태여도 error상태 그대로 유지
                 .onChange(of: isFocused) { oldValue, newValue in
@@ -39,7 +39,7 @@ public struct FCTextFieldStyle: TextFieldStyle {
 
             if case .won = accessory {
                 Text("원")
-                    .font(pretendard: .semibold16)
+                    .font(.pretendard16(.semibold))
                     .foregroundStyle(Color.gray45)
             }
         }

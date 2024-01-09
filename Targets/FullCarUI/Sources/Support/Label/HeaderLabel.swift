@@ -17,11 +17,11 @@ public struct HeaderLabel: View {
     public var body: some View {
         HStack(spacing: 0) {
             Text(value)
-                .font(pretendard: font)
+                .font(font)
 
             if isRequired {
                 Text(" *")
-                    .font(pretendard: font)
+                    .font(font)
                     .foregroundStyle(Color.red100)
             }
         }
@@ -32,7 +32,7 @@ public extension HeaderLabel {
     init(
         title: String,
         isRequired: Bool = false,
-        font: Pretendard.Style = .semibold16
+        font: Pretendard.Style = .pretendard16(.semibold)
     ) {
         self.value = title
         self.isRequired = isRequired
@@ -44,6 +44,6 @@ public extension HeaderLabel {
     HeaderLabel(
         title: "희망 접선 장소",
         isRequired: true,
-        font: .semibold16
+        font: .pretendard16(.semibold)
     )
 }

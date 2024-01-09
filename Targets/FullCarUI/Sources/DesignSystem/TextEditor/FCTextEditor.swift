@@ -30,7 +30,7 @@ public struct FCTextEditor: View {
 
     private var textEditor: some View {
         TextEditor(text: $text)
-            .font(pretendard: font)
+            .font(font)
             .padding(padding)
             .focused($isFocused)
             .onChange(of: isFocused) { oldValue, newValue in
@@ -44,7 +44,7 @@ public struct FCTextEditor: View {
 
     private var placeholderView: some View {
         Text(placeholder)
-            .font(pretendard: font)
+            .font(font)
             .foregroundStyle(Color.gray45)
             .onTapGesture {
                 isFocused = true
@@ -59,7 +59,7 @@ public extension FCTextEditor {
     init(
         text: Binding<String>,
         placeholder: String,
-        font: Pretendard.Style = .semibold16,
+        font: Pretendard.Style = .pretendard16(.semibold),
         padding: CGFloat = 16,
         radius: CGFloat = 10
     ) {

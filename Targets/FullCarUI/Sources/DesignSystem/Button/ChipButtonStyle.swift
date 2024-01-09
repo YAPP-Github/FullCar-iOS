@@ -17,7 +17,7 @@ public struct ChipButtonStyle: ButtonStyle {
 
     public func makeBody(configuration: Configuration) -> some View {
         configuration.label
-            .font(pretendard: isSelected ? .bold15: .medium15)
+            .font(isSelected ? .pretendard15(.bold): .pretendard15(.medium))
             .padding(.vertical, Constants.verticalPadding)
             .padding(.horizontal, Constants.horizontalPadding)
             .foregroundStyle(style.dark)
