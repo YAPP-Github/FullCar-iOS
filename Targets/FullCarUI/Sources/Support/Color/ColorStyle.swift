@@ -9,12 +9,12 @@
 import SwiftUI
 
 /// 자주 사용하는 색상 조합 타입입니다.
-public struct ColorStyle {
+public struct ColorStyle: Equatable {
     let dark: Color
     let light: Color
     let extra: Color
 
-    init(
+    public init(
         dark: Color,
         light: Color,
         extra: Color? = nil

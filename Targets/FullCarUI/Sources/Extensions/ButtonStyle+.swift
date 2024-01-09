@@ -15,7 +15,7 @@ extension ButtonStyle where Self == FCarButtonStyle {
         horizontalPadding: CGFloat = 0,
         verticalPadding: CGFloat = 17,
         radius: CGFloat = 8,
-        style: ColorStyle.Palette
+        style: ColorStyle
     ) -> FCarButtonStyle {
         FCarButtonStyle(
             font: font,

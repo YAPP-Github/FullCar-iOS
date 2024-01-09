@@ -17,10 +17,10 @@ public enum PostState: String {
     /// 마감
     case close = "마감"
 
-    var style: ColorStyle.Palette {
+    var style: ColorStyle {
         switch self {
-        case .recruite, .request: return .primary_secondary
-        case .close: return .gray60
+        case .recruite, .request: return .palette(.primary_secondary)
+        case .close: return .palette(.gray60)
         }
     }
 }
@@ -32,10 +32,10 @@ public enum Matching: String {
     /// 매칭 취소
     case cancel = "매칭 취소"
 
-    var style: ColorStyle.Palette {
+    var style: ColorStyle {
         switch self {
-        case .success: return .green
-        case .cancel: return .red
+        case .success: return .palette(.green)
+        case .cancel: return .palette(.red)
         }
     }
 }
@@ -65,7 +65,7 @@ public enum Driver {
 
     var iconSize: Icon.Size { return ._16 }
 
-    var style: ColorStyle.Palette { return .gray60 }
+    var style: ColorStyle { return .palette(.gray60) }
 }
 
 extension Driver.Gender {

@@ -23,14 +23,14 @@ public struct BadgeConfigurable {
         horizontalPadding: CGFloat = 8,
         verticalPadding: CGFloat = 5,
         cornerRadius: CGFloat = 3,
-        style: ColorStyle.Palette
+        style: ColorStyle
     ) {
         self.font = font
         self.spacing = spacing
         self.horizontalPadding = horizontalPadding
         self.verticalPadding = verticalPadding
         self.cornerRadius = cornerRadius
-        self.style = .palette(style)
+        self.style = style
     }
 }
 

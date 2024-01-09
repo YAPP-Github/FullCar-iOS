@@ -149,7 +149,7 @@ public extension FCBadge {
                 badgeConfigurable: .init(
                     font: .pretendard17(.bold), 
                     spacing: 5,
-                    style: .primary_secondary
+                    style: .palette(.primary_secondary)
                 ),
                 iconConfigurable: .init(
                     location: .trailing(.user),

@@ -15,7 +15,7 @@ public struct FCarButtonStyle: ButtonStyle {
     private let verticalPadding: CGFloat
     private let horizontalPadding: CGFloat
     private let cornerRadius: CGFloat
-    private let colorStyle: ColorStyle.Palette
+    private let colorStyle: ColorStyle
 
     public func makeBody(configuration: Configuration) -> some View {
         configuration.label
@@ -34,7 +34,7 @@ public extension FCarButtonStyle {
         horizontalPadding: CGFloat,
         verticalPadding: CGFloat,
         radius: CGFloat,
-        colorStyle: ColorStyle.Palette
+        colorStyle: ColorStyle
     ) {
         self.font = font
         self.horizontalPadding = horizontalPadding
@@ -44,24 +44,24 @@ public extension FCarButtonStyle {
     }
 
     private var foregroundColor: Color {
-        if colorStyle == .primary_white {
+        if colorStyle == .palette(.primary_white) {
             switch isEnabled {
             case true: return ColorStyle.palette(.primary_white).light
             case false: return ColorStyle.palette(.gray30).light
             }
         } else {
-            return ColorStyle.palette(colorStyle).dark
+            return colorStyle.dark
         }
     }
 
     private var backgroundColor: Color {
-        if colorStyle == .primary_white {
+        if colorStyle == .palette(.primary_white) {
             switch isEnabled {
             case true: return ColorStyle.palette(.primary_white).dark
             case false: return ColorStyle.palette(.gray30).dark
             }
         } else {
-            return ColorStyle.palette(colorStyle).light
+            return colorStyle.light
         }
     }
 }
@@ -72,20 +72,20 @@ public extension FCarButtonStyle {
             Text("다음")
                 .frame(maxWidth: .infinity)
         })
-        .buttonStyle(.fullCar(style: .primary_white))
+        .buttonStyle(.fullCar(style: .palette(.primary_white)))
 
         Button(action: {}, label: {
             Text("다음")
                 .frame(maxWidth: .infinity)
         })
-        .buttonStyle(.fullCar(style: .primary_white))
+        .buttonStyle(.fullCar(style: .palette(.primary_white)))
         .disabled(true)
 
         Button(action: {}, label: {
             Text("인증메일 발송")
                 .frame(maxWidth: .infinity)
         })
-        .buttonStyle(.fullCar(style: .primary_white))
+        .buttonStyle(.fullCar(style: .palette(.primary_white)))
         .disabled(true)
 
         Button(action: {}, label: {
@@ -93,7 +93,7 @@ public extension FCarButtonStyle {
         })
         .buttonStyle(.fullCar(
             horizontalPadding: 22,
-            style: .gray60
+            style: .palette(.gray60)
         ))
         .disabled(true)
 
@@ -102,7 +102,7 @@ public extension FCarButtonStyle {
         })
         .buttonStyle(.fullCar(
             horizontalPadding: 70,
-            style: .primary_white
+            style: .palette(.primary_white)
         ))
 
         Button(action: {}, label: {
@@ -112,7 +112,17 @@ public extension FCarButtonStyle {
             font: .pretendard16(.semibold),
             horizontalPadding: 14,
             verticalPadding: 15,
-            style: .primary_secondary
+            style: .palette(.primary_secondary)
+        ))
+
+        Button(action: {}, label: {
+            Text("검색")
+        })
+        .buttonStyle(.fullCar(
+            font: .pretendard16(.semibold),
+            horizontalPadding: 14,
+            verticalPadding: 15,
+            style: .init(dark: .red100, light: .red50)
         ))
     }
 }
