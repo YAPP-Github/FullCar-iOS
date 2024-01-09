@@ -85,40 +85,41 @@ public extension FCBadge {
         )
     }
 
-    /// 운전자의 정보를 알려주는 배지입니다.
+    /// 운전자의 성별 정보를 알려주는 배지입니다.
     init(
-        driver: Driver
+        gender: Driver.Gender
     ) {
-        switch driver {
-        case .gender(let gender):
-            self.init(
-                title: gender.rawValue,
-                badgeConfigurable: .init(
-                    font: driver.font,
-                    spacing: gender.spacing,
-                    style: driver.style
-                ),
-                iconConfigurable: .init(
-                    location: .leading(gender.icon),
-                    size: driver.iconSize,
-                    color: driver.iconColor
-                )
+        self.init(
+            title: gender.rawValue,
+            badgeConfigurable: .init(
+                font: Driver.BadgeStyle.font,
+                spacing: gender.spacing,
+                style: Driver.BadgeStyle.style
+            ),
+            iconConfigurable: .init(
+                location: .leading(gender.icon),
+                size: Driver.BadgeStyle.iconSize,
+                color: Driver.BadgeStyle.iconColor
             )
-        case .mood(let mood):
-            self.init(
-                title: mood.rawValue,
-                badgeConfigurable: .init(
-                    font: driver.font,
-                    spacing: mood.spacing,
-                    style: driver.style
-                ),
-                iconConfigurable: .init(
-                    location: .leading(mood.icon),
-                    size: driver.iconSize,
-                    color: driver.iconColor
-                )
+        )
+    }
+
+    init(
+        mood: Driver.Mood
+    ) {
+        self.init(
+            title: mood.rawValue,
+            badgeConfigurable: .init(
+                font: Driver.BadgeStyle.font,
+                spacing: mood.spacing,
+                style: Driver.BadgeStyle.style
+            ),
+            iconConfigurable: .init(
+                location: .leading(mood.icon),
+                size: Driver.BadgeStyle.iconSize,
+                color: Driver.BadgeStyle.iconColor
             )
-        }
+        )
     }
 }
 
@@ -136,13 +137,13 @@ public extension FCBadge {
         }
 
         VStack {
-            FCBadge(driver: .gender(.female))
-            FCBadge(driver: .gender(.male))
+            FCBadge(gender: .female)
+            FCBadge(gender: .male)
         }
 
         VStack {
-            FCBadge(driver: .mood(.quiet))
-            FCBadge(driver: .mood(.talk))
+            FCBadge(mood: .quiet)
+            FCBadge(mood: .talk)
 
             FCBadge(
                 title: "테스트",

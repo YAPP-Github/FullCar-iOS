@@ -45,10 +45,11 @@ public extension Matching {
 }
 
 /// 운전자의 정보
-public enum Driver {
-    case gender(Gender)
-    case mood(Mood)
+public struct Driver {
+    var gender: Gender
+    var mood: Mood
 
+    /// 운전자의 성별 타입
     public enum Gender: String {
         /// 여성 운전자
         case female = "여성 운전자"
@@ -56,6 +57,7 @@ public enum Driver {
         case male = "남성 운전자"
     }
 
+    /// 운전자의 운행분위기 타입
     public enum Mood: String {
         /// 조용히 가기
         case quiet = "조용히 가기"
@@ -64,14 +66,16 @@ public enum Driver {
     }
 }
 
-public extension Driver {
-    var font: Pretendard.Style { return .pretendard12(.semibold) }
+extension Driver {
+    enum BadgeStyle {
+        static var font: Pretendard.Style { return .pretendard12(.semibold) }
 
-    var iconColor: Color { return .gray60 }
+        static var iconColor: Color { return .gray60 }
 
-    var iconSize: Icon.Size { return ._16 }
+        static var iconSize: Icon.Size { return ._16 }
 
-    var style: ColorStyle { return .palette(.gray60) }
+        static var style: ColorStyle { return .palette(.gray60) }
+    }
 }
 
 public extension Driver.Gender {
