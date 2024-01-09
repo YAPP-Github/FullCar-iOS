@@ -1,5 +1,5 @@
 //
-//  Badge.swift
+//  FCBadge.swift
 //  FullCarUI
 //
 //  Created by Sunny on 1/1/24.
@@ -9,7 +9,7 @@
 import SwiftUI
 
 /// 아이콘 + 라벨 조합의 배지입니다. 아이콘은 leading, none, trailing으로 위치를 선택할 수 있습니다.
-public struct Badge: View {
+public struct FCBadge: View {
     private let label: String
     private let badgeConfigurable: BadgeConfigurable
     private let iconConfigurable: IconConfigurable
@@ -44,7 +44,7 @@ public struct Badge: View {
     }
 }
 
-public extension Badge {
+public extension FCBadge {
     init(
         title: String,
         badgeConfigurable: BadgeConfigurable,
@@ -56,7 +56,7 @@ public extension Badge {
     }
 }
 
-public extension Badge {
+public extension FCBadge {
     /// 게시글의 상태값을 알려주는 배지입니다.
     init(
         postState: PostState
@@ -125,26 +125,26 @@ public extension Badge {
 #Preview {
     VStack(spacing: 30) {
         VStack {
-            Badge(postState: .recruite)
-            Badge(postState: .request)
-            Badge(postState: .close)
+            FCBadge(postState: .recruite)
+            FCBadge(postState: .request)
+            FCBadge(postState: .close)
         }
 
         VStack {
-            Badge(matching: .success)
-            Badge(matching: .cancel)
+            FCBadge(matching: .success)
+            FCBadge(matching: .cancel)
         }
 
         VStack {
-            Badge(driver: .gender(.female))
-            Badge(driver: .gender(.male))
+            FCBadge(driver: .gender(.female))
+            FCBadge(driver: .gender(.male))
         }
 
         VStack {
-            Badge(driver: .mood(.quiet))
-            Badge(driver: .mood(.talk))
+            FCBadge(driver: .mood(.quiet))
+            FCBadge(driver: .mood(.talk))
 
-            Badge(
+            FCBadge(
                 title: "테스트",
                 badgeConfigurable: .init(
                     font: .bold17, 
