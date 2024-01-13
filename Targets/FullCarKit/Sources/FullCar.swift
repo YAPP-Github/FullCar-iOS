@@ -29,4 +29,8 @@ public extension FullCar {
         case home
         case settings
     }
+    enum CallListTab: String, Hashable {
+        case request
+        case receive
+    }
 }
