@@ -16,45 +16,38 @@ import Dependencies
 final class FullCarAccount: NSObject {
     @Dependency(\.accountService.login) var login
 
-    var appleAuthorizationHandler: ((Result<Void, Error>) -> ())?
-
     private var continuation: CheckedContinuation<String, Error>?
 
     @MainActor
-    func kakaoLogin() async throws {
-        if self.continuation == nil {
-            let accessToken: String = try await withCheckedThrowingContinuation { continuation in
-                authenticateWithKakao()
-                self.continuation = continuation
-            }
-            try await login(accessToken)
-
-            self.continuation = nil
-        } else {
-            throw LoginError.continuationAlreadySet
+    func performLogin(_ type: LoginType) async throws {
+        if let currentContinuation = continuation {
+            currentContinuation.resume(throwing: LoginError.continuationAlreadySet)
+            continuation = nil
         }
-    }
 
-    func appleLogin() {
-        let request = ASAuthorizationAppleIDProvider().createRequest()
-        request.requestedScopes = []
-
-        let authorizationController = ASAuthorizationController(authorizationRequests: [request])
-        authorizationController.delegate = self
-        authorizationController.presentationContextProvider = self
-        authorizationController.performRequests()
+        let accessToken: String = try await withCheckedThrowingContinuation { continuation in
+            switch type {
+            case .kakao: authenticateWithKakao()
+            case .apple: configureAppleLogin()
+            }
+            self.continuation = continuation
+        }
+        try await login(accessToken)
     }
 
     private func authenticateWithKakao() {
         let completion: ((OAuthToken?, Error?) -> Void) = { token, error in
             if let error = error {
                 self.continuation?.resume(throwing: error)
+                self.continuation = nil
             } else {
                 guard let accessToken = token?.accessToken else {
                     self.continuation?.resume(throwing: LoginError.kakaoTokenNil)
+                    self.continuation = nil
                     return
                 }
                 self.continuation?.resume(returning: accessToken)
+                self.continuation = nil
             }
         }
 
@@ -63,6 +56,16 @@ final class FullCarAccount: NSObject {
         } else {
             UserApi.shared.loginWithKakaoAccount(completion: completion)
         }
+    }
+
+    private func configureAppleLogin() {
+        let request = ASAuthorizationAppleIDProvider().createRequest()
+        request.requestedScopes = []
+
+        let authorizationController = ASAuthorizationController(authorizationRequests: [request])
+        authorizationController.delegate = self
+        authorizationController.presentationContextProvider = self
+        authorizationController.performRequests()
     }
 }
 
@@ -81,29 +84,22 @@ extension FullCarAccount: ASAuthorizationControllerDelegate {
         guard let credential = authorization.credential as? ASAuthorizationAppleIDCredential,
               let identityToken = credential.identityToken,
               let token = String(data: identityToken, encoding: .utf8) else {
-            appleAuthorizationHandler?(.failure(LoginError.appleTokenNil))
-            // 일케 변경하는건?
-//            continuation?.resume(throwing: LoginError.appleTokenNil)
+            continuation?.resume(throwing: LoginError.appleTokenNil)
+            continuation = nil
             return
         }
 
-        Task {
-            try await login(token)
-            appleAuthorizationHandler?(.success(()))
-        }
+        continuation?.resume(returning: token)
+        continuation = nil
     }
 
     func authorizationController(controller: ASAuthorizationController, didCompleteWithError error: Error) {
-        appleAuthorizationHandler?(.failure(error))
+        continuation?.resume(throwing: error)
+        continuation = nil
     }
 }
 
 extension FullCarAccount {
-    enum LoginType: String {
-        case kakao
-        case apple
-    }
-
     enum LoginError: Error {
         case kakaoTokenNil
         case appleTokenNil

@@ -51,42 +51,13 @@ final class LoginViewModel {
 
     let fullCar = FullCar.shared
 
-    init() {
-        configureAppleLogin()
-    }
-
     func loginButtonTapped(for type: LoginType) async {
-        switch type {
-        case .kakao: await startKakaoLogin()
-        case .apple: startAppleLogin()
-        }
-    }
-
-    private func startKakaoLogin() async {
         do {
-            try await account.kakaoLogin()
+            try await account.performLogin(type)
             fullCar.appState = .tab
         } catch {
             fullCar.appState = .login
             print(error)
-        }
-    }
-
-    private func startAppleLogin() {
-        account.appleLogin()
-    }
-
-    // 어짜피 로그인은 한번 뿐이니, 카카오 로그인 또한 클로저로 실행?
-    // 아니면 카카오 로그인처럼 애플 로그인 continuation 사용해서 async/await 사용하도록 변경하는건? (이거 우선 실행 ㄱㄱ)
-    private func configureAppleLogin() {
-        account.appleAuthorizationHandler = { [weak self] result in
-            switch result {
-            case .success:
-                self?.fullCar.appState = .tab
-            case .failure(let error):
-                self?.fullCar.appState = .login
-                print(error)
-            }
         }
     }
 }
