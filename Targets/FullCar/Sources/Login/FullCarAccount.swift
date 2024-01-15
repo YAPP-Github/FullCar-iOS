@@ -13,8 +13,10 @@ import KakaoSDKUser
 import AuthenticationServices
 import Dependencies
 
-final class FullCarAccount {
+final class FullCarAccount: NSObject {
     @Dependency(\.accountService.login) var login
+
+    var appleAuthorizationHandler: ((Result<Void, Error>) -> ())?
 
     private var continuation: CheckedContinuation<String, Error>?
 
@@ -33,15 +35,14 @@ final class FullCarAccount {
         }
     }
 
-    func appleLogin(result: Result<ASAuthorization, Error>) async throws {
-        if case let .success(authorization) = result {
-            guard let credential = authorization.credential as? ASAuthorizationAppleIDCredential,
-                  let identityToken = credential.identityToken,
-                  let token = String(data: identityToken, encoding: .utf8) else {
-                throw LoginError.appleTokenNil
-            }
-            try await login(token)
-        }
+    func appleLogin() {
+        let request = ASAuthorizationAppleIDProvider().createRequest()
+        request.requestedScopes = []
+
+        let authorizationController = ASAuthorizationController(authorizationRequests: [request])
+        authorizationController.delegate = self
+        authorizationController.presentationContextProvider = self
+        authorizationController.performRequests()
     }
 
     private func authenticateWithKakao() {
@@ -62,6 +63,38 @@ final class FullCarAccount {
         } else {
             UserApi.shared.loginWithKakaoAccount(completion: completion)
         }
+    }
+}
+
+extension FullCarAccount: ASAuthorizationControllerPresentationContextProviding {
+    func presentationAnchor(for controller: ASAuthorizationController) -> ASPresentationAnchor {
+        let scenes = UIApplication.shared.connectedScenes
+        let windowScenes = scenes.first as? UIWindowScene
+        let rootViewController = windowScenes?.keyWindow?.rootViewController
+
+        return (rootViewController?.view.window!)!
+    }
+}
+
+extension FullCarAccount: ASAuthorizationControllerDelegate {
+    func authorizationController(controller: ASAuthorizationController, didCompleteWithAuthorization authorization: ASAuthorization) {
+        guard let credential = authorization.credential as? ASAuthorizationAppleIDCredential,
+              let identityToken = credential.identityToken,
+              let token = String(data: identityToken, encoding: .utf8) else {
+            appleAuthorizationHandler?(.failure(LoginError.appleTokenNil))
+            // 일케 변경하는건?
+//            continuation?.resume(throwing: LoginError.appleTokenNil)
+            return
+        }
+
+        Task {
+            try await login(token)
+            appleAuthorizationHandler?(.success(()))
+        }
+    }
+
+    func authorizationController(controller: ASAuthorizationController, didCompleteWithError error: Error) {
+        appleAuthorizationHandler?(.failure(error))
     }
 }
 
