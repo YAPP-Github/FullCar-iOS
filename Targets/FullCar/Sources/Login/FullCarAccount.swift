@@ -18,6 +18,13 @@ final class FullCarAccount: NSObject {
 
     private var continuation: CheckedContinuation<String, Error>?
 
+    private var deviceToken: String? {
+        guard let delegate = UIApplication.shared.delegate as? AppDelegate else {
+            return nil
+        }
+        return delegate.deviceToken
+    }
+
     @MainActor
     func performLogin(_ type: LoginType) async throws {
         if let currentContinuation = continuation {
