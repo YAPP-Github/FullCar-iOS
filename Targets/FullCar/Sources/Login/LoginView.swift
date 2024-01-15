@@ -11,39 +11,6 @@ import FullCarKit
 import FullCarUI
 import Dependencies
 
-enum LoginType {
-    case kakao
-    case apple
-
-    var title: String {
-        switch self {
-        case .kakao: return "카카오 로그인"
-        case .apple: return "Apple로 로그인"
-        }
-    }
-
-    var icon: Image {
-        switch self {
-        case .kakao: return Image(icon: .kakaoLogo)
-        case .apple: return Image(icon: .appleLogo)
-        }
-    }
-
-    var backgroundColor: Color {
-        switch self {
-        case .kakao: return Color(cgColor: UIColor(hex: "FEE500").cgColor)
-        case .apple: return .black
-        }
-    }
-
-    var fontColor: Color {
-        switch self {
-        case .kakao: return Color.black.opacity(0.85)
-        case .apple: return .white
-        }
-    }
-}
-
 @MainActor
 @Observable
 final class LoginViewModel {
@@ -67,48 +34,53 @@ struct LoginView: View {
 
     var body: some View {
         bodyView
+            .debug(color: .red)
     }
 
     private var bodyView: some View {
-        VStack {
-            Spacer()
+        VStack(spacing: 0) {
+//            Spacer()
 
             title
+                .debug()
+                .padding(.bottom, 16)
+                .padding(.top, 85)
+
+            subTitle
                 .padding(.bottom, 57)
 
-            logoImage
+//            Spacer()
 
-            Spacer()
+            Image(icon: .homeLogo)
+                .padding(.bottom, 148)
 
-            loginButton(for: .kakao)
-            loginButton(for: .apple)
+//            Spacer()
+
+            VStack(spacing: 10) {
+                loginButton(for: .kakao)
+                loginButton(for: .apple)
+            }
+            .padding(.bottom, 50)
         }
-        .padding(.bottom, 55)
         .padding(.horizontal, 20)
     }
 
     private var title: some View {
-        VStack(spacing: 16) {
-            VStack {
-                Text("회사공개를 통한")
+        VStack {
+            Text("회사공개를 통한")
 
-                HStack(spacing: 0) {
-                    Text("안전한 카풀, ")
-                    Text("풀카")
-                        .foregroundStyle(Color.fullCar_primary)
-                }
+            HStack(spacing: 0) {
+                Text("안전한 카풀, ")
+                Text("풀카")
+                    .foregroundStyle(Color.fullCar_primary)
             }
-            .font(.pretendard28(.bold))
-
-            Text("검증된 사람들과 즐겁게 카풀 해보세요!")
-                .font(.pretendard16(.regular))
         }
+        .font(.pretendard28(.bold))
     }
 
-    private var logoImage: some View {
-        Image(icon: .homeLogo)
-            .frame(width: 238, height: 192)
-            .padding(.trailing, 20)
+    private var subTitle: some View {
+        Text("검증된 사람들과 즐겁게 카풀 해보세요!")
+            .font(.pretendard16(.regular))
     }
 
     private func loginButton(for type: LoginType) -> some View {
@@ -120,20 +92,31 @@ struct LoginView: View {
                 case .kakao:
                     type.icon
                         .resizable()
-                        .frame(width: 32, height: 32)
-                        .padding(.leading, 7)
+                        .frame(iconSize: ._32)
+                        .padding(.leading, Constants.LoginButton.iconLeading)
                 case .apple:
                     type.icon
-                        .padding(.leading, 7)
+                        .frame(iconSize: ._32)
+                        .padding(.leading, Constants.LoginButton.iconLeading)
                 }
                 Text(type.title)
-                    .font(.pretendard19(.medium))
-                    .foregroundStyle(type.fontColor)
                     .frame(maxWidth: .infinity)
             }
-            .frame(height: 44)
+            .font(.pretendard19(.medium))
+            .foregroundStyle(type.fontColor)
+            .frame(height: Constants.LoginButton.height)
             .background(type.backgroundColor)
-            .cornerRadius(radius: 7, corners: .allCorners)
+            .cornerRadius(radius: Constants.LoginButton.radius, corners: .allCorners)
+        }
+    }
+}
+
+extension LoginView {
+    enum Constants {
+        enum LoginButton {
+            static let height: CGFloat = 44
+            static let radius: CGFloat = 7
+            static let iconLeading: CGFloat = 15
         }
     }
 }
