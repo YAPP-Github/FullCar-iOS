@@ -11,7 +11,7 @@ import Dependencies
 
 public struct AccountService {
     public var hasValidToken: () async throws -> Bool
-    public var login: (_ accessToken: String) async throws -> Void
+    public var login: (_ request: AuthRequest) async throws -> Void
     public var logout: () async throws -> Void
     public var leave: () async throws -> Void
 }
@@ -26,9 +26,8 @@ extension AccountService: DependencyKey {
                 let credential = try await tokenStorage.loadToken()
                 return credential.accessTokenExpiration > Date()
             },
-            login: { accessToken in
-                let credential = try await api.login(accessToken)
-
+            login: { request in
+                let credential = try await api.login(request)
                 await tokenStorage.save(token: credential)
             },
             logout: {
@@ -52,12 +51,10 @@ extension AccountService: TestDependencyKey {
             login: { accessToken in
                 // 실제 서버 통신 대신 목데이터 사용
                 let credential = AccountCredential(
+                    onBoardingFlag: false, 
                     accessToken: "access Token",
-                    refreshToken: "refresh Token",
-                    accessTokenExpiration: Date()
+                    refreshToken: "refresh Token"
                 )
-
-                print("test/ login credential: \(credential)")
             },
             logout: { },
             leave: { }

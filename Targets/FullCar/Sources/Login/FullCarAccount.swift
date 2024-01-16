@@ -12,6 +12,7 @@ import KakaoSDKAuth
 import KakaoSDKUser
 import AuthenticationServices
 import Dependencies
+import FullCarKit
 
 final class FullCarAccount: NSObject {
     @Dependency(\.accountService.login) var login
@@ -26,7 +27,7 @@ final class FullCarAccount: NSObject {
     }
 
     @MainActor
-    func performLogin(_ type: LoginType) async throws {
+    func performLogin(_ type: SocialType) async throws {
         if let currentContinuation = continuation {
             currentContinuation.resume(throwing: LoginError.continuationAlreadySet)
             continuation = nil
@@ -40,6 +41,8 @@ final class FullCarAccount: NSObject {
             self.continuation = continuation
         }
         try await login(accessToken)
+        let request: AuthRequest = .init(socialType: type, token: accessToken, deviceToken: deviceToken ?? "456")
+        try await login(request)
     }
 
     private func authenticateWithKakao() {
