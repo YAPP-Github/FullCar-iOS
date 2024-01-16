@@ -10,7 +10,7 @@ import Foundation
 
 public protocol URLRequestConfigurable {
     var url: URLConvertible { get }
-    var path: String? { get }
+    var path: String { get }
     var method: HTTPMethod { get }
     var parameters: Parameters? { get }
     var headers: [Header]? { get }
@@ -20,7 +20,8 @@ public protocol URLRequestConfigurable {
 
 extension URLRequestConfigurable {
     public func asURLRequest() throws -> URLRequest {
-        var request = try URLRequest(url: url.asURL())
+        let url = try url.asURL()
+        var request =  URLRequest(url: url.appendingPathComponent(path))
         request.httpMethod = method.rawValue
         request.allHTTPHeaderFields = headers?.dictionary
         return try encoder.encode(request: request, with: parameters)
