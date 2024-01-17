@@ -18,6 +18,6 @@ struct AccountCredential: Codable {
         self.onBoardingFlag = onBoardingFlag
         self.accessToken = accessToken
         self.refreshToken = refreshToken
-        self.accessTokenExpiration = Date().addingTimeInterval(0.9 * 3600)
+        self.accessTokenExpiration = Date().addingTimeInterval(0.8 * 3600)
     }
 }
