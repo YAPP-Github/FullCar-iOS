@@ -8,7 +8,6 @@
 
 import SwiftUI
 import FullCarKit
-import FullCarUI
 import Dependencies
 
 @MainActor
@@ -18,7 +17,7 @@ final class LoginViewModel {
 
     let fullCar = FullCar.shared
 
-    func loginButtonTapped(for type: LoginType) async {
+    func loginButtonTapped(for type: SocialType) async {
         do {
             try await account.performLogin(type)
             fullCar.appState = .tab
@@ -38,38 +37,32 @@ struct LoginView: View {
     }
 
     private var bodyView: some View {
-        VStack(spacing: 0) {
-//            Spacer()
-
-            title
-                .debug()
-                .padding(.bottom, 16)
-                .padding(.top, 85)
-
-            subTitle
-                .padding(.bottom, 57)
-
-//            Spacer()
+        VStack(spacing: .zero) {
+            VStack(spacing: Constants.Title.spacing) {
+                title
+                subTitle
+            }
+            .debug()
+            .padding(.top, Constants.Title.top)
+            .padding(.bottom, Constants.Title.bottom)
 
             Image(icon: .homeLogo)
-                .padding(.bottom, 148)
+                .padding(.bottom, Constants.Image.bottom)
 
-//            Spacer()
-
-            VStack(spacing: 10) {
+            VStack(spacing: Constants.LoginButton.spacing) {
                 loginButton(for: .kakao)
                 loginButton(for: .apple)
             }
-            .padding(.bottom, 50)
+            .padding(.bottom, Constants.LoginButton.bottom)
         }
-        .padding(.horizontal, 20)
+        .padding(.horizontal, Constants.horizontal)
     }
 
     private var title: some View {
         VStack {
             Text("회사공개를 통한")
 
-            HStack(spacing: 0) {
+            HStack(spacing: .zero) {
                 Text("안전한 카풀, ")
                 Text("풀카")
                     .foregroundStyle(Color.fullCar_primary)
@@ -83,22 +76,13 @@ struct LoginView: View {
             .font(.pretendard16(.regular))
     }
 
-    private func loginButton(for type: LoginType) -> some View {
+    private func loginButton(for type: SocialType) -> some View {
         Button {
             Task { await viewModel.loginButtonTapped(for: type) }
         } label: {
             ZStack(alignment: .leading) {
-                switch type {
-                case .kakao:
-                    type.icon
-                        .resizable()
-                        .frame(iconSize: ._32)
-                        .padding(.leading, Constants.LoginButton.iconLeading)
-                case .apple:
-                    type.icon
-                        .frame(iconSize: ._32)
-                        .padding(.leading, Constants.LoginButton.iconLeading)
-                }
+                socialIcon(type)
+
                 Text(type.title)
                     .frame(maxWidth: .infinity)
             }
@@ -109,14 +93,42 @@ struct LoginView: View {
             .cornerRadius(radius: Constants.LoginButton.radius, corners: .allCorners)
         }
     }
+
+    private func socialIcon(_ type: SocialType) -> some View {
+        switch type {
+        case .kakao:
+            type.icon
+                .resizable()
+                .frame(iconSize: ._32)
+                .padding(.leading, Constants.Image.leading)
+        case .apple:
+            type.icon
+                .frame(iconSize: ._32)
+                .padding(.leading, Constants.Image.leading)
+        }
+    }
 }
 
 extension LoginView {
     enum Constants {
+        static let horizontal: CGFloat = 20
+        
         enum LoginButton {
             static let height: CGFloat = 44
             static let radius: CGFloat = 7
-            static let iconLeading: CGFloat = 15
+            static let spacing: CGFloat = 10
+            static let bottom: CGFloat = 50
+        }
+
+        enum Title {
+            static let spacing: CGFloat = 16
+            static let top: CGFloat = 85
+            static let bottom: CGFloat = 57
+        }
+
+        enum Image {
+            static let bottom: CGFloat = 148
+            static let leading: CGFloat = 15
         }
     }
 }

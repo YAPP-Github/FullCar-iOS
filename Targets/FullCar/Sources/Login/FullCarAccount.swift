@@ -40,8 +40,8 @@ final class FullCarAccount: NSObject {
             }
             self.continuation = continuation
         }
-        try await login(accessToken)
         let request: AuthRequest = .init(socialType: type, token: accessToken, deviceToken: deviceToken ?? "456")
+
         try await login(request)
     }
 
