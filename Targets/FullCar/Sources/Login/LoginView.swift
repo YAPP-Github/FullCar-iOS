@@ -33,7 +33,6 @@ struct LoginView: View {
 
     var body: some View {
         bodyView
-            .debug(color: .red)
     }
 
     private var bodyView: some View {
@@ -42,7 +41,6 @@ struct LoginView: View {
                 title
                 subTitle
             }
-            .debug()
             .padding(.top, Constants.Title.top)
             .padding(.bottom, Constants.Title.bottom)
 

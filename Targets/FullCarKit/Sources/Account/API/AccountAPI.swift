@@ -20,10 +20,14 @@ extension AccountAPI: DependencyKey {
     static var liveValue: AccountAPI {
         return  AccountAPI(
             login: { request in
-                let response: AuthResponse = try await NetworkClient.account.request(
+                let response: ApiAuthResponse = try await NetworkClient.account.request(
                     endpoint: Endpoint.Account.login(request: request)
                 ).response()
-                return response.accountCredential
+                let authResponse = response.data
+
+                return .init(onBoardingFlag: authResponse.onBoardingFlag,
+                             accessToken: authResponse.accessToken,
+                             refreshToken: authResponse.refreshToken)
             },
             logout: {
                 try await NetworkClient.main.request(
