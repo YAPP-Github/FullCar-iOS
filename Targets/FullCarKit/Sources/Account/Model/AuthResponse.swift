@@ -6,14 +6,14 @@
 //  Copyright © 2024 FullCar Corp. All rights reserved.
 //
 
-struct AuthResponse: Decodable {
+struct ApiAuthResponse: Decodable {
     let status: Int
     let message: String
-    let accountCredential: AccountCredential
+    let data: AuthResponse
+}
 
-    enum CodingKeys: String, CodingKey {
-        case status
-        case message
-        case accountCredential = "data"
-    }
+struct AuthResponse: Decodable {
+    let onBoardingFlag: Bool
+    let accessToken: String
+    let refreshToken: String
 }
