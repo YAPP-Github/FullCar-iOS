@@ -23,8 +23,25 @@ extension AccountService: DependencyKey {
 
         return AccountService(
             hasValidToken: {
+                // 1. 기존 토큰 가져오기
                 let credential = try await tokenStorage.loadToken()
-                return credential.accessTokenExpiration > Date()
+
+                // 2. 기존 토큰이 존재한다면 access token 유효한지 확인
+                guard credential.accessTokenExpiration > Date() else {
+                    // 3. 새로운 refresh token으로 access token 재발급
+                    let response = try await api.refresh(credential.refreshToken)
+                    let newCredential: AccountCredential = .init(
+                        onBoardingFlag: credential.onBoardingFlag,
+                        accessToken: response.accessToken,
+                        refreshToken: response.refreshToken
+                    )
+                    await tokenStorage.save(token: newCredential)
+
+                    // 4. 만약 refresh token 또한 유효하지 않다면 throws 전달
+                    return true
+                }
+
+                return true
             },
             login: { request in
                 let credential = try await api.login(request)

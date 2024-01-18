@@ -13,7 +13,7 @@ struct AccountAPI {
     var login: (_ request: AuthRequest) async throws -> AccountCredential
     var logout: () async throws -> Void
     var leave: () async throws -> Void
-    var refresh: (_ refreshToken: String) async throws -> AccountCredential
+    var refresh: (_ refreshToken: String) async throws -> AuthTokenResponse
 }
 
 extension AccountAPI: DependencyKey {
@@ -42,10 +42,9 @@ extension AccountAPI: DependencyKey {
                 ).response()
             },
             refresh: { refreshToken in
-                let newCredential: AccountCredential = try await NetworkClient.main.request(
-                    endpoint: Endpoint.Account.refresh(refreshToken: refreshToken)
-                ).response()
-                return newCredential
+                let response: ApiAuthTokenResponse = try await NetworkClient.account.request(endpoint: Endpoint.Account.refresh(refreshToken: refreshToken)).response()
+
+                return response.data
             })
     }
 }
