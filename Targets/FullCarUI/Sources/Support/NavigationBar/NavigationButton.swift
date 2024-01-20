@@ -10,13 +10,13 @@ import SwiftUI
 
 /// NavigationBar에서 사용하는  button 입니다.
 public struct NavigationButton: View {
-    private let icon: Icon.Symbol
+    private let icon: FCIcon.Symbol
     private let iconColor: Color
-    private let iconSize: Icon.Size
+    private let iconSize: FCIcon.Size
     private let action: () -> Void
 
     public init(
-        icon: Icon.Symbol,
+        icon: FCIcon.Symbol,
         action: @escaping () -> Void
     ) {
         self.icon = icon

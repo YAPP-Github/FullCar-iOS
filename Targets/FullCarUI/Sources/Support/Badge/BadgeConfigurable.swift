@@ -37,18 +37,18 @@ public struct BadgeConfigurable {
 /// Badge 아이콘의 구성 가능한 특성을 나타낸 타입입니다.
 public struct IconConfigurable {
     let location: Location
-    let size: Icon.Size
+    let size: FCIcon.Size
     let color: Color
 
     public enum Location {
-        case leading(Icon.Symbol)
-        case trailing(Icon.Symbol)
+        case leading(FCIcon.Symbol)
+        case trailing(FCIcon.Symbol)
         case none
     }
 
     public init(
         location: Location,
-        size: Icon.Size = ._0,
+        size: FCIcon.Size = ._0,
         color: Color = .clear
     ) {
         self.location = location

@@ -10,8 +10,8 @@ import SwiftUI
 
 /// icon과 text가 결합된 타입
 public enum Message {
-    case information(String, icon: Icon.Symbol? = .check)
-    case error(String, icon: Icon.Symbol? = nil)
+    case information(String, icon: FCIcon.Symbol? = .check)
+    case error(String, icon: FCIcon.Symbol? = nil)
 
     public var fontColor: Color {
         switch self {
@@ -27,7 +27,7 @@ public enum Message {
         }
     }
 
-    public var icon: Icon.Symbol? {
+    public var icon: FCIcon.Symbol? {
         switch self {
         case .information(_, let icon), .error(_, let icon):
             return icon
