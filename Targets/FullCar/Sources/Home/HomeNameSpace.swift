@@ -21,7 +21,9 @@ struct Home {
     
     struct Model {
         struct Response: Decodable {
-            let result: String
+            let totalPage: Int
+            let currentPage: Int
+            let list: [CarPull.Model.Response]
         }
     }
 }
@@ -34,6 +36,18 @@ extension Home.API: DependencyKey {
                 .response()
         }
     )
+    #if DEBUG
+    static let testValue: Home.API = unimplemented("homeapi")
+    static let previewValue: Home.API = .init(
+        fetch: { _, _ in 
+            return .init(
+                totalPage: 10, 
+                currentPage: 1,
+                list: [.mock, .mock, .mock, .mock, .mock, .mock]
+            )
+        }
+    )
+    #endif
 }
 
 extension DependencyValues {
