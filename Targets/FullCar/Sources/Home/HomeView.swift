@@ -22,18 +22,22 @@ struct HomeView: View {
         .onFirstTask { await viewModel.onFirstTask() }
     }
     private var headerView: some View {
-        HStack(spacing: .zero) {
-            Text("야놀자")
-                .font(.pretendard18(.bold))
-                .foregroundStyle(Color.black80)
-            Spacer()
-            Image("FCHomeTopTrailingImage", bundle: .main)
+        VStack(spacing: .zero) {
+            HStack(spacing: .zero) {
+                Text("야놀자")
+                    .font(.pretendard18(.bold))
+                    .foregroundStyle(Color.black80)
+                Spacer()
+                Image("FCHomeTopTrailingImage", bundle: .main)
+            }
+            .padding(.leading, 20)
+            .padding(.trailing, 15.48)
+            .frame(height: 61)
+            .frame(maxWidth: .infinity)
+            .background(Color.white)
+            
+            Divider().frame(height: 1)
         }
-        .padding(.leading, 20)
-        .padding(.trailing, 15.48)
-        .frame(height: 61)
-        .frame(maxWidth: .infinity)
-        .background(Color.white)
     }
     @ViewBuilder
     private var bodyView: some View {
@@ -43,16 +47,18 @@ struct HomeView: View {
             emptyView
         }
     }
-    private func carPullList(_ list: [Home.Model.TempCarPull]) -> some View {
+    private func carPullList(_ list: [CarPull.Model.Response]) -> some View {
         ScrollView(.vertical) { 
-            ForEach(list) { carpull in
-                Button {
-                    Task { await viewModel.onCardTapped(carpull) }
-                } label: {
-                    HomeCardView(carPull: carpull)
-                        .padding(.bottom, 8)
+            VStack(spacing: .zero) {
+                ForEach(list) { carpull in
+                    Button {
+                        Task { await viewModel.onCardTapped(carpull) }
+                    } label: {
+                        CarPull.CardView(carPull: carpull)
+                            .padding(.bottom, 8)
+                    }
+                    .buttonStyle(.plain)
                 }
-                .buttonStyle(.plain)
             }
         }
         .scrollIndicators(.hidden)

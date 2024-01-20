@@ -13,10 +13,33 @@ import FullCarUI
 struct CarPullDetailView: View {
     let viewModel: CarPullDetailViewModel
     
-    let carpull: Home.Model.TempCarPull
     var body: some View {
         bodyView
-//            .fullCarNavigationBar(title: "카풀 상세")
+            .navigationBarStyle(
+                leadingView: { 
+                    Button {
+                    } label: {
+                        Image(icon: .back)
+                            .resizable()
+                            .renderingMode(.template)
+                            .foregroundStyle(Color.black)
+                            .frame(width: 24, height: 24)
+                    }
+                }, centerView: { 
+                    Text("카풀 상세")
+                        .font(.pretendard18(.bold))
+                }, trailingView: { 
+                    Button {
+                        
+                    } label: {
+                        Image(icon: .menu)
+                            .resizable()
+                            .renderingMode(.template)
+                            .foregroundStyle(Color.black)
+                            .frame(width: 24, height: 24)
+                    }
+                }
+            )
             .background(Color.white)
     }
     
@@ -33,18 +56,11 @@ struct CarPullDetailView: View {
     private var contentView: some View {
         ScrollView(.vertical) {
             VStack(spacing: .zero) {
-                HomeCardView(carPull: carpull)
+                CarPull.CardView(carPull: viewModel.carPull)
                 
                 Color.gray10.frame(height: 8)
                 
-                CarInformationCardView(
-                    information: .init(
-                        number: "아반떼",
-                        model: "23루 2341",
-                        manufacturer: "현대자동차",
-                        color: "화이트"
-                    )
-                )
+                Car.InformationCardView(information: viewModel.information)
                 
                 if viewModel.requestStatus == .inProcess {
                     Text("희망 접선 장소 해야함")
@@ -73,8 +89,11 @@ struct CarPullDetailView: View {
 #Preview {
     NavigationStack {
         CarPullDetailView(
-            viewModel: .init(),
-            carpull: .mock
+            viewModel: .init(
+                requestStatus: .beforeBegin,
+                carPull: .mock,
+                information: .mock
+            )
         )
     }
 }

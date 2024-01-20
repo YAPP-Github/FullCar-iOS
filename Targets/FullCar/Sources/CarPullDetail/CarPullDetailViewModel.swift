@@ -19,6 +19,18 @@ final class CarPullDetailViewModel {
     }
     
     var requestStatus: RequestStatus = .beforeBegin
+    let carPull: CarPull.Model.Response
+    let information: Car.Information
+    
+    init(
+        requestStatus: RequestStatus,
+        carPull: CarPull.Model.Response,
+        information: Car.Information
+    ) {
+        self.requestStatus = requestStatus
+        self.carPull = carPull
+        self.information = information
+    }
     
     func beginRequestButtonTapped() {
         requestStatus = .inProcess

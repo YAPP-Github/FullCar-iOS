@@ -16,6 +16,8 @@ import Dependencies
 final class HomeViewModel {
     @ObservationIgnored
     @Dependency(\.homeAPI) private var homeAPI
+    
+    private var currentPage: Int = 1
     var homeResponse: Home.Model.Response?
     
     func onFirstTask() async {
@@ -30,10 +32,15 @@ final class HomeViewModel {
     
     @Sendable
     func refreshable() async {
-        print(#function)
+        clear()
     }
     
-    func onCardTapped(_ carpull: Home.Model.TempCarPull) async {
+    func onCardTapped(_ carpull: CarPull.Model.Response) async {
+        
+    }
+    
+    private func clear() {
+        self.currentPage = 1
         
     }
 }

@@ -21,48 +21,12 @@ struct Home {
     
     struct Model {
         struct Response: Decodable {
-            let list: [TempCarPull]
-        }
-        
-        struct TempCarPull: Decodable, Identifiable {
-            var id: UUID = .init()
-            let companyName: String
-            let title: String
-            let description: String
-            let mood: Mood
-            let state: State
-        }
-        
-        enum State: Decodable {
-            case open
-            case closed
-            
-            var description: String {
-                switch self {
-                case .open: return "모집중"
-                case .closed: return "마감"
-                }
-            }
-        }
-        
-        enum Mood: Decodable {
-            case silence
-            case smallTalk
+            let totalPage: Int
+            let currentPage: Int
+            let list: [CarPull.Model.Response]
         }
     }
 }
-
-#if DEBUG
-extension Home.Model.TempCarPull {
-    static var mock: Self = .init(
-        companyName: "카카오페이",
-        title: "판교역 10시 도착",
-        description: "어쩌구 저쩌구",
-        mood: .silence,
-        state: .open
-    )
-}
-#endif
 
 extension Home.API: DependencyKey {
     static let liveValue: Home.API = .init(
@@ -76,7 +40,11 @@ extension Home.API: DependencyKey {
     static let testValue: Home.API = unimplemented("homeapi")
     static let previewValue: Home.API = .init(
         fetch: { _, _ in 
-            return .init(list: [.mock, .mock, .mock, .mock, .mock, .mock])
+            return .init(
+                totalPage: 10, 
+                currentPage: 1,
+                list: [.mock, .mock, .mock, .mock, .mock, .mock]
+            )
         }
     )
     #endif
