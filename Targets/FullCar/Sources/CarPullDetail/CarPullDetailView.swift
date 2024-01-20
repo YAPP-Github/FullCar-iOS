@@ -59,11 +59,11 @@ struct CarPullDetailView: View {
         label: { Text("탑승요청") }
         .buttonStyle(
             .fullCar(
-                font: .body1,
+                font: .pretendard17(.bold),
                 horizontalPadding: 137,
                 verticalPadding: 17,
                 radius: 8,
-                style: .primary_white
+                style: .palette(.primary_white)
             )
         )
     }

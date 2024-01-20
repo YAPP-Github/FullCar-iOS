@@ -25,28 +25,24 @@ struct HomeCardView: View {
         VStack(alignment: .leading, spacing: .zero) { 
             HStack(spacing: .zero) {
                 Text(carPull.companyName)
-                    .font(pretendard: .caption1)
+                    .font(.pretendard14(.semibold))
                     .foregroundStyle(Color.fullCar_primary)
                 Spacer()
-                Badge(
-                    title: "모집중",
-                    configurable: .standard,
-                    style: .palette(.primary_secondary)
-                )
+                FCBadge(postState: .recruite)
             }
             .padding(.bottom, 14)
             
             Text(carPull.title)
-                .font(pretendard: .body1)
+                .font(.pretendard17(.bold))
                 .padding(.bottom, 12)
             
             Text(carPull.description)
-                .font(pretendard: .body6)
+                .font(.pretendard16(.regular))
                 .padding(.bottom, 10)
             
             HStack(spacing: 6) {
-                Badge(.female)
-                Badge(.quiet)
+                FCBadge(gender: .female)
+                FCBadge(mood: .quiet)
             }
             
             Divider()
@@ -54,16 +50,16 @@ struct HomeCardView: View {
             
             HStack(spacing: .zero) {
                 Text("희망비용")
-                    .font(pretendard: .caption1)
+                    .font(.pretendard14(.semibold))
                     .foregroundStyle(Color.gray50)
                     .padding(.trailing, 8)
                 
                 Text("48,000원")
-                    .font(pretendard: .caption1)
+                    .font(.pretendard14(.semibold))
                     .foregroundStyle(Color.black80)
                 Spacer()
                 Text("12월 28일")
-                    .font(pretendard: .caption2)
+                    .font(.pretendard14(.semibold))
                     .foregroundStyle(Color.gray40)
             }
         }

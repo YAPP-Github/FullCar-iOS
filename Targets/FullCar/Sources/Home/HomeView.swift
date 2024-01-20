@@ -24,7 +24,7 @@ struct HomeView: View {
     private var headerView: some View {
         HStack(spacing: .zero) {
             Text("야놀자")
-                .font(pretendard: .heading2)
+                .font(.pretendard18(.bold))
                 .foregroundStyle(Color.black80)
             Spacer()
             Image("FCHomeTopTrailingImage", bundle: .main)
