@@ -42,9 +42,17 @@ public struct FCTextFieldStyle: TextFieldStyle {
                     .font(.pretendard16(.semibold))
                     .foregroundStyle(Color.gray45)
             }
+
+            if case .search = accessory {
+                Image(icon: .search)
+                    .resizable()
+                    .frame(iconSize: ._24)
+                    .foregroundStyle(Color.gray45)
+            }
         }
         .padding(padding)
         .background(backgroundColor)
+        .cornerRadius(radius: cornerRadius, corners: .allCorners)
         .overlay(
             RoundedRectangle(cornerRadius: cornerRadius)
                 .stroke(state.borderColor, lineWidth: 1)
@@ -70,5 +78,7 @@ public extension FCTextFieldStyle {
     enum AccessoryType {
         case check(Binding<Bool>)
         case won
+        case search
+        case none(CGFloat)
     }
 }
