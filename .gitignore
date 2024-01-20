@@ -69,3 +69,7 @@ Derived/
 
 ### Tuist managed dependencies ###
 Tuist/Dependencies
+
+## Folder ##
+Tuist/Signing
+Tuist/master.key

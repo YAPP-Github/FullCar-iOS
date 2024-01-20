@@ -35,6 +35,7 @@ public let mainTarget: Target = .init(
     ),
     sources: ["Sources/**"],
     resources: ["Resources/**"],
+    //settings: .settings(base: <#T##SettingsDictionary#>, debug: <#T##SettingsDictionary#>, release: <#T##SettingsDictionary#>, defaultSettings: <#T##DefaultSettings#>)
     dependencies: [
         .fullCarKit,
         .fullCarUI,
