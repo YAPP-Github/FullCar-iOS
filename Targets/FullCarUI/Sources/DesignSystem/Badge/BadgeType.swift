@@ -72,7 +72,7 @@ extension Driver {
 
         static var iconColor: Color { return .gray60 }
 
-        static var iconSize: Icon.Size { return ._16 }
+        static var iconSize: FCIcon.Size { return ._16 }
 
         static var style: ColorStyle { return .palette(.gray60) }
     }
@@ -81,13 +81,13 @@ extension Driver {
 public extension Driver.Gender {
     var spacing: CGFloat { return 2 }
 
-    var icon: Icon.Symbol { return .user }
+    var icon: FCIcon.Symbol { return .user }
 }
 
 public extension Driver.Mood {
     var spacing: CGFloat { return 4 }
 
-    var icon: Icon.Symbol {
+    var icon: FCIcon.Symbol {
         switch self {
         case .quiet: return .quite
         case .talk: return .talk

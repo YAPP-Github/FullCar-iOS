@@ -35,7 +35,7 @@ public struct FCBadge: View {
     }
 
     @ViewBuilder
-    private func iconView(_ symbol: Icon.Symbol) -> some View {
+    private func iconView(_ symbol: FCIcon.Symbol) -> some View {
         Image(icon: symbol)
             .renderingMode(.template)
             .resizable()
