@@ -22,7 +22,7 @@ public struct FCTextFieldStyle: TextFieldStyle {
     public func _body(configuration: Configuration) -> some View {
         HStack {
             configuration
-                .font(.pretendard16(.semibold))
+                .font(.pretendard16_19(.semibold))
                 .focused($isFocused)
                 // 에러 상태일 땐, focus상태여도 error상태 그대로 유지
                 .onChange(of: isFocused) { oldValue, newValue in
@@ -79,6 +79,6 @@ public extension FCTextFieldStyle {
         case check(Binding<Bool>)
         case won
         case search
-        case none(CGFloat)
+        case none
     }
 }

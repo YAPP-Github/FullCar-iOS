@@ -6,7 +6,8 @@ struct FullCarApp: App {
     
     var body: some Scene {
         WindowGroup {
-            RootView(viewModel: .init())
+//            RootView(viewModel: .init())
+            OnboardingView(viewModel: .init())
         }
     }
 }

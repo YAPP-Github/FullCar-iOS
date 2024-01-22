@@ -15,6 +15,7 @@ public enum Pretendard {
         case pretendard18(Weight)
         case pretendard17(Weight)
         case pretendard16(Weight)
+        case pretendard16_19(Weight)
         case pretendard15(Weight)
         case pretendard14(Weight)
         case pretendard13(Weight)
@@ -46,6 +47,7 @@ extension Pretendard.Style {
         case .pretendard18: return 18
         case .pretendard17: return 17
         case .pretendard16: return 16
+        case .pretendard16_19: return 16
         case .pretendard15: return 15
         case .pretendard14: return 14
         case .pretendard13: return 13
@@ -65,6 +67,11 @@ extension Pretendard.Style {
             case .semibold: return 22
             case .regular: return 24
             case .medium: return 20
+            }
+        case .pretendard16_19(let weight):
+            switch weight {
+            case .semibold: return 19
+            default: return self.size
             }
         case .pretendard15(let weight):
             switch weight {
@@ -129,6 +136,7 @@ extension Pretendard.Style: FontLineHeightConfigurable {
                 .pretendard18(let weight),
                 .pretendard17(let weight),
                 .pretendard16(let weight),
+                .pretendard16_19(let weight),
                 .pretendard15(let weight),
                 .pretendard14(let weight),
                 .pretendard13(let weight),

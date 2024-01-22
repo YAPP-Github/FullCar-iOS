@@ -16,9 +16,9 @@ extension TextFieldStyle where Self == FCTextFieldStyle {
     ) -> FCTextFieldStyle {
         var padding: CGFloat {
             switch type {
-            case .check: return 16
-            case .won, .search: return 14
-            case .none(let padding): return padding
+            case .check, .search: return 16
+            case .won: return 14
+            default: return 0
             }
         }
 
@@ -26,7 +26,7 @@ extension TextFieldStyle where Self == FCTextFieldStyle {
             switch type {
             case .check, .search: return .gray5
             case .won: return .white
-            case .none: return .white
+            default: return .clear
             }
         }
 
