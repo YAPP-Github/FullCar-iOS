@@ -16,15 +16,17 @@ extension TextFieldStyle where Self == FCTextFieldStyle {
     ) -> FCTextFieldStyle {
         var padding: CGFloat {
             switch type {
-            case .check(let binding): return 16
+            case .check: return 16
             case .won: return 14
+            default: return 0
             }
         }
 
         var backgroundColor: Color {
             switch type {
-            case .check(let binding): return .gray5
+            case .check: return .gray5
             case .won: return .white
+            default: return .clear
             }
         }
 
@@ -38,7 +40,7 @@ extension TextFieldStyle where Self == FCTextFieldStyle {
     }
 
     public static func fullCar(
-        type: FCTextFieldStyle.AccessoryType,
+        type: FCTextFieldStyle.AccessoryType = .none,
         state: Binding<InputState>,
         padding: CGFloat,
         backgroundColor: Color,
