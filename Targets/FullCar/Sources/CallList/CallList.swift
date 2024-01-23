@@ -21,7 +21,15 @@ struct Dummy: Hashable {
 final class CallListViewModel {
     var selection: FullCar.CallListTab = .request
     
-    var dummyData: [Dummy] = [.init(status: .waiting),.init(status: .failure),.init(status: .waiting),.init(status: .success),.init(status: .waiting),.init(status: .waiting),.init(status: .success),.init(status: .success), .init(status: .success)]
+    var dummyData: [Dummy] = [.init(status: .waiting),
+                              .init(status: .failure),
+                              .init(status: .waiting),
+                              .init(status: .success),
+                              .init(status: .waiting),
+                              .init(status: .waiting),
+                              .init(status: .success),
+                              .init(status: .success),
+                              .init(status: .success)]
 }
 
 

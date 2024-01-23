@@ -16,7 +16,7 @@ struct CallRequestListView: View {
         ScrollView {
             LazyVGrid(columns: [GridItem()], content: {
                 
-                ForEach(data, id:\.self) { item in
+                ForEach(data, id: \.self) { item in
                     CallListItem(status: item.status,
                                  isLast: item.id == data.last?.id)
                 }

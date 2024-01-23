@@ -13,7 +13,7 @@ import Observation
 
 struct CallListItem: View {
     
-    var status: FullCar.CallStatus = .failure
+    private(set) var status: FullCar.CallStatus = .failure
     var isLast: Bool = false
     
     var body: some View {
@@ -28,11 +28,11 @@ struct CallListItem: View {
                 }
                 .padding(.top, 18)
             }
-            .padding([.vertical, .horizontal], 20)
+            .padding(.all, 20)
             
             if !isLast {
                 Divider()
-                    .padding([.horizontal], 20)
+                    .padding(.horizontal, 20)
             }
         }
         
@@ -120,7 +120,7 @@ extension CallListItem {
     }
 }
 
-// Action
+//MARK: Action
 extension CallListItem {
     func getColor(back: Bool = false) -> Color {
         switch status {
@@ -137,5 +137,3 @@ extension CallListItem {
 #Preview {
     CallListItem()
 }
-
-
