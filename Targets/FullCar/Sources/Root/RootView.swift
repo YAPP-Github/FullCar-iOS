@@ -9,6 +9,7 @@
 import SwiftUI
 import FullCarUI
 import FullCarKit
+import Firebase
 import Observation
 import Dependencies
 import KakaoSDKAuth
@@ -27,13 +28,21 @@ final class RootViewModel {
     // 토큰이 없으면 로그인 화면으로
     func onFirstTask() async {
         try? await Task.sleep(for: .seconds(1))
+        #if DEBUG
+        appState = .tab
+        #else
         if ((try? await account.hasValidToken()) != nil) {
             appState = .tab
         } else {
             appState = .login
         }
+        #endif
     }
 
+    func setupFirebase() async {
+        FirebaseApp.configure()
+    }
+    
     func setupKakaoSDK() async {
         guard let kakaoNativeAppKey = Bundle.main.kakaoNativeAppKey else { return }
         KakaoSDK.initSDK(appKey: kakaoNativeAppKey)
@@ -55,6 +64,7 @@ struct RootView: View {
                 viewModel.handleKakaoURL(url)
             }
             .onFirstTask {
+                await viewModel.setupFirebase()
                 await viewModel.setupKakaoSDK()
                 await viewModel.onFirstTask()
             }
