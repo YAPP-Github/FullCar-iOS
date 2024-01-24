@@ -32,23 +32,22 @@ struct OnboardingView: View {
             ZStack(alignment: .top) {
                 if !isSearchActive {
                     companyTextFieldView
-                        .padding(.horizontal, 20)
-                        .navigationBarStyle(
-                            leadingView: {
-                                NavigationButton(icon: .back, action: { })
-                            },
-                            centerView: {
-                                Text("회원 가입")
-                                    .font(.pretendard18(.bold))
-                            },
-                            trailingView: { }
-                        )
                 } else {
                     CompanySearchView(company: $company)
-                        .padding(.horizontal, 20)
-                        .transition(.move(edge: .bottom))
                 }
             }
+            .padding(.horizontal, 20)
+            .animation(.default, value: isSearchActive)
+            .navigationBarStyle(
+                leadingView: {
+                    NavigationButton(icon: .back, action: { })
+                },
+                centerView: {
+                    Text("회원 가입")
+                        .font(.pretendard18(.bold))
+                },
+                trailingView: { }
+            )
         }
     }
 
