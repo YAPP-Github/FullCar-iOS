@@ -42,7 +42,9 @@ extension AccountAPI: DependencyKey {
                 ).response()
             },
             refresh: { refreshToken in
-                let response: ApiAuthTokenResponse = try await NetworkClient.account.request(endpoint: Endpoint.Account.refresh(refreshToken: refreshToken)).response()
+                let response: ApiAuthTokenResponse = try await NetworkClient.account.request(
+                    endpoint: Endpoint.Account.refresh(refreshToken: refreshToken)
+                ).response()
 
                 return response.data
             })
