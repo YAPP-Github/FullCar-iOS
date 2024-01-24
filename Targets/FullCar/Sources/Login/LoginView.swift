@@ -29,10 +29,11 @@ final class LoginViewModel {
 }
 
 struct LoginView: View {
-    let viewModel: LoginViewModel
+    @Bindable var viewModel: LoginViewModel
 
     var body: some View {
         bodyView
+            .padding(.horizontal, Constants.horizontal)
     }
 
     private var bodyView: some View {
@@ -41,7 +42,6 @@ struct LoginView: View {
                 title
                 subTitle
             }
-            .padding(.top, Constants.Title.top)
             .padding(.bottom, Constants.Title.bottom)
 
             Image(icon: .homeLogo)
@@ -51,9 +51,7 @@ struct LoginView: View {
                 loginButton(for: .kakao)
                 loginButton(for: .apple)
             }
-            .padding(.bottom, Constants.LoginButton.bottom)
         }
-        .padding(.horizontal, Constants.horizontal)
     }
 
     private var title: some View {
@@ -115,12 +113,10 @@ extension LoginView {
             static let height: CGFloat = 44
             static let radius: CGFloat = 7
             static let spacing: CGFloat = 10
-            static let bottom: CGFloat = 50
         }
 
         enum Title {
             static let spacing: CGFloat = 16
-            static let top: CGFloat = 85
             static let bottom: CGFloat = 57
         }
 
