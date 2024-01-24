@@ -59,25 +59,28 @@ extension AccountService: DependencyKey {
     }
 }
 
+#if DEBUG
 extension AccountService: TestDependencyKey {
     static public var testValue: AccountService {
         @Dependency(\.accountAPI) var api
+        @Dependency(\.tokenStorage) var tokenStorage
 
         return AccountService(
             hasValidToken: { return false },
             login: { accessToken in
-                // 실제 서버 통신 대신 목데이터 사용
                 let credential = AccountCredential(
-                    onBoardingFlag: false, 
-                    accessToken: "access Token",
-                    refreshToken: "refresh Token"
+                    onBoardingFlag: false,
+                    accessToken: "Test Access Token",
+                    refreshToken: "Test Refresh Token"
                 )
+                await tokenStorage.save(token: credential)
             },
             logout: { },
             leave: { }
         )
     }
 }
+#endif
 
 extension DependencyValues {
     public var accountService: AccountService {

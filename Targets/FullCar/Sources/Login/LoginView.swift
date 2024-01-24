@@ -23,7 +23,10 @@ final class LoginViewModel {
             fullCar.appState = .tab
         } catch {
             fullCar.appState = .login
-            print(error)
+
+            #if DEBUG
+            print("[🆘][LoginViewModel.swift] -> 로그인 실패 : \(error)")
+            #endif
         }
     }
 }

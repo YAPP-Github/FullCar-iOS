@@ -40,6 +40,7 @@ final class FullCarAccount: NSObject {
             }
             self.continuation = continuation
         }
+        // 임시 Device token 넣어주기. 추후 수정
         let request: AuthRequest = .init(socialType: type, token: accessToken, deviceToken: deviceToken ?? "456")
 
         try await login(request)

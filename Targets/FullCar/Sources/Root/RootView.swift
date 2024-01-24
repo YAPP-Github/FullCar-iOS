@@ -27,13 +27,15 @@ final class RootViewModel {
     // 홈으로 이동할거고
     // 토큰이 없으면 로그인 화면으로
     func onFirstTask() async {
-        try? await Task.sleep(for: .seconds(1))
-        
         do {
             let isValidToken = try await account.hasValidToken()
             appState = isValidToken ? .tab : .login
         } catch {
             appState = .login
+
+            #if DEBUG
+            print("[🆘][RootView.swift] -> 자동 로그인 실패 : \(error)")
+            #endif
         }
     }
 
