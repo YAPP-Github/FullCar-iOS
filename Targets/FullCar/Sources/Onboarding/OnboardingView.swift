@@ -95,23 +95,38 @@ struct OnboardingView: View {
 
     private var genderPicker: some View {
         VStack(alignment: .leading, spacing: 20) {
-            HeaderLabel(
-                title: "베스트드라이버는나야 님의 성별을 알려주세요.",
-                font: .pretendard22(.bold)
-            )
-
-            HStack(spacing: 6) {
-                ForEach(Gender.allCases, id: \.self) { genderType in
-                    if genderType != .none {
-                        Button(action: {
-                            gender = genderType
-                        }, label: {
-                            Text(genderType.rawValue)
-                        })
-                        .buttonStyle(.chip(genderType == gender))
+            SectionView(
+                content: {
+                    HStack(spacing: 6) {
+                        ForEach(Gender.allCases, id: \.self) { genderType in
+                            if genderType != .none {
+                                Button(action: {
+                                    gender = genderType
+                                }, label: {
+                                    Text(genderType.rawValue)
+                                })
+                                .buttonStyle(.chip(genderType == gender))
+                            }
+                        }
                     }
-                }
-            }
+                },
+                header: {
+                    HeaderLabel(
+                        title: "베스트드라이버님의 성별을 알려주세요.",
+                        font: .pretendard22(.bold)
+                    )
+                }, 
+                footer: {
+                    if gender == .notPublic {
+                        let notPublic: Message = .information("성별 미공개 시 게시글 노출률이 낮아질 수 있어요.")
+                        Text(notPublic.description)
+                            .font(.pretendard14(.semibold))
+                            .foregroundStyle(notPublic.fontColor)
+                    }
+                },
+                headerBottomPadding: 20,
+                footerTopPadding: 8
+            )
         }
     }
 
