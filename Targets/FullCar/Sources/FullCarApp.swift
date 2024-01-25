@@ -6,8 +6,11 @@ struct FullCarApp: App {
     
     var body: some Scene {
         WindowGroup {
-//            RootView(viewModel: .init())
+            #if DEBUG
             OnboardingView(viewModel: .init())
+            #else
+            RootView(viewModel: .init())
+            #endif
         }
     }
 }

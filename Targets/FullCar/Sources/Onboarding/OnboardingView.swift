@@ -16,7 +16,7 @@ final class OnboardingViewModel {
 }
 
 struct OnboardingView: View {
-    let viewModel: OnboardingViewModel
+    @Bindable var viewModel: OnboardingViewModel
 
     @State private var companyTextFieldState: InputState = .default
 
@@ -24,31 +24,32 @@ struct OnboardingView: View {
     @State private var isSearchActive: Bool = false
 
     var body: some View {
-        bodyView
+        NavigationStack {
+            bodyView
+                .padding(.horizontal, 20)
+                .padding(.top, 32)
+                .navigationBarStyle(
+                    leadingView: {
+                        NavigationButton(icon: .back, action: { })
+                    },
+                    centerView: {
+                        Text(isSearchActive ? "회사 입력" : "회원 가입")
+                            .font(.pretendard18(.bold))
+                    },
+                    trailingView: { }
+                )
+        }
     }
 
     private var bodyView: some View {
-        NavigationStack {
-            ZStack(alignment: .top) {
-                if !isSearchActive {
-                    companyTextFieldView
-                } else {
-                    CompanySearchView(company: $company)
-                }
+        ZStack(alignment: .top) {
+            if !isSearchActive {
+                companyTextFieldView
+            } else {
+                CompanySearchView(company: $company)
             }
-            .padding(.horizontal, 20)
-            .animation(.default, value: isSearchActive)
-            .navigationBarStyle(
-                leadingView: {
-                    NavigationButton(icon: .back, action: { })
-                },
-                centerView: {
-                    Text("회원 가입")
-                        .font(.pretendard18(.bold))
-                },
-                trailingView: { }
-            )
         }
+        .animation(.default, value: isSearchActive)
     }
 
     private var companyTextFieldView: some View {
@@ -63,12 +64,11 @@ struct OnboardingView: View {
             headerFont: .pretendard22(.bold),
             headerPadding: 20
         )
-        .onChange(of: companyTextFieldState) { oldValue, newValue in
-            if newValue == .focus {
-                withAnimation {
-                    isSearchActive.toggle()
-                }
+        .onTapGesture {
+            withAnimation {
+                isSearchActive.toggle()
             }
+
         }
     }
 }
