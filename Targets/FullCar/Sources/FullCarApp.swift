@@ -12,7 +12,7 @@ class AppDelegate: NSObject, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
 
-        // 추후 device token 설정 위해 push alerm 관련 설정하기
+        // 팀계정 설정되면 device token 받아오기
         print("device token 입니다 : \(deviceToken)")
         self.deviceToken = String(data: deviceToken, encoding: .utf8)
     }

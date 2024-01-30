@@ -1,5 +1,5 @@
 //
-//  SocialType+.swift
+//  LoginStyle.swift
 //  FullCarUI
 //
 //  Created by Sunny on 1/15/24.
@@ -7,9 +7,13 @@
 //
 
 import SwiftUI
-import FullCarKit
 
-public extension SocialType {
+public enum LoginStyle {
+    case kakao
+    case apple
+}
+
+public extension LoginStyle {
     var title: String {
         switch self {
         case .kakao: return "카카오 로그인"
