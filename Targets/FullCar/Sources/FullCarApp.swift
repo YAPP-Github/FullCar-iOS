@@ -7,7 +7,7 @@ struct FullCarApp: App {
     var body: some Scene {
         WindowGroup {
             #if DEBUG
-            CompanySearchView(viewModel: .init())
+            CompanySelectView(viewModel: .init())
             #else
             RootView(viewModel: .init())
             #endif
