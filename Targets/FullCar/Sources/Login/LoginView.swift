@@ -98,6 +98,7 @@ struct LoginView: View {
         }
     }
 
+    @ViewBuilder
     private func socialIcon(_ type: SocialType) -> some View {
         switch type {
         case .kakao:
