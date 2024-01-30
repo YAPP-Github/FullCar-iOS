@@ -24,7 +24,7 @@ public extension Endpoint {
 extension Endpoint.Account: URLRequestConfigurable {
     public var url: URLConvertible { return "http://43.200.176.240:8080" }
 
-    public var path: String {
+    public var path: String? {
         switch self {
         case .login: return "/api/v1/auth"
         case .logout: return "/logout"
@@ -83,9 +83,9 @@ extension Endpoint.Home: URLRequestConfigurable {
         }
     }
     
-    public var path: String {
+    public var path: String? {
         switch self {
-        case .fetch: return ""
+        case .fetch: return nil
         }
     }
     
