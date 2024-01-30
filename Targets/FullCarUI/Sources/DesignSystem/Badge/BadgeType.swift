@@ -63,7 +63,9 @@ public struct Driver: Decodable {
     }
 
     /// 운전자의 운행분위기 타입
-    public enum Mood: String, Decodable {
+    public enum Mood: String, Decodable, CaseIterable, Identifiable {
+        public var id: Self { return self }
+        
         /// 조용히 가기
         case quiet = "조용히 가기"
         /// 대화하며 가기
