@@ -8,6 +8,7 @@
 
 import SwiftUI
 import FullCarKit
+import FullCarUI
 import Dependencies
 
 @MainActor
@@ -82,13 +83,13 @@ struct LoginView: View {
             ZStack(alignment: .leading) {
                 socialIcon(type)
 
-                Text(type.title)
+                Text(socialLoginStyle(type).title)
                     .frame(maxWidth: .infinity)
             }
             .font(.pretendard19(.medium))
-            .foregroundStyle(type.fontColor)
+            .foregroundStyle(socialLoginStyle(type).fontColor)
             .frame(height: Constants.LoginButton.height)
-            .background(type.backgroundColor)
+            .background(socialLoginStyle(type).backgroundColor)
             .cornerRadius(radius: Constants.LoginButton.radius, corners: .allCorners)
         }
     }
@@ -96,14 +97,21 @@ struct LoginView: View {
     private func socialIcon(_ type: SocialType) -> some View {
         switch type {
         case .kakao:
-            type.icon
+            LoginStyle.kakao.icon
                 .resizable()
                 .frame(iconSize: ._32)
                 .padding(.leading, Constants.Image.leading)
         case .apple:
-            type.icon
+            LoginStyle.apple.icon
                 .frame(iconSize: ._32)
                 .padding(.leading, Constants.Image.leading)
+        }
+    }
+
+    private func socialLoginStyle(_ type: SocialType) -> LoginStyle {
+        switch type {
+        case .kakao: return LoginStyle.kakao
+        case .apple: return LoginStyle.apple
         }
     }
 }
