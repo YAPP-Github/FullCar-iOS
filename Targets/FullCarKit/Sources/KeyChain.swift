@@ -15,7 +15,7 @@ public class Keychain {
     var accessGroup: String?
     var synchronizable: Bool = false
     
-    private init() {}
+    private init() { }
     
     private func getPrefixedKey(key: String) -> String {
         return "com.fullcar.app.\(key)"

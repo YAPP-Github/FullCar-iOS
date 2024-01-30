@@ -14,7 +14,7 @@ public extension Endpoint {
     }
 
     enum Account {
-        case login(accessToken: String)
+        case login(request: AuthRequest)
         case logout
         case leave
         case refresh(refreshToken: String)
@@ -22,21 +22,14 @@ public extension Endpoint {
 }
 
 extension Endpoint.Account: URLRequestConfigurable {
-    public var url: URLConvertible {
-        switch self {
-        case .login: return "https://www.test.com"
-        case .logout: return "https://www.test.com"
-        case .leave: return "https://www.test.com"
-        case .refresh: return "https://www.test.com"
-        }
-    }
-    
+    public var url: URLConvertible { return "http://43.200.176.240:8080" }
+
     public var path: String? {
         switch self {
-        case .login: return "/login"
+        case .login: return "/api/v1/auth"
         case .logout: return "/logout"
         case .leave: return "/leave"
-        case .refresh: return "/refresh"
+        case .refresh: return "/api/v1/auth/token"
         }
     }
     
@@ -51,8 +44,10 @@ extension Endpoint.Account: URLRequestConfigurable {
     
     public var parameters: Parameters? {
         switch self {
-        case .login(let accessToken): return [
-            "accessToken": "\(accessToken)"
+        case .login(let request): return [
+            "socialType": request.socialType.rawValue,
+            "token": request.token,
+            "deviceToken": request.deviceToken
         ]
         case .logout: return nil
         case .leave: return nil
@@ -90,7 +85,7 @@ extension Endpoint.Home: URLRequestConfigurable {
     
     public var path: String? {
         switch self {
-        case .fetch: return ""
+        case .fetch: return nil
         }
     }
     

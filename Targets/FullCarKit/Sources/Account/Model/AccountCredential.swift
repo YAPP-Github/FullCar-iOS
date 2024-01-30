@@ -9,7 +9,15 @@
 import Foundation
 
 struct AccountCredential: Codable {
+    var onBoardingFlag: Bool
     let accessToken: String
     let refreshToken: String
     let accessTokenExpiration: Date
+
+    init(onBoardingFlag: Bool, accessToken: String, refreshToken: String) {
+        self.onBoardingFlag = onBoardingFlag
+        self.accessToken = accessToken
+        self.refreshToken = refreshToken
+        self.accessTokenExpiration = Date().addingTimeInterval(0.8 * 3600)
+    }
 }
