@@ -1,6 +1,6 @@
 import SwiftUI
 
-class AppDelegate: NSObject, UIApplicationDelegate {
+final class AppDelegate: NSObject, UIApplicationDelegate {
     static var shared: AppDelegate?
 
     private(set) var deviceToken: String?

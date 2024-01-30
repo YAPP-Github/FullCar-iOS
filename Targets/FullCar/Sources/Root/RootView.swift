@@ -83,13 +83,6 @@ struct RootView: View {
 //            Image("런치스크린 이미지 나오면!", bundle: .main)
                 
         case .login:
-//            LoginView(
-//                viewModel: withDependencies({
-//                    $0.accountService = .testValue
-//                }, operation: {
-//                    LoginViewModel()
-//                })
-//            )
             LoginView(viewModel: .init())
         case .tab:
             FullCarTabView(viewModel: .init())
