@@ -19,13 +19,6 @@ final class FullCarAccount: NSObject {
 
     private var continuation: CheckedContinuation<String, Error>?
 
-    private var deviceToken: String? {
-        guard let delegate = UIApplication.shared.delegate as? AppDelegate else {
-            return nil
-        }
-        return delegate.deviceToken
-    }
-
     @MainActor
     func performLogin(_ type: SocialType) async throws {
         if let currentContinuation = continuation {
@@ -41,7 +34,11 @@ final class FullCarAccount: NSObject {
             self.continuation = continuation
         }
         // 임시 Device token 넣어주기. 추후 수정
-        let request: AuthRequest = .init(socialType: type, token: accessToken, deviceToken: deviceToken ?? "456")
+        let request: AuthRequest = .init(
+            socialType: type,
+            token: accessToken,
+            deviceToken: AppDelegate.shared?.deviceToken ?? "456"
+        )
 
         try await login(request)
     }

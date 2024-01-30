@@ -30,6 +30,10 @@ final class RootViewModel {
         do {
             let isValidToken = try await account.hasValidToken()
             appState = isValidToken ? .tab : .login
+
+            #if DEBUG
+            print("[✅][RootView.swift] -> 자동 로그인 성공!")
+            #endif
         } catch {
             appState = .login
 

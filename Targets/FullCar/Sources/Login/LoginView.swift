@@ -22,6 +22,10 @@ final class LoginViewModel {
         do {
             try await account.performLogin(type)
             fullCar.appState = .tab
+
+            #if DEBUG
+            print("[✅][LoginViewModel.swift] -> 로그인 성공!")
+            #endif
         } catch {
             fullCar.appState = .login
 
