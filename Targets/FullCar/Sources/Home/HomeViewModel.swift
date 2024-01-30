@@ -17,13 +17,37 @@ final class HomeViewModel {
     @ObservationIgnored
     @Dependency(\.homeAPI) private var homeAPI
     
+    var carPullList: [CarPull.Model.Response] = []
+    var apiIsInFlight: Bool = false
+    
     private var currentPage: Int = 1
-    var homeResponse: Home.Model.Response?
+    private var homeResponse: Home.Model.Response?
     
     func onFirstTask() async {
+        await fetchCarPulls(page: currentPage)
+    }
+    
+    func rowAppeared(at index: Int) async {
+        guard index.hasReachedThreshold(outOf: carPullList.count) else { return }
+        guard !apiIsInFlight else { return }
+        await fetchCarPulls(page: currentPage)
+    }
+    
+    private func fetchCarPulls(page: Int) async {
         do {
-            let response = try await homeAPI.fetch(id: "id", name: "name")
+            apiIsInFlight = true
+            defer { apiIsInFlight = false }
+            
+            let response = try await homeAPI.fetch(page: currentPage)
             self.homeResponse = response
+            
+            if page == 1 {
+                carPullList = response.data.carPullList
+            } else {
+                carPullList.append(contentsOf: response.data.carPullList)
+            }
+            
+            currentPage += 1
         }
         catch {
             // some error handling
@@ -41,6 +65,20 @@ final class HomeViewModel {
     
     private func clear() {
         self.currentPage = 1
-        
+        self.carPullList.removeAll()
+        self.homeResponse = .none
+    }
+}
+
+fileprivate extension Int {
+    func hasReachedThreshold(
+        outOf totalCount: Int,
+        threshold: Int = 5
+    ) -> Bool {
+        if self > totalCount - threshold {
+            return true
+        } else {
+            return false
+        }
     }
 }

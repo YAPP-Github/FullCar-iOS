@@ -74,7 +74,7 @@ extension CarPull {
 #if DEBUG
 #Preview {
     VStack {
-        CarPull.CardView(carPull: .mock)
+        CarPull.CardView(carPull: .mock())
             .debug()
     }
     .frame(maxWidth: .infinity, maxHeight: .infinity)

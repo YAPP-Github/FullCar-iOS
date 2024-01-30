@@ -41,16 +41,12 @@ struct HomeView: View {
     }
     @ViewBuilder
     private var bodyView: some View {
-        if let list = viewModel.homeResponse?.list {
-            carPullList(list)
-        } else {
-            emptyView
-        }
+        carPullList(viewModel.carPullList)
     }
     private func carPullList(_ list: [CarPull.Model.Response]) -> some View {
         ScrollView(.vertical) { 
-            VStack(spacing: .zero) {
-                ForEach(list) { carpull in
+            LazyVStack(spacing: .zero) {
+                ForEach(Array(list.enumerated()), id: \.element) { index, carpull in
                     Button {
                         Task { await viewModel.onCardTapped(carpull) }
                     } label: {
@@ -58,6 +54,9 @@ struct HomeView: View {
                             .padding(.bottom, 8)
                     }
                     .buttonStyle(.plain)
+                    .task {
+                        await viewModel.rowAppeared(at: index)
+                    }
                 }
             }
         }

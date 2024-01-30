@@ -91,7 +91,7 @@ struct CarPullDetailView: View {
         CarPullDetailView(
             viewModel: .init(
                 requestStatus: .beforeBegin,
-                carPull: .mock,
+                carPull: .mock(),
                 information: .mock
             )
         )

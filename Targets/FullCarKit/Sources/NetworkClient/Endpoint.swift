@@ -10,7 +10,7 @@ import Foundation
 public struct Endpoint { }
 public extension Endpoint {
     enum Home {
-        case fetch(id: String, name: String)
+        case fetch(page: Int, size: Int)
     }
 
     enum Account {
@@ -79,13 +79,13 @@ extension Endpoint.Account: URLRequestConfigurable {
 extension Endpoint.Home: URLRequestConfigurable {
     public var url: URLConvertible {
         switch self {
-        case .fetch: return "https://www.naver.com"
+        case .fetch: return "http://43.200.176.240:8080"
         }
     }
     
     public var path: String? {
         switch self {
-        case .fetch: return nil
+        case .fetch: return "/api/v1/carpools"
         }
     }
     
@@ -97,9 +97,9 @@ extension Endpoint.Home: URLRequestConfigurable {
     
     public var parameters: Parameters? {
         switch self {
-        case .fetch(let id, let name): return [
-            "id": "\(id)",
-            "name": "\(name)"
+        case .fetch(let page, let size): return [
+            "page": "\(page)",
+            "size": "\(size)"
         ]
         }
     }
