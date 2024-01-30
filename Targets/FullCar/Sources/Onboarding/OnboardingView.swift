@@ -9,6 +9,12 @@
 import SwiftUI
 import FullCarUI
 
+@MainActor
+@Observable
+final class OnboardingViewModel {
+
+}
+
 struct OnboardingView: View {
     @Bindable var viewModel: OnboardingViewModel
 
