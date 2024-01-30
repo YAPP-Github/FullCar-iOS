@@ -9,10 +9,10 @@
 import SwiftUI
 
 public struct ChipButtonStyle: ButtonStyle {
-    @Binding private var isSelected: Bool
+    private let isSelected: Bool
 
-    public init(isSelected: Binding<Bool>) {
-        self._isSelected = isSelected
+    public init(isSelected: Bool) {
+        self.isSelected = isSelected
     }
 
     public func makeBody(configuration: Configuration) -> some View {
@@ -58,7 +58,7 @@ struct ChipButtonStylePreviews: PreviewProvider {
             }, label: {
                 Text("여성")
             })
-            .buttonStyle(.chip($isSelected_firstButton))
+            .buttonStyle(.chip(isSelected_firstButton))
 
 
             Button(action: {
@@ -66,7 +66,7 @@ struct ChipButtonStylePreviews: PreviewProvider {
             }, label: {
                 Text("공개안함")
             })
-            .buttonStyle(.chip($isSelected_secondButton))
+            .buttonStyle(.chip(isSelected_secondButton))
         }
     }
 }
