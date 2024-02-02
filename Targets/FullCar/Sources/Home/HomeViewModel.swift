@@ -14,9 +14,15 @@ import Dependencies
 @MainActor
 @Observable
 final class HomeViewModel {
+    
+    enum Destination: Hashable {
+        case detail(CarPullDetailViewModel)
+    }
+    
     @ObservationIgnored
     @Dependency(\.homeAPI) private var homeAPI
     
+    var paths: [Destination] = []
     var carPullList: [CarPull.Model.Response] = []
     var apiIsInFlight: Bool = false
     
@@ -60,7 +66,13 @@ final class HomeViewModel {
     }
     
     func onCardTapped(_ carpull: CarPull.Model.Response) async {
-        
+        guard paths.isEmpty else { return }
+        let detailViewModel = CarPullDetailViewModel(carPull: carpull)
+        // TODO: 먼저 지워지는거 수정
+        detailViewModel.onBackButtonTapped = { [weak self] in
+            self?.paths.removeAll()
+        }
+        paths.append(.detail(detailViewModel))
     }
     
     private func clear() {
