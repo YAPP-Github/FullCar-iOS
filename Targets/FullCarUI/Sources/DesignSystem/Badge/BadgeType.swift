@@ -9,7 +9,7 @@
 import SwiftUI
 
 /// 게시글의 상태값
-public enum PostState: String {
+public enum PostState: String, Decodable {
     /// 모집중
     case recruite = "모집중"
     /// 요청중
@@ -45,12 +45,17 @@ public extension Matching {
 }
 
 /// 운전자의 정보
-public struct Driver {
-    var gender: Gender
-    var mood: Mood
+public struct Driver: Decodable {
+    public var gender: Gender
+    public var mood: Mood
+    
+    public init(gender: Gender, mood: Mood) {
+        self.gender = gender
+        self.mood = mood
+    }
 
     /// 운전자의 성별 타입
-    public enum Gender: String {
+    public enum Gender: String, Decodable {
         /// 여성 운전자
         case female = "여성 운전자"
         /// 남성 운전자
@@ -58,7 +63,9 @@ public struct Driver {
     }
 
     /// 운전자의 운행분위기 타입
-    public enum Mood: String {
+    public enum Mood: String, Decodable, CaseIterable, Identifiable {
+        public var id: Self { return self }
+        
         /// 조용히 가기
         case quiet = "조용히 가기"
         /// 대화하며 가기

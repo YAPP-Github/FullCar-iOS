@@ -28,11 +28,15 @@ final class RootViewModel {
     // 토큰이 없으면 로그인 화면으로
     func onFirstTask() async {
         try? await Task.sleep(for: .seconds(1))
+        #if DEBUG
+        appState = .tab
+        #else
         if ((try? await account.hasValidToken()) != nil) {
             appState = .tab
         } else {
             appState = .login
         }
+        #endif
     }
 
     func setupFirebase() async {

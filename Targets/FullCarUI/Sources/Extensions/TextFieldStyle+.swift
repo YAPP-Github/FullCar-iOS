@@ -40,7 +40,7 @@ extension TextFieldStyle where Self == FCTextFieldStyle {
     }
 
     public static func fullCar(
-        type: FCTextFieldStyle.AccessoryType,
+        type: FCTextFieldStyle.AccessoryType = .none,
         state: Binding<InputState>,
         padding: CGFloat,
         backgroundColor: Color,

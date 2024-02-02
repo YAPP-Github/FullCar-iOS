@@ -27,7 +27,7 @@ extension ButtonStyle where Self == FCarButtonStyle {
     }
 
     /// Basic Filter Chips는 Selected/Unselected에 따라 Default, Active 상태로 분류됩니다. Selected는 Active된 상태로 간주됩니다.
-    public static func chip(_ isSelected: Binding<Bool>) -> ChipButtonStyle {
+    public static func chip(_ isSelected: Bool) -> ChipButtonStyle {
         ChipButtonStyle(isSelected: isSelected)
     }
 }
