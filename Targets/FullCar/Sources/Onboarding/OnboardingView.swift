@@ -34,10 +34,17 @@ struct OnboardingView: View {
 
     var body: some View {
         GeometryReader { geometry in
-            bodyView
-                .padding(.horizontal, 20)
-                .padding(.top, 32)
-                .frame(width: geometry.size.width, height: geometry.size.height)
+            VStack(spacing: .zero) {
+                bodyView
+
+                Spacer()
+
+                sendEmailButton
+                    .padding(.bottom, 16)
+                    .padding(.horizontal, 20)
+                    .debug()
+            }
+            .frame(width: geometry.size.width, height: geometry.size.height)
         }
         .navigationBarStyle(
             leadingView: {
@@ -52,27 +59,23 @@ struct OnboardingView: View {
     }
 
     private var bodyView: some View {
-        VStack(spacing: .zero) {
-            ScrollView {
-                VStack(alignment: .leading, spacing: 40) {
-                    companyTextField
+        ScrollView {
+            VStack(alignment: .leading, spacing: 40) {
+                companyTextField
 
-                    if isEmailValid {
-                        nickNameTextField
-                    }
+                if isEmailValid {
+                    nickNameTextField
+                }
 
-                    if isNickNameValid {
-                        genderPicker
-                    }
+                if isNickNameValid {
+                    genderPicker
                 }
             }
-
-            Spacer()
-
-            sendEmailButton
-                .padding(.bottom, 16)
-                .debug()
+            .padding(.top, 32)
+            .padding(.horizontal, 20)
         }
+        .scrollBounceBehavior(.basedOnSize)
+        .scrollIndicators(.hidden)
     }
 
     private var companyTextField: some View {
