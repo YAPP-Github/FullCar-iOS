@@ -52,7 +52,11 @@ struct HomeView: View {
     }
     @ViewBuilder
     private var bodyView: some View {
-        carPullList(viewModel.carPullList)
+        if viewModel.carPullList.isEmpty {
+            Color.red
+        } else {
+            carPullList(viewModel.carPullList)
+        }
     }
     private func carPullList(_ list: [CarPull.Model.Response]) -> some View {
         ScrollView(.vertical) { 

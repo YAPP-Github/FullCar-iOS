@@ -12,6 +12,10 @@ public extension Endpoint {
     enum Home {
         case fetch(page: Int, size: Int)
     }
+    
+    enum Car {
+        case fetch(carNo: String, carName: String, carBrand: String, carColor: String)
+    }
 
     enum Account {
         case login(request: AuthRequest)
@@ -72,6 +76,49 @@ extension Endpoint.Account: URLRequestConfigurable {
         case .logout: return URLEncoding()
         case .leave: return URLEncoding()
         case .refresh: return JSONEncoding()
+        }
+    }
+}
+
+extension Endpoint.Car: URLRequestConfigurable {
+    public var url: URLConvertible {
+        switch self {
+        case .fetch: return "http://43.200.176.240:8080"
+        }
+    }
+    
+    public var path: String? {
+        switch self {
+        case .fetch: return "/api/v1/cars"
+        }
+    }
+    
+    public var method: HTTPMethod {
+        switch self {
+        case .fetch: return .post
+        }
+    }
+    
+    public var parameters: Parameters? {
+        switch self {
+        case .fetch(let carNo, let carName, let carBrand, let carColor): return [
+            "carNo": "\(carNo)",
+            "carName": "\(carName)",
+            "carBrand": "\(carBrand)",
+            "carColor": "\(carColor)",
+        ]
+        }
+    }
+    
+    public var headers: [Header]? {
+        switch self {
+        case .fetch: return nil
+        }
+    }
+    
+    public var encoder: ParameterEncodable {
+        switch self {
+        case .fetch: return JSONEncoding()
         }
     }
 }

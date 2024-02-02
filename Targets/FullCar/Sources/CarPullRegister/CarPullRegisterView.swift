@@ -11,7 +11,7 @@ import FullCarUI
 
 @MainActor
 @Observable
-final class RegisterViewModel {
+final class CarPullRegisterViewModel {
     enum Focused {
         case wishPlace
         case wishCost
@@ -36,9 +36,9 @@ final class RegisterViewModel {
 }
 
 @MainActor
-struct RegisterView: View {
+struct CarPullRegisterView: View {
     
-    @Bindable var viewModel: RegisterViewModel
+    @Bindable var viewModel: CarPullRegisterViewModel
     
     var body: some View {
         _body
@@ -174,5 +174,5 @@ struct RegisterView: View {
 }
 
 #Preview {
-    RegisterView(viewModel: .init())
+    CarPullRegisterView(viewModel: .init())
 }
