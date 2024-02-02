@@ -12,7 +12,11 @@ import FullCarUI
 @MainActor
 @Observable
 final class OnboardingViewModel {
-
+    func isEmailValid(_ email: String) -> Bool {
+        let emailPattern = "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,64}"
+        let emailPred = NSPredicate(format:"SELF MATCHES %@", emailPattern)
+        return emailPred.evaluate(with: email)
+    }
 }
 
 struct OnboardingView: View {
@@ -20,40 +24,20 @@ struct OnboardingView: View {
 
     @State private var email: String = ""
     @State private var emailTextFieldState: InputState = .default
-    @State private var isEmailValid: Bool = true
+    @State private var isEmailValid: Bool = false
 
     @State private var nickName: String = ""
     @State private var nickNameTextFieldState: InputState = .default
-    @State private var isNickNameValid: Bool = true
+    @State private var isNickNameValid: Bool = false
 
     @State private var gender: Gender = .none
 
     var body: some View {
-        bodyView
-    }
-
-    private var bodyView: some View {
-        ScrollView {
-            VStack(spacing: .zero) {
-                VStack(alignment: .leading, spacing: 40) {
-                    companyTextField
-
-                    if isEmailValid {
-                        nickNameTextField
-                    }
-
-                    if isNickNameValid {
-                        genderPicker
-                    }
-                }
-
-                Spacer()
-
-                sendEmailButton
-            }
-            .padding(.horizontal, 20)
-            .padding(.top, 32)
-            .padding(.bottom, 46)
+        GeometryReader { geometry in
+            bodyView
+                .padding(.horizontal, 20)
+                .padding(.top, 32)
+                .frame(width: geometry.size.width, height: geometry.size.height)
         }
         .navigationBarStyle(
             leadingView: {
@@ -65,6 +49,30 @@ struct OnboardingView: View {
             },
             trailingView: { }
         )
+    }
+
+    private var bodyView: some View {
+        VStack(spacing: .zero) {
+            ScrollView {
+                VStack(alignment: .leading, spacing: 40) {
+                    companyTextField
+
+                    if isEmailValid {
+                        nickNameTextField
+                    }
+
+                    if isNickNameValid {
+                        genderPicker
+                    }
+                }
+            }
+
+            Spacer()
+
+            sendEmailButton
+                .padding(.bottom, 16)
+                .debug()
+        }
     }
 
     private var companyTextField: some View {
@@ -149,7 +157,7 @@ struct OnboardingView: View {
                     .frame(maxWidth: .infinity)
             })
             .buttonStyle(.fullCar(style: .palette(.primary_white)))
-            .disabled(true)
+//            .disabled(viewModel.isEmailValid(<#T##email: String##String#>))
         }
     }
 }
