@@ -81,7 +81,7 @@ struct OnboardingView: View {
     private var companyTextField: some View {
         FCTextFieldView(
             textField: {
-                TextField("gildong@fullcar.com3", text: $email)
+                TextField("\("gildong@fullcar.com")", text: $email)
                     .textFieldStyle(.fullCar(
                         type: .check($isEmailValid),
                         state: $emailTextFieldState)
