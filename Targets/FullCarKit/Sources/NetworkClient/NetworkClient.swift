@@ -46,5 +46,7 @@ public extension NetworkClient {
     static let headerInterceptor: NetworkInterceptor = HeaderInterceptor()
     static let tokenInterceptor: NetworkInterceptor = TokenInterceptor()
     static let errorInterceptor: NetworkInterceptor = ErrorInterceptor()
-    static let main: NetworkClient = .init(session: .main, interceptors: [headerInterceptor, tokenInterceptor, errorInterceptor]) 
+
+    static let main: NetworkClient = .init(session: .main, interceptors: [headerInterceptor, tokenInterceptor, errorInterceptor])
+    static let account: NetworkClient = .init(session: .main, interceptors: [headerInterceptor, errorInterceptor])
 }

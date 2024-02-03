@@ -43,8 +43,8 @@ extension TextFieldStyle where Self == FCTextFieldStyle {
         type: FCTextFieldStyle.AccessoryType = .none,
         state: Binding<InputState>,
         padding: CGFloat,
-        backgroundColor: Color,
-        cornerRadius: CGFloat
+        backgroundColor: Color = .white,
+        cornerRadius: CGFloat = 10
     ) -> FCTextFieldStyle {
         return FCTextFieldStyle(
             state: state,

@@ -27,6 +27,18 @@ struct FullCarTabView: View {
                     Text("home")
                 }
                 .tag(FullCar.Tab.home)
+            CarPullRegisterView(viewModel: .init())
+                .tabItem { 
+                    Text("register")
+                }
+                .tag(FullCar.Tab.register)
+            
+            Car.Register.BodyView(viewModel: .init())
+                .tabItem { 
+                    Text("car experiment")
+                }
+                .tag(FullCar.Tab.experiment)
+            
             SettingsView(viewModel: .init())
                 .tabItem { 
                     Text("setting")

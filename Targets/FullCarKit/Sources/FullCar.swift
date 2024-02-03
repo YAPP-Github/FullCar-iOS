@@ -27,7 +27,9 @@ public extension FullCar {
 public extension FullCar {
     enum Tab: String, Hashable {
         case home
+        case register
         case settings
+        case experiment
     }
     
     enum CallListTab: String, Hashable {

@@ -12,38 +12,73 @@ import Dependencies
 
 struct Home {
     struct API { 
-        private var fetch: @Sendable (String, String) async throws -> Model.Response
+        private var fetch: @Sendable (Int, Int) async throws -> Model.Response
         
-        func fetch(id: String, name: String) async throws -> Model.Response {
-            return try await self.fetch(id, name)
+        func fetch(page: Int, size: Int = 20) async throws -> Model.Response {
+            return try await self.fetch(page, size)
         }
     }
     
     struct Model {
         struct Response: Decodable {
-            let totalPage: Int
-            let currentPage: Int
-            let list: [CarPull.Model.Response]
+            let status: Int
+            let message: String
+            let data: Body
+        }
+    }
+}
+
+extension Home.Model.Response {
+    struct Body: Decodable {
+        let size: Int
+        let carPullList: [CarPull.Model.Response]
+        private enum CodingKeys: String, CodingKey {
+            case size
+            case carPullList = "content"
         }
     }
 }
 
 extension Home.API: DependencyKey {
     static let liveValue: Home.API = .init(
-        fetch: { id, name in
+        fetch: { page, size in
             return try await NetworkClient.main
-                .request(endpoint: Endpoint.Home.fetch(id: id, name: name))
+                .request(endpoint: Endpoint.Home.fetch(page: page, size: size))
                 .response()
         }
     )
     #if DEBUG
     static let testValue: Home.API = unimplemented("homeapi")
     static let previewValue: Home.API = .init(
-        fetch: { _, _ in 
+        fetch: { _, _ in
             return .init(
-                totalPage: 10, 
-                currentPage: 1,
-                list: [.mock, .mock, .mock, .mock, .mock, .mock]
+                status: 200,
+                message: "",
+                data: .init(
+                    size: 20,
+                    carPullList: [
+                        .mock(),
+                        .mock(),
+                        .mock(),
+                        .mock(),
+                        .mock(),
+                        .mock(),
+                        .mock(),
+                        .mock(),
+                        .mock(),
+                        .mock(),
+                        .mock(),
+                        .mock(),
+                        .mock(),
+                        .mock(),
+                        .mock(),
+                        .mock(),
+                        .mock(),
+                        .mock(),
+                        .mock(),
+                        .mock(),
+                    ]
+                )
             )
         }
     )

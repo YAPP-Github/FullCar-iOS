@@ -9,23 +9,45 @@
 import Foundation
 
 public struct Car {
-    public struct Information {
-        public let number: String
-        public let model: String
-        public let manufacturer: String
-        public let color: String
+    public struct Information: Decodable {
+        let id: Int
+        let carNumber: String
+        let carName: String
+        let carBrand: String
+        let carColor: String
         
-        public init(number: String, model: String, manufacturer: String, color: String) {
-            self.number = number
-            self.model = model
-            self.manufacturer = manufacturer
-            self.color = color
+        init(
+            id: Int,
+            carNumber: String,
+            carName: String,
+            carBrand: String,
+            carColor: String
+        ) {
+            self.id = id
+            self.carNumber = carNumber
+            self.carName = carName
+            self.carBrand = carBrand
+            self.carColor = carColor
+        }
+        
+        private enum CodingKeys: String, CodingKey {
+            case id
+            case carNumber = "carNo"
+            case carName
+            case carBrand
+            case carColor
         }
     }
 }
 
 #if DEBUG
 public extension Car.Information {
-    static var mock: Self = .init(number: "23루 2648", model: "아반떼", manufacturer: "현대자동차", color: "화이트")
+    static var mock: Self = .init(
+        id: .zero,
+        carNumber: "23루 1234",
+        carName: "펠리세이드",
+        carBrand: "현대",
+        carColor: "화이트"
+    )
 }
 #endif

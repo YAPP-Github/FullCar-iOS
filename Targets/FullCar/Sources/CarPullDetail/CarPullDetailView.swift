@@ -14,10 +14,14 @@ struct CarPullDetailView: View {
     let viewModel: CarPullDetailViewModel
     
     var body: some View {
-        bodyView
+        _body
+            .onFirstTask {
+                await viewModel.onFirstTask()
+            }
             .navigationBarStyle(
                 leadingView: { 
                     Button {
+                        viewModel.onBackButtonTapped()
                     } label: {
                         Image(icon: .back)
                             .resizable()
@@ -43,7 +47,7 @@ struct CarPullDetailView: View {
             .background(Color.white)
     }
     
-    private var bodyView: some View {
+    private var _body: some View {
         VStack(spacing: .zero) {
             contentView
             Spacer()
@@ -60,7 +64,9 @@ struct CarPullDetailView: View {
                 
                 Color.gray10.frame(height: 8)
                 
-                Car.InformationCardView(information: viewModel.information)
+                if let information = viewModel.information {
+                    Car.InformationCardView(information: information)
+                }
                 
                 if viewModel.requestStatus == .inProcess {
                     Text("희망 접선 장소 해야함")
@@ -91,8 +97,7 @@ struct CarPullDetailView: View {
         CarPullDetailView(
             viewModel: .init(
                 requestStatus: .beforeBegin,
-                carPull: .mock,
-                information: .mock
+                carPull: .mock()
             )
         )
     }
