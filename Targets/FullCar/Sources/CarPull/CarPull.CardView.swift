@@ -30,7 +30,11 @@ extension CarPull {
                         .font(.pretendard14(.semibold))
                         .foregroundStyle(Color.fullCar_primary)
                     Spacer()
-                    FCBadge(postState: carPull.postState)
+                    
+                    if let postState = carPull.postState {
+                        FCBadge(postState: postState)
+                    }
+                    
                 }
                 .padding(.bottom, 14)
                 
@@ -42,9 +46,11 @@ extension CarPull {
                     .font(.pretendard16(.regular))
                     .padding(.bottom, 10)
                 
-                HStack(spacing: 6) {
-                    FCBadge(gender: carPull.driver.gender)
-                    FCBadge(mood: carPull.driver.mood)
+                if let driver = carPull.driver {
+                    HStack(spacing: 6) {
+                        FCBadge(gender: driver.gender)
+                        FCBadge(mood: driver.mood)
+                    }
                 }
                 
                 Divider()

@@ -27,6 +27,11 @@ struct FullCarTabView: View {
                     Text("home")
                 }
                 .tag(FullCar.Tab.home)
+            CallListView(viewModel: .init())
+                .tabItem {
+                    Text("요청")
+                }
+                .tag(FullCar.Tab.request)
             SettingsView(viewModel: .init())
                 .tabItem { 
                     Text("setting")

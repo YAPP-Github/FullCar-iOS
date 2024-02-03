@@ -15,8 +15,8 @@ extension CarPull.Model {
         let companyName: String
         let title: String
         let description: String
-        let driver: Driver
-        let postState: PostState
+        let driver: Driver?
+        let postState: PostState?
     }
 }
 
