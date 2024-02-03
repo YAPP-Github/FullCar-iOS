@@ -25,6 +25,8 @@ struct OnboardingView: View {
     @State private var email: String = ""
     @State private var emailTextFieldState: InputState = .default
     @State private var isEmailValid: Bool = false
+    // 블랙리스트 이메일인지 검증하는 api 호출 여부
+    @State private var isEmailRequestSent: Bool = false
 
     @State private var nickName: String = ""
     @State private var nickNameTextFieldState: InputState = .default
@@ -32,7 +34,7 @@ struct OnboardingView: View {
 
     @State private var gender: Gender = .none
 
-    @State private var isButtonActive: Bool = false
+    @State private var isEmailButtonActive: Bool = false
 
     var body: some View {
         GeometryReader { geometry in
@@ -41,10 +43,7 @@ struct OnboardingView: View {
 
                 Spacer()
 
-                sendEmailButton
-                    .padding(.bottom, 16)
-                    .padding(.horizontal, 20)
-                    .debug()
+                buttonView
             }
             .frame(width: geometry.size.width, height: geometry.size.height)
         }
@@ -80,6 +79,18 @@ struct OnboardingView: View {
         .scrollIndicators(.hidden)
     }
 
+    @ViewBuilder
+    private var buttonView: some View {
+        if !isEmailValid {
+            sendEmailButton
+                .padding(.bottom, 16)
+                .padding(.horizontal, 20)
+                .debug()
+        } else {
+
+        }
+    }
+
     private var companyTextField: some View {
         FCTextFieldView(
             textField: {
@@ -90,7 +101,7 @@ struct OnboardingView: View {
                     )
                     .onChange(of: email) { oldValue, newValue in
                         Task {
-                            isButtonActive = await viewModel.isEmailValid(newValue)
+                            isEmailButtonActive = await viewModel.isEmailValid(newValue)
                         }
                     }
             },
@@ -156,19 +167,37 @@ struct OnboardingView: View {
 
     private var sendEmailButton: some View {
         VStack(spacing: 10) {
-            Text("메일이 오지 않나요? >")
-                .foregroundStyle(Color.fullCar_primary)
-                .font(.pretendard14(.semibold))
-                // 인증메일 발송 api 전송 이후 appear
-                .hidden()
+            if isEmailRequestSent {
+                Text("메일이 오지 않나요? >")
+                    .foregroundStyle(Color.fullCar_primary)
+                    .font(.pretendard14(.semibold))
+            }
 
-            Button(action: {}, label: {
+            Button(action: {
+                // email 블랙리스트 여부 api 호출
+                isEmailRequestSent = true
+                isEmailButtonActive = false
+                // api response에 따라 Button 활성, 비활성 여부
+                // api response success -> 인증메일 발송 버튼 대신 "다음" 버튼 + 닉네임 textfield 생성
+                // api response fail -> emailTextFieldState = .error로 변경
+                    // 그 후 email이 한자로도 변경되면 해당 버튼 active 활성화
+            }, label: {
                 Text("인증메일 발송")
                     .frame(maxWidth: .infinity)
             })
             .buttonStyle(.fullCar(style: .palette(.primary_white)))
-            .disabled(!isButtonActive)
+            .disabled(!isEmailButtonActive)
         }
+    }
+
+    private var completionButton: some View {
+        Button(action: {
+        }, label: {
+            Text("다음")
+                .frame(maxWidth: .infinity)
+        })
+        .buttonStyle(.fullCar(style: .palette(.primary_white)))
+//        .disabled(/*@START_MENU_TOKEN@*/true/*@END_MENU_TOKEN@*/)
     }
 }
 
