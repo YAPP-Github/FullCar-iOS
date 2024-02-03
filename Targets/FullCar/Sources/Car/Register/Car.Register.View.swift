@@ -10,11 +10,18 @@ import SwiftUI
 import FullCarUI
 
 import Dependencies
+import XCTestDynamicOverlay
 
 extension Car.Register {
     @MainActor
     @Observable
     final class ViewModel {
+        
+        @ObservationIgnored
+        @Dependency(\.carRegisterAPI) private var carRegisterAPI
+        
+        var onBackButtonTapped: () -> Void = unimplemented("onBackButtonTapped")
+        
         var carNumber: String = ""
         var carNumberState: InputState = .default
         
@@ -27,11 +34,18 @@ extension Car.Register {
         var carColor: String = ""
         var carColorState: InputState = .default
         
-        @ObservationIgnored
-        @Dependency(\.carRegisterAPI) private var carRegisterAPI
+        var apiIsInFlight: Bool = false
+        
+        var isValid: Bool {
+            return !carNumber.isEmpty && !carName.isEmpty && !carBrand.isEmpty && !carColor.isEmpty &&
+            carNumber.count <= 10 && carName.count <= 15 && carBrand.count <= 15 && carColor.count <= 10
+        }
         
         func registerButtonTapped() async {
             do {
+                apiIsInFlight = true
+                defer { apiIsInFlight = false }
+                
                 try await carRegisterAPI.fetch(
                     carNumber: carNumber,
                     carName: carName,
@@ -52,9 +66,32 @@ extension Car.Register {
         @Bindable var viewModel: ViewModel
         
         var body: some View {
+            _body
+                .navigationBarStyle(
+                    leadingView: {
+                        Button {
+                            viewModel.onBackButtonTapped()
+                        } label: {
+                            Image(icon: .back)
+                                .resizable()
+                                .renderingMode(.template)
+                                .foregroundStyle(Color.black)
+                                .frame(width: 24, height: 24)
+                        }
+                    }, centerView: {
+                        Text("차량 등록")
+                            .font(.pretendard18(.bold))
+                    }, trailingView: {
+                        EmptyView() 
+                    }
+                )
+        }
+        
+        private var _body: some View {
             ScrollView(.vertical) { 
                 bodyView
                     .padding(.horizontal, 20)
+                    .padding(.top, 32)
             }
         }
         
@@ -70,13 +107,13 @@ extension Car.Register {
                     textField: {
                         TextField("ex) 23루 1234", text: $viewModel.carNumber)
                             .textFieldStyle(
-                                .fullCar(type: .won, state: $viewModel.carNumberState)
+                                .fullCar(state: $viewModel.carNumberState, padding: 16)
                             )
                     },
                     state: $viewModel.carNumberState,
                     headerText: "차량번호",
                     isHeaderRequired: true,
-                    footerMessage: .information("차량 번호는 카풀이 매칭된 이후에만 공개됩니다", icon: .check)
+                    footerMessage: .information("차량 번호는 일부만 공개됩니다", icon: .check)
                 )
                 .padding(.bottom, 36)
                 
@@ -84,7 +121,7 @@ extension Car.Register {
                     textField: {
                         TextField("ex) 아반떼, 레이, 코나 등", text: $viewModel.carName)
                             .textFieldStyle(
-                                .fullCar(type: .won, state: $viewModel.carNameState)
+                                .fullCar(state: $viewModel.carNameState, padding: 16)
                             )
                     },
                     state: $viewModel.carNameState,
@@ -97,7 +134,7 @@ extension Car.Register {
                     textField: {
                         TextField("ex) 현대, 기아, 벤츠 등", text: $viewModel.carBrand)
                             .textFieldStyle(
-                                .fullCar(type: .won, state: $viewModel.carBrandState)
+                                .fullCar(state: $viewModel.carBrandState, padding: 16)
                             )
                     },
                     state: $viewModel.carBrandState,
@@ -110,7 +147,7 @@ extension Car.Register {
                     textField: {
                         TextField("ex) 화이트", text: $viewModel.carColor)
                             .textFieldStyle(
-                                .fullCar(type: .won, state: $viewModel.carColorState)
+                                .fullCar(state: $viewModel.carColorState, padding: 16)
                             )
                     },
                     state: $viewModel.carColorState,
@@ -120,13 +157,18 @@ extension Car.Register {
                 .padding(.bottom, 36)
                 
                 Button {
-                    Task {
-                        await viewModel.registerButtonTapped()
-                    }
+                    Task { await viewModel.registerButtonTapped() }
                 } label: {
-                    Text("다음")
-                        .frame(maxWidth: .infinity)
+                    if viewModel.apiIsInFlight {
+                        ProgressView().id(UUID())
+                            .progressViewStyle(CircularProgressViewStyle(tint: Color.white))
+                            .frame(maxWidth: .infinity)
+                    } else {
+                        Text("완료")
+                            .frame(maxWidth: .infinity)
+                    }
                 }
+                .disabled(!viewModel.isValid)
                 .buttonStyle(
                     .fullCar(
                         font: .pretendard17(.bold), 
@@ -143,6 +185,8 @@ extension Car.Register {
 
 #if DEBUG
     #Preview {
-        Car.Register.BodyView(viewModel: .init())
+        NavigationStack {
+            Car.Register.BodyView(viewModel: .init())
+        }
     }
 #endif

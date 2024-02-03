@@ -40,6 +40,12 @@ extension Car.Register.API: DependencyKey {
         return try await NetworkClient.main.request(endpoint: Endpoint.Car.fetch(carNo: carNo, carName: carName, carBrand: carBrand, carColor: carColor))
             .response()
     }
+    #if DEBUG
+    static let previewValue: Car.Register.API = .init { carNo, carName, carBrand, carColor in
+        try? await Task.sleep(for: .seconds(1)) 
+        return .init(status: 200, message: "", data: .mock)
+    }
+    #endif
 }
 
 extension DependencyValues {
