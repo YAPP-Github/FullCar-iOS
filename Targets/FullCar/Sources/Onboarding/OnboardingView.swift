@@ -32,6 +32,8 @@ struct OnboardingView: View {
 
     @State private var gender: Gender = .none
 
+    @State private var isButtonActive: Bool = false
+
     var body: some View {
         GeometryReader { geometry in
             VStack(spacing: .zero) {
@@ -86,6 +88,11 @@ struct OnboardingView: View {
                         type: .check($isEmailValid),
                         state: $emailTextFieldState)
                     )
+                    .onChange(of: email) { oldValue, newValue in
+                        Task {
+                            isButtonActive = await viewModel.isEmailValid(newValue)
+                        }
+                    }
             },
             state: $emailTextFieldState,
             headerText: "회사 메일을 입력해 주세요.",
@@ -160,7 +167,7 @@ struct OnboardingView: View {
                     .frame(maxWidth: .infinity)
             })
             .buttonStyle(.fullCar(style: .palette(.primary_white)))
-//            .disabled(viewModel.isEmailValid(<#T##email: String##String#>))
+            .disabled(!isButtonActive)
         }
     }
 }
