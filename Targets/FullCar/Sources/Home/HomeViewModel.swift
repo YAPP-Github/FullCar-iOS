@@ -23,11 +23,11 @@ final class HomeViewModel {
     @Dependency(\.homeAPI) private var homeAPI
     
     var paths: [Destination] = []
-    var carPullList: [CarPull.Model.Response] = []
+    var carPullList: [CarPull.Model.Information] = []
     var apiIsInFlight: Bool = false
     
     private var currentPage: Int = 1
-    private var homeResponse: Home.Model.Response?
+    private var homeResponse: CommonResponse<CarPull.Model.Fetch>?
     
     func onFirstTask() async {
         await fetchCarPulls(page: currentPage)
@@ -65,7 +65,7 @@ final class HomeViewModel {
         clear()
     }
     
-    func onCardTapped(_ carpull: CarPull.Model.Response) async {
+    func onCardTapped(_ carpull: CarPull.Model.Information) async {
         guard paths.isEmpty else { return }
         let detailViewModel = CarPullDetailViewModel(carPull: carpull)
         // TODO: 먼저 지워지는거 수정

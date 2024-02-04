@@ -21,13 +21,13 @@ final class CarPullDetailViewModel {
     }
     
     var requestStatus: RequestStatus
-    let carPull: CarPull.Model.Response
+    let carPull: CarPull.Model.Information
     var information: Car.Information?
     var onBackButtonTapped: () -> Void = unimplemented("onBackButtonTapped")
     
     init(
         requestStatus: RequestStatus = .beforeBegin,
-        carPull: CarPull.Model.Response
+        carPull: CarPull.Model.Information
     ) {
         self.requestStatus = requestStatus
         self.carPull = carPull

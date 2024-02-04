@@ -58,7 +58,7 @@ struct HomeView: View {
             carPullList(viewModel.carPullList)
         }
     }
-    private func carPullList(_ list: [CarPull.Model.Response]) -> some View {
+    private func carPullList(_ list: [CarPull.Model.Information]) -> some View {
         ScrollView(.vertical) { 
             LazyVStack(spacing: .zero) {
                 ForEach(Array(list.enumerated()), id: \.element) { index, carpull in

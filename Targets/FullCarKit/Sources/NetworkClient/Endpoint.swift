@@ -9,12 +9,19 @@ import Foundation
 
 public struct Endpoint { }
 public extension Endpoint {
-    enum Home {
-        case fetch(page: Int, size: Int)
-    }
-    
     enum Car {
         case fetch(carNo: String, carName: String, carBrand: String, carColor: String)
+    }
+    
+    enum CarPull {
+        case fetch(page: Int, size: Int)
+        case register(
+            pickupLocation: String,
+            period: String,
+            money: Int,
+            content: String,
+            moodType: String
+        )
     }
 
     enum Account {
@@ -123,22 +130,23 @@ extension Endpoint.Car: URLRequestConfigurable {
     }
 }
 
-extension Endpoint.Home: URLRequestConfigurable {
+extension Endpoint.CarPull: URLRequestConfigurable {
     public var url: URLConvertible {
         switch self {
-        case .fetch: return "http://43.200.176.240:8080"
+        case .fetch, .register: return "http://43.200.176.240:8080"
         }
     }
     
     public var path: String? {
         switch self {
-        case .fetch: return "/api/v1/carpools"
+        case .fetch, .register: return "/api/v1/carpools"
         }
     }
     
     public var method: HTTPMethod {
         switch self {
         case .fetch: return .get
+        case .register: return .post
         }
     }
     
@@ -148,18 +156,32 @@ extension Endpoint.Home: URLRequestConfigurable {
             "page": "\(page)",
             "size": "\(size)"
         ]
+        case let .register(
+            pickupLocation,
+            period,
+            money,
+            content,
+            moodType
+        ): return [
+            "pickupLocation": pickupLocation,
+            "period": period,    
+            "money": money,
+            "content": content,
+            "moodType": moodType,
+        ]
         }
     }
     
     public var headers: [Header]? {
         switch self {
-        case .fetch: return nil
+        case .fetch, .register: return nil
         }
     }
     
     public var encoder: ParameterEncodable {
         switch self {
         case .fetch: return URLEncoding()
+        case .register: return JSONEncoding()
         }
     }
 }

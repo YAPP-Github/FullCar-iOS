@@ -12,15 +12,23 @@ import FullCarUI
 @MainActor
 @Observable
 final class CarPullRegisterViewModel {
-    enum Focused {
-        case wishPlace
-        case wishCost
-        case wishToSay
-    }
     
-    var wishState: InputState = .default
     var wishPlaceText: String = ""
+    var wishPlaceState: InputState = .default
+    
+    var wishCostText: String = ""
+    var wishCostState: InputState = .default
+    
+    var wishToSayText: String = ""
+    
     var driversMood: Set<Driver.Mood> = .init()
+    var periodType: CarPull.Model.PeriodType?
+    var isValid: Bool {
+        !wishPlaceText.isEmpty && wishPlaceText.count <= 20 && 
+        periodType != nil && 
+        !wishCostText.isEmpty && wishCostText.count <= 10 &&
+        wishToSayText.count <= 150
+    }
     
     func moodButtonTapped(mood: Driver.Mood) {
         if driversMood.contains(mood) {
@@ -28,6 +36,10 @@ final class CarPullRegisterViewModel {
         } else {
             driversMood.insert(mood)
         }
+    }
+    
+    func periodSelectionButton(period: CarPull.Model.PeriodType) {
+        self.periodType = period
     }
     
     func nextButtonTapped() async {
@@ -42,15 +54,21 @@ struct CarPullRegisterView: View {
     
     var body: some View {
         _body
+        // FIXME: 탭으로 변경
             .navigationBarStyle(
                 leadingView: {
-                    Image(icon: .back)
-                        .resizable()
-                        .renderingMode(.template)
-                        .foregroundStyle(Color.black)
-                        .frame(width: 24, height: 24)
+                    Button {
+                        
+                    } label: {
+                        Image(icon: .back)
+                            .resizable()
+                            .renderingMode(.template)
+                            .foregroundStyle(Color.black)
+                            .frame(width: 24, height: 24)
+                    }
                 }, centerView: {
                     Text("카풀 등록")
+                        .font(.pretendard18(.bold))
                 }, trailingView: {
                     EmptyView() 
                 }
@@ -76,10 +94,10 @@ struct CarPullRegisterView: View {
             textField: {
                 TextField("ex) 삼성역 5번 출구", text: $viewModel.wishPlaceText)
                     .textFieldStyle(
-                        .fullCar(type: .won, state: $viewModel.wishState)
+                        .fullCar(state: $viewModel.wishPlaceState, padding: 16)
                     )
             },
-            state: $viewModel.wishState,
+            state: $viewModel.wishPlaceState,
             headerText: "희망 접선 장소",
             isHeaderRequired: true,
             headerPadding: 12
@@ -92,13 +110,8 @@ struct CarPullRegisterView: View {
     private var wishCostTextField: some View {
         SectionView { 
             FCTextFieldView(
-                textField: {
-                    TextField("ex) 30,000", text: .constant(""))
-                        .textFieldStyle(
-                            .fullCar(type: .won, state: .constant(.default))
-                        )
-                },
-                state: .constant(.default)
+                textField: { periodSelectionView },
+                state: $viewModel.wishCostState
             )
         } header: { 
             HeaderLabel(
@@ -108,6 +121,46 @@ struct CarPullRegisterView: View {
             )
         }
         .padding(.bottom, 36)
+    }
+    
+    private var periodSelectionView: some View {
+        HStack(spacing: .zero) {
+            periodSelectionButton
+                .padding(.trailing, 12)
+            
+            TextField("ex) 30,000", text: $viewModel.wishCostText)
+                .textFieldStyle(
+                    .fullCar(type: .won, state: $viewModel.wishCostState)
+                )
+        }
+    }
+    
+    private var periodSelectionButton: some View {
+        Menu {
+            ForEach(CarPull.Model.PeriodType.allCases, id: \.self) { period in
+                Button {
+                    viewModel.periodSelectionButton(period: period)
+                } label: {
+                    Text(period.description)
+                }
+            }
+        } label: {
+            HStack(spacing: .zero) {
+                Text(viewModel.periodType?.description ?? "기간")
+                    .font(.pretendard16(.semibold))
+                    .foregroundStyle(viewModel.periodType == nil ? Color.gray45 : Color.black80)
+                    .padding(.trailing, 8)
+                Image(systemName: "chevron.down")
+                    .foregroundStyle(Color.black80)
+            }
+            .padding(.horizontal, 12)
+            .padding(.vertical, 16)
+            .overlay {
+                RoundedRectangle(cornerRadius: 10)
+                    .stroke(lineWidth: 1)
+                    .foregroundStyle(Color.gray30)
+            }
+        }
     }
     
     private var wishToSayTextField: some View {
@@ -121,7 +174,7 @@ struct CarPullRegisterView: View {
             .frame(maxWidth: .infinity, alignment: .leading)
             
             FCTextEditor(
-                text: .constant(""),
+                text: $viewModel.wishToSayText,
                 placeholder: "탑승자에게 하고 싶은 말이 있다면 자유롭게 작성해주세요!",
                 font: .pretendard16(.semibold),
                 padding: 16,
@@ -170,6 +223,7 @@ struct CarPullRegisterView: View {
                 style: .palette(.primary_white)
             )
         )
+        .disabled(!viewModel.isValid)
     }
 }
 

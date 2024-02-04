@@ -9,8 +9,3 @@
 import Foundation
 
 public struct CarPull { }
-
-extension CarPull { 
-    struct Model { }
-    struct API { }
-}

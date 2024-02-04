@@ -52,9 +52,9 @@ fileprivate extension String {
     var encryptedText: String {
         let carNumber: String = self
         let splited = carNumber.split(whereSeparator: \.isWhitespace)
-        let prefix = splited[0]
-        let encryptedText = splited[1].map { _ in return "*"}.joined()
-        return "\(prefix) \(encryptedText)"
+        let prefix = splited[0].map { _ in return "*"}.joined()
+        let suffix = splited[1]
+        return "\(prefix) \(suffix)"
     }
 }
 
