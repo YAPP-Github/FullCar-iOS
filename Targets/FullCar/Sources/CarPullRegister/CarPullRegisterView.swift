@@ -9,9 +9,14 @@
 import SwiftUI
 import FullCarUI
 
+import Dependencies
+
 @MainActor
 @Observable
 final class CarPullRegisterViewModel {
+    
+    @ObservationIgnored
+    @Dependency(\.carpullAPI) private var carpullAPI 
     
     var wishPlaceText: String = ""
     var wishPlaceState: InputState = .default
@@ -43,7 +48,18 @@ final class CarPullRegisterViewModel {
     }
     
     func nextButtonTapped() async {
-        
+        do {
+            let res = try await carpullAPI.register(
+                pickupLocation: wishPlaceText,
+                periodType: periodType!,
+                money: Int(wishCostText)!,
+                content: wishToSayText,
+                moodType: driversMood.first ?? .quiet
+            )
+        }
+        catch {
+            print(error)
+        }
     }
 }
 

@@ -17,7 +17,7 @@ public extension Endpoint {
         case fetch(page: Int, size: Int)
         case register(
             pickupLocation: String,
-            period: String,
+            periodType: String,
             money: Int,
             content: String,
             moodType: String
@@ -158,13 +158,13 @@ extension Endpoint.CarPull: URLRequestConfigurable {
         ]
         case let .register(
             pickupLocation,
-            period,
+            periodType,
             money,
             content,
             moodType
         ): return [
             "pickupLocation": pickupLocation,
-            "period": period,    
+            "periodType": periodType,    
             "money": money,
             "content": content,
             "moodType": moodType,

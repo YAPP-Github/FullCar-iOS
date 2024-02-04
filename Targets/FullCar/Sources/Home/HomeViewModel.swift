@@ -20,7 +20,7 @@ final class HomeViewModel {
     }
     
     @ObservationIgnored
-    @Dependency(\.homeAPI) private var homeAPI
+    @Dependency(\.carpullAPI) private var carpullAPI
     
     var paths: [Destination] = []
     var carPullList: [CarPull.Model.Information] = []
@@ -44,7 +44,7 @@ final class HomeViewModel {
             apiIsInFlight = true
             defer { apiIsInFlight = false }
             
-            let response = try await homeAPI.fetch(page: currentPage)
+            let response = try await carpullAPI.fetch(page: currentPage)
             self.homeResponse = response
             
             if page == 1 {

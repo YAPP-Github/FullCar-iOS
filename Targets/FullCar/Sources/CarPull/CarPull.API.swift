@@ -25,12 +25,12 @@ extension CarPull {
         
         func register(
             pickupLocation: String,
-            period: CarPull.Model.PeriodType,
+            periodType: CarPull.Model.PeriodType,
             money: Int,
             content: String,
             moodType: Driver.Mood
         ) async throws -> Model.Information {
-            return try await self.register(pickupLocation, period.rawValue, money, content, moodType.rawValue)
+            return try await self.register(pickupLocation, periodType.rawValue, money, content, moodType.description)
         }
     }
 }
@@ -42,11 +42,11 @@ extension CarPull.API: DependencyKey {
                 .request(endpoint: Endpoint.CarPull.fetch(page: page, size: size))
                 .response()
         },
-        register: { pickupLocation, period, money, content, moodType in
+        register: { pickupLocation, periodType, money, content, moodType in
             return try await NetworkClient.main.request(
                 endpoint: Endpoint.CarPull.register(
                     pickupLocation: pickupLocation,
-                    period: period,
+                    periodType: periodType,
                     money: money,
                     content: content,
                     moodType: moodType
@@ -97,7 +97,7 @@ extension CarPull.API: DependencyKey {
 }
 
 extension DependencyValues {
-    var homeAPI: CarPull.API {
+    var carpullAPI: CarPull.API {
         get { self[CarPull.API.self] }
         set { self[CarPull.API.self] = newValue }
     }
