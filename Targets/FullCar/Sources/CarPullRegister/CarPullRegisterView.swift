@@ -26,21 +26,18 @@ final class CarPullRegisterViewModel {
     
     var wishToSayText: String = ""
     
-    var driversMood: Set<Driver.Mood> = .init()
+    var driversMood: Driver.Mood?
     var periodType: CarPull.Model.PeriodType?
+    
     var isValid: Bool {
         !wishPlaceText.isEmpty && wishPlaceText.count <= 20 && 
         periodType != nil && 
         !wishCostText.isEmpty && wishCostText.count <= 10 &&
-        wishToSayText.count <= 150
+        !wishToSayText.isEmpty && wishToSayText.count <= 150
     }
     
     func moodButtonTapped(mood: Driver.Mood) {
-        if driversMood.contains(mood) {
-            driversMood.remove(mood)
-        } else {
-            driversMood.insert(mood)
-        }
+        self.driversMood = mood
     }
     
     func periodSelectionButton(period: CarPull.Model.PeriodType) {
@@ -54,7 +51,7 @@ final class CarPullRegisterViewModel {
                 periodType: periodType!,
                 money: Int(wishCostText)!,
                 content: wishToSayText,
-                moodType: driversMood.first ?? .quiet
+                moodType: driversMood
             )
         }
         catch {
@@ -213,9 +210,9 @@ struct CarPullRegisterView: View {
                     Button {
                         viewModel.moodButtonTapped(mood: mood)
                     } label: {
-                        Text(mood.rawValue)
+                        Text(mood.description)
                     }
-                    .buttonStyle(.chip(viewModel.driversMood.contains(mood)))
+                    .buttonStyle(.chip(viewModel.driversMood == mood))
                     .padding(.trailing, 6)
                 }
             }

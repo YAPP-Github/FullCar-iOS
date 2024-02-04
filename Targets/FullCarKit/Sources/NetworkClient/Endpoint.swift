@@ -20,7 +20,7 @@ public extension Endpoint {
             periodType: String,
             money: Int,
             content: String,
-            moodType: String
+            moodType: String?
         )
     }
 
@@ -162,13 +162,19 @@ extension Endpoint.CarPull: URLRequestConfigurable {
             money,
             content,
             moodType
-        ): return [
-            "pickupLocation": pickupLocation,
-            "periodType": periodType,    
-            "money": money,
-            "content": content,
-            "moodType": moodType,
-        ]
+        ): 
+            var param: [String: Any] = [
+                "pickupLocation": pickupLocation,
+                "periodType": periodType,    
+                "money": money,
+                "content": content,
+            ]
+            if let moodType {
+                param["moodType"] = moodType
+                return param
+            } else {
+                return param
+            }
         }
     }
     

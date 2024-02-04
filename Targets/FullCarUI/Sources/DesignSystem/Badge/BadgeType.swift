@@ -66,16 +66,13 @@ public struct Driver: Decodable {
     public enum Mood: String, Decodable, CaseIterable, Identifiable, CustomStringConvertible {
         public var id: Self { return self }
         
-        /// 조용히 가기
-        case quiet = "조용히 가기"
-        /// 대화하며 가기
-        case talk = "대화하며 가기"
+        case quiet = "QUIET"
+        case talk = "CHATTY"
         
-        // FIXME: 수정하기
         public var description: String {
             switch self {
-            case .quiet: "CHATTY"
-            case .talk: "CHATTY"
+            case .quiet: "조용히 가기"
+            case .talk: "대화하며 가기"
             }
         }
     }
