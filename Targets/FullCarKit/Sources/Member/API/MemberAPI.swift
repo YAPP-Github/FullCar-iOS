@@ -10,15 +10,16 @@ import SwiftUI
 import Dependencies
 
 struct MemberAPI {
-    var locationSearch: (_ location: String, _ key: String) async throws -> [LocalCoordinate]
+    var searchLocation: (_ location: String, _ key: String) async throws -> [LocalCoordinate]
+    var checkNickname: (_ nickname: String) async throws -> Void
 }
 
 extension MemberAPI: DependencyKey {
     static var liveValue: MemberAPI {
         return MemberAPI(
-            locationSearch: { location, key in
+            searchLocation: { location, key in
                 let response: LocationResponse = try await NetworkClient.account.request(
-                    endpoint: Endpoint.Member.locationSearch(location, key: key)
+                    endpoint: Endpoint.Member.search(location: location, key: key)
                 ).response()
                 let coordinates: [LocalCoordinate] = response.locations.compactMap { location in
                     return LocalCoordinate(
@@ -30,6 +31,9 @@ extension MemberAPI: DependencyKey {
                 }
 
                 return coordinates
+            },
+            checkNickname: { nickname in
+                // 닉네임 불러라~
             }
         )
     }

@@ -19,7 +19,7 @@ extension MemberService: DependencyKey {
 
         return MemberService(
             locationSearch: { location,key in
-                let coordinate = try await api.locationSearch(location, key)
+                let coordinate = try await api.searchLocation(location, key)
                 return coordinate
             }
         )

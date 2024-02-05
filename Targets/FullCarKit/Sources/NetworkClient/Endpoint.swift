@@ -32,7 +32,8 @@ public extension Endpoint {
     }
 
     enum Member {
-        case locationSearch(_ location: String, key: String)
+        case search(location: String, key: String)
+        case check(nickname: String)
     }
 }
 
@@ -199,41 +200,49 @@ extension Endpoint.CarPull: URLRequestConfigurable {
 extension Endpoint.Member: URLRequestConfigurable {
     public var url: URLConvertible {
         switch self {
-        case .locationSearch: return "https://dapi.kakao.com"
+        case .search: return "https://dapi.kakao.com"
+        case .check: return "http://43.200.176.240:8080"
         }
     }
     
     public var path: String? {
         switch self {
-        case .locationSearch: return "/v2/local/search/keyword.json"
+        case .search: return "/v2/local/search/keyword.json"
+        case .check: return "/api/v1/members/onboarding/nickname"
         }
     }
     
     public var method: HTTPMethod {
         switch self {
-        case .locationSearch: return .get
+        case .search: return .get
+        case .check: return .post
         }
     }
     
     public var parameters: Parameters? {
         switch self {
-        case .locationSearch(let location, _): return [
+        case .search(let location, _): return [
             "query": "\(location)"
+        ]
+        case .check(let nickname): return [
+            "nickname": "\(nickname)"
         ]
         }
     }
     
     public var headers: [Header]? {
         switch self {
-        case .locationSearch(_, let key): return [
+        case .search(_, let key): return [
             .authorization("KakaoAK \(key)")
         ]
+        case .check: return nil
         }
     }
     
     public var encoder: ParameterEncodable {
         switch self {
-        case .locationSearch: return URLEncoding()
+        case .search: return URLEncoding()
+        case .check: return JSONEncoding()
         }
     }
 }
