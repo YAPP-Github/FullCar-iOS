@@ -8,14 +8,30 @@
 
 import SwiftUI
 import FullCarUI
+import FullCarKit
+import Dependencies
 
 @MainActor
 @Observable
 final class OnboardingViewModel {
+    @ObservationIgnored @Dependency(\.memberService.locationSearch) var locationSearch
+
     func isEmailValid(_ email: String) -> Bool {
         let emailPattern = "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,64}"
         let emailPred = NSPredicate(format:"SELF MATCHES %@", emailPattern)
         return emailPred.evaluate(with: email)
+    }
+
+    // 이름...?
+    func fetchCompanyCoordinate() async {
+        guard let kakaoNativeAppKey = Bundle.main.kakaoNativeAppKey else { return }
+
+        // location search 실행
+        do {
+            try await locationSearch("네이버", kakaoNativeAppKey)
+        } catch {
+            print(error)
+        }
     }
 }
 

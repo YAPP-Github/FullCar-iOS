@@ -59,7 +59,9 @@ struct CompanySearchView: View {
                             ))
 
                     Button(action: {
-                        companySearchBarState = .default
+                        Task {
+                            await viewModel.locationSearch
+                        }
                     }, label: {
                         Text("검색")
                     })
