@@ -10,32 +10,29 @@ import SwiftUI
 import Dependencies
 
 struct MemberAPI {
-    var locationSearch: (_ location: String, _ key: String) async throws -> CompanyCoordinate
+    var locationSearch: (_ location: String, _ key: String) async throws -> [CompanyCoordinate]
 }
 
 extension MemberAPI: DependencyKey {
     static var liveValue: MemberAPI {
         return MemberAPI(
             locationSearch: { location, key in
-                let coordinate: CompanyCoordinate = try await NetworkClient.account.request(
+                let response: LocationResponse = try await NetworkClient.account.request(
                     endpoint: Endpoint.Member.locationSearch(location, key: key)
                 ).response()
-                return coordinate
+                let coordinates: [CompanyCoordinate] = response.locations.compactMap { location in
+                    return CompanyCoordinate(
+                        name: location.placeName,
+                        address: location.roadAddressName,
+                        latitude: Double(location.y) ?? .zero,
+                        longitude: Double(location.x) ?? .zero
+                    )
+                }
+
+                return coordinates
             }
         )
     }
-
-    #if DEBUG
-    static let testValue: MemberAPI = .init(
-        locationSearch: { _, _ in
-            return .init(
-                name: "네이버",
-                latitude: 127.10520633434606,
-                longitude: 37.3588600621634
-            )
-        }
-    )
-    #endif
 }
 
 extension DependencyValues {

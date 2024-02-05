@@ -23,12 +23,12 @@ final class OnboardingViewModel {
     }
 
     // 이름...?
-    func fetchCompanyCoordinate() async {
+    func fetchCompanyCoordinate(_ company: String) async {
         guard let kakaoRestApiKey = Bundle.main.kakaoRestApiKey else { return }
 
         // location search 실행
         do {
-            try await memberService.locationSearch("네이버", kakaoRestApiKey)
+            try await memberService.locationSearch(company, kakaoRestApiKey)
         } catch {
             print(error)
         }
