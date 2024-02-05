@@ -82,7 +82,7 @@ struct CompanySearchView: View {
         ScrollView {
             LazyVGrid(columns: [GridItem()], spacing: .zero, content: {
                 ForEach($viewModel.locations, id: \.self) { item in
-                    LocationListItem(location: item)
+                    LocationListItem(location: item, company: company)
                 }
             })
         }

@@ -25,7 +25,7 @@ final class OnboardingViewModel {
             latitude: 127.10520633434606,
             longitude: 37.3588600621634),
         .init(
-            name: "네이버2",
+            name: "NAVER2",
             address: "경기2 성남시 분당구 정자일로 95",
             latitude: 127.10520633434606,
             longitude: 37.3588600621634),
@@ -35,7 +35,7 @@ final class OnboardingViewModel {
             latitude: 127.10520633434606,
             longitude: 37.3588600621634),
         .init(
-            name: "네이버4",
+            name: "NAVER4",
             address: "경기4 성남시 분당구 정자일로 95",
             latitude: 127.10520633434606,
             longitude: 37.3588600621634)
