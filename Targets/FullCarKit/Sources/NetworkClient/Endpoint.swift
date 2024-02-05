@@ -9,12 +9,23 @@ import Foundation
 
 public struct Endpoint { }
 public extension Endpoint {
-    enum Home {
-        case fetch(id: String, name: String)
+    enum Car {
+        case fetch(carNo: String, carName: String, carBrand: String, carColor: String)
+    }
+    
+    enum CarPull {
+        case fetch(page: Int, size: Int)
+        case register(
+            pickupLocation: String,
+            periodType: String,
+            money: Int,
+            content: String,
+            moodType: String?
+        )
     }
 
     enum Account {
-        case login(accessToken: String)
+        case login(request: AuthRequest)
         case logout
         case leave
         case refresh(refreshToken: String)
@@ -26,21 +37,14 @@ public extension Endpoint {
 }
 
 extension Endpoint.Account: URLRequestConfigurable {
-    public var url: URLConvertible {
-        switch self {
-        case .login: return "https://www.test.com"
-        case .logout: return "https://www.test.com"
-        case .leave: return "https://www.test.com"
-        case .refresh: return "https://www.test.com"
-        }
-    }
-    
+    public var url: URLConvertible { return "http://43.200.176.240:8080" }
+
     public var path: String? {
         switch self {
-        case .login: return "/login"
+        case .login: return "/api/v1/auth"
         case .logout: return "/logout"
         case .leave: return "/leave"
-        case .refresh: return "/refresh"
+        case .refresh: return "/api/v1/auth/token"
         }
     }
     
@@ -55,8 +59,10 @@ extension Endpoint.Account: URLRequestConfigurable {
     
     public var parameters: Parameters? {
         switch self {
-        case .login(let accessToken): return [
-            "accessToken": "\(accessToken)"
+        case .login(let request): return [
+            "socialType": request.socialType.rawValue,
+            "token": request.token,
+            "deviceToken": request.deviceToken
         ]
         case .logout: return nil
         case .leave: return nil
@@ -85,30 +91,32 @@ extension Endpoint.Account: URLRequestConfigurable {
     }
 }
 
-extension Endpoint.Home: URLRequestConfigurable {
+extension Endpoint.Car: URLRequestConfigurable {
     public var url: URLConvertible {
         switch self {
-        case .fetch: return "https://www.naver.com"
+        case .fetch: return "http://43.200.176.240:8080"
         }
     }
     
     public var path: String? {
         switch self {
-        case .fetch: return ""
+        case .fetch: return "/api/v1/cars"
         }
     }
     
     public var method: HTTPMethod {
         switch self {
-        case .fetch: return .get
+        case .fetch: return .post
         }
     }
     
     public var parameters: Parameters? {
         switch self {
-        case .fetch(let id, let name): return [
-            "id": "\(id)",
-            "name": "\(name)"
+        case .fetch(let carNo, let carName, let carBrand, let carColor): return [
+            "carNo": "\(carNo)",
+            "carName": "\(carName)",
+            "carBrand": "\(carBrand)",
+            "carColor": "\(carColor)",
         ]
         }
     }
@@ -121,7 +129,69 @@ extension Endpoint.Home: URLRequestConfigurable {
     
     public var encoder: ParameterEncodable {
         switch self {
+        case .fetch: return JSONEncoding()
+        }
+    }
+}
+
+extension Endpoint.CarPull: URLRequestConfigurable {
+    public var url: URLConvertible {
+        switch self {
+        case .fetch, .register: return "http://43.200.176.240:8080"
+        }
+    }
+    
+    public var path: String? {
+        switch self {
+        case .fetch, .register: return "/api/v1/carpools"
+        }
+    }
+    
+    public var method: HTTPMethod {
+        switch self {
+        case .fetch: return .get
+        case .register: return .post
+        }
+    }
+    
+    public var parameters: Parameters? {
+        switch self {
+        case .fetch(let page, let size): return [
+            "page": "\(page)",
+            "size": "\(size)"
+        ]
+        case let .register(
+            pickupLocation,
+            periodType,
+            money,
+            content,
+            moodType
+        ): 
+            var param: [String: Any] = [
+                "pickupLocation": pickupLocation,
+                "periodType": periodType,    
+                "money": money,
+                "content": content,
+            ]
+            if let moodType {
+                param["moodType"] = moodType
+                return param
+            } else {
+                return param
+            }
+        }
+    }
+    
+    public var headers: [Header]? {
+        switch self {
+        case .fetch, .register: return nil
+        }
+    }
+    
+    public var encoder: ParameterEncodable {
+        switch self {
         case .fetch: return URLEncoding()
+        case .register: return JSONEncoding()
         }
     }
 }

@@ -108,7 +108,7 @@ public extension FCBadge {
         mood: Driver.Mood
     ) {
         self.init(
-            title: mood.rawValue,
+            title: mood.description,
             badgeConfigurable: .init(
                 font: Driver.BadgeStyle.font,
                 spacing: mood.spacing,

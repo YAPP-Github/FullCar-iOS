@@ -31,6 +31,10 @@ public let mainTarget: Target = .init(
                 "CFBundleURLSchemes": ["kakao$(KAKAO_NATIVE_APP_KEY)"]
               ]
             ],
+            // http 실행을 위한 임시 설정
+            "NSAppTransportSecurity": [
+                "NSAllowsArbitraryLoads": true
+            ],
         ]
     ),
     sources: ["Sources/**"],

@@ -9,48 +9,79 @@
 import SwiftUI
 import FullCarUI
 
+import Dependencies
+
 @MainActor
 @Observable
-final class RegisterViewModel {
-    enum Focused {
-        case wishPlace
-        case wishCost
-        case wishToSay
+final class CarPullRegisterViewModel {
+    
+    @ObservationIgnored
+    @Dependency(\.carpullAPI) private var carpullAPI 
+    
+    var wishPlaceText: String = ""
+    var wishPlaceState: InputState = .default
+    
+    var wishCostText: String = ""
+    var wishCostState: InputState = .default
+    
+    var wishToSayText: String = ""
+    
+    var driversMood: Driver.Mood?
+    var periodType: CarPull.Model.PeriodType?
+    
+    var isValid: Bool {
+        !wishPlaceText.isEmpty && wishPlaceText.count <= 20 && 
+        periodType != nil && 
+        !wishCostText.isEmpty && wishCostText.count <= 10 &&
+        !wishToSayText.isEmpty && wishToSayText.count <= 150
     }
     
-    var wishState: InputState = .default
-    var wishPlaceText: String = ""
-    var driversMood: Set<Driver.Mood> = .init()
-    
     func moodButtonTapped(mood: Driver.Mood) {
-        if driversMood.contains(mood) {
-            driversMood.remove(mood)
-        } else {
-            driversMood.insert(mood)
-        }
+        self.driversMood = mood
+    }
+    
+    func periodSelectionButton(period: CarPull.Model.PeriodType) {
+        self.periodType = period
     }
     
     func nextButtonTapped() async {
-        
+        do {
+            let res = try await carpullAPI.register(
+                pickupLocation: wishPlaceText,
+                periodType: periodType!,
+                money: Int(wishCostText)!,
+                content: wishToSayText,
+                moodType: driversMood
+            )
+        }
+        catch {
+            print(error)
+        }
     }
 }
 
 @MainActor
-struct RegisterView: View {
+struct CarPullRegisterView: View {
     
-    @Bindable var viewModel: RegisterViewModel
+    @Bindable var viewModel: CarPullRegisterViewModel
     
     var body: some View {
         _body
+        // FIXME: 탭으로 변경
             .navigationBarStyle(
                 leadingView: {
-                    Image(icon: .back)
-                        .resizable()
-                        .renderingMode(.template)
-                        .foregroundStyle(Color.black)
-                        .frame(width: 24, height: 24)
+                    Button {
+                        
+                    } label: {
+                        Image(icon: .back)
+                            .resizable()
+                            .renderingMode(.template)
+                            .foregroundStyle(Color.black)
+                            .frame(width: 24, height: 24)
+                    }
                 }, centerView: {
                     Text("카풀 등록")
+                        .font(.pretendard18(.bold))
                 }, trailingView: {
                     EmptyView() 
                 }
@@ -76,10 +107,10 @@ struct RegisterView: View {
             textField: {
                 TextField("ex) 삼성역 5번 출구", text: $viewModel.wishPlaceText)
                     .textFieldStyle(
-                        .fullCar(type: .won, state: $viewModel.wishState)
+                        .fullCar(state: $viewModel.wishPlaceState, padding: 16)
                     )
             },
-            state: $viewModel.wishState,
+            state: $viewModel.wishPlaceState,
             headerText: "희망 접선 장소",
             isHeaderRequired: true,
             headerPadding: 12
@@ -92,13 +123,8 @@ struct RegisterView: View {
     private var wishCostTextField: some View {
         SectionView { 
             FCTextFieldView(
-                textField: {
-                    TextField("ex) 30,000", text: .constant(""))
-                        .textFieldStyle(
-                            .fullCar(type: .won, state: .constant(.default))
-                        )
-                },
-                state: .constant(.default)
+                textField: { periodSelectionView },
+                state: $viewModel.wishCostState
             )
         } header: { 
             HeaderLabel(
@@ -108,6 +134,46 @@ struct RegisterView: View {
             )
         }
         .padding(.bottom, 36)
+    }
+    
+    private var periodSelectionView: some View {
+        HStack(spacing: .zero) {
+            periodSelectionButton
+                .padding(.trailing, 12)
+            
+            TextField("ex) 30,000", text: $viewModel.wishCostText)
+                .textFieldStyle(
+                    .fullCar(type: .won, state: $viewModel.wishCostState)
+                )
+        }
+    }
+    
+    private var periodSelectionButton: some View {
+        Menu {
+            ForEach(CarPull.Model.PeriodType.allCases, id: \.self) { period in
+                Button {
+                    viewModel.periodSelectionButton(period: period)
+                } label: {
+                    Text(period.description)
+                }
+            }
+        } label: {
+            HStack(spacing: .zero) {
+                Text(viewModel.periodType?.description ?? "기간")
+                    .font(.pretendard16(.semibold))
+                    .foregroundStyle(viewModel.periodType == nil ? Color.gray45 : Color.black80)
+                    .padding(.trailing, 8)
+                Image(systemName: "chevron.down")
+                    .foregroundStyle(Color.black80)
+            }
+            .padding(.horizontal, 12)
+            .padding(.vertical, 16)
+            .overlay {
+                RoundedRectangle(cornerRadius: 10)
+                    .stroke(lineWidth: 1)
+                    .foregroundStyle(Color.gray30)
+            }
+        }
     }
     
     private var wishToSayTextField: some View {
@@ -121,7 +187,7 @@ struct RegisterView: View {
             .frame(maxWidth: .infinity, alignment: .leading)
             
             FCTextEditor(
-                text: .constant(""),
+                text: $viewModel.wishToSayText,
                 placeholder: "탑승자에게 하고 싶은 말이 있다면 자유롭게 작성해주세요!",
                 font: .pretendard16(.semibold),
                 padding: 16,
@@ -144,9 +210,9 @@ struct RegisterView: View {
                     Button {
                         viewModel.moodButtonTapped(mood: mood)
                     } label: {
-                        Text(mood.rawValue)
+                        Text(mood.description)
                     }
-                    .buttonStyle(.chip(viewModel.driversMood.contains(mood)))
+                    .buttonStyle(.chip(viewModel.driversMood == mood))
                     .padding(.trailing, 6)
                 }
             }
@@ -170,9 +236,10 @@ struct RegisterView: View {
                 style: .palette(.primary_white)
             )
         )
+        .disabled(!viewModel.isValid)
     }
 }
 
 #Preview {
-    RegisterView(viewModel: .init())
+    CarPullRegisterView(viewModel: .init())
 }

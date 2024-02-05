@@ -11,7 +11,7 @@ import Dependencies
 
 public struct AccountService {
     public var hasValidToken: () async throws -> Bool
-    public var login: (_ accessToken: String) async throws -> Void
+    public var login: (_ request: AuthRequest) async throws -> Void
     public var logout: () async throws -> Void
     public var leave: () async throws -> Void
 }
@@ -24,11 +24,23 @@ extension AccountService: DependencyKey {
         return AccountService(
             hasValidToken: {
                 let credential = try await tokenStorage.loadToken()
-                return credential.accessTokenExpiration > Date()
-            },
-            login: { accessToken in
-                let credential = try await api.login(accessToken)
 
+                guard credential.accessTokenExpiration > Date() else {
+                    let response = try await api.refresh(credential.refreshToken)
+                    let newCredential: AccountCredential = .init(
+                        onBoardingFlag: credential.onBoardingFlag,
+                        accessToken: response.accessToken,
+                        refreshToken: response.refreshToken
+                    )
+                    await tokenStorage.save(token: newCredential)
+
+                    return true
+                }
+
+                return true
+            },
+            login: { request in
+                let credential = try await api.login(request)
                 await tokenStorage.save(token: credential)
             },
             logout: {
@@ -43,27 +55,28 @@ extension AccountService: DependencyKey {
     }
 }
 
+#if DEBUG
 extension AccountService: TestDependencyKey {
     static public var testValue: AccountService {
         @Dependency(\.accountAPI) var api
+        @Dependency(\.tokenStorage) var tokenStorage
 
         return AccountService(
             hasValidToken: { return false },
             login: { accessToken in
-                // 실제 서버 통신 대신 목데이터 사용
                 let credential = AccountCredential(
-                    accessToken: "access Token",
-                    refreshToken: "refresh Token",
-                    accessTokenExpiration: Date()
+                    onBoardingFlag: false,
+                    accessToken: "Test Access Token",
+                    refreshToken: "Test Refresh Token"
                 )
-
-                print("test/ login credential: \(credential)")
+                await tokenStorage.save(token: credential)
             },
             logout: { },
             leave: { }
         )
     }
 }
+#endif
 
 extension DependencyValues {
     public var accountService: AccountService {

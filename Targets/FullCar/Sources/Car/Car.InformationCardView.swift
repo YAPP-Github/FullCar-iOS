@@ -25,11 +25,11 @@ extension Car {
                     .font(.pretendard17(.bold))
                     .padding(.bottom, 16)
                     .foregroundStyle(Color.black80)
-                rowView(title: "차량 번호", content: information.number.encryptedText)
+                rowView(title: "차량 번호", content: information.carNumber.encryptedText)
                     .padding(.bottom, 12)
-                rowView(title: "차량 종류", content: "\(information.model) · \(information.manufacturer)")
+                rowView(title: "차량 종류", content: "\(information.carName) · \(information.carBrand)")
                     .padding(.bottom, 12)
-                rowView(title: "차량 색상", content: information.color)
+                rowView(title: "차량 색상", content: information.carColor)
             }
             .padding(.all, 20)
         }
@@ -52,9 +52,9 @@ fileprivate extension String {
     var encryptedText: String {
         let carNumber: String = self
         let splited = carNumber.split(whereSeparator: \.isWhitespace)
-        let prefix = splited[0]
-        let encryptedText = splited[1].map { _ in return "*"}.joined()
-        return "\(prefix) \(encryptedText)"
+        let prefix = splited[0].map { _ in return "*"}.joined()
+        let suffix = splited[1]
+        return "\(prefix) \(suffix)"
     }
 }
 

@@ -21,8 +21,25 @@ public protocol URLRequestConfigurable {
 extension URLRequestConfigurable {
     public func asURLRequest() throws -> URLRequest {
         var request = try URLRequest(url: url.asURL())
+        if let path { request.url?.append(path: path) }
+        if let headers { request.setHeaders(headers) }
         request.httpMethod = method.rawValue
         request.allHTTPHeaderFields = headers?.dictionary
+
+        #if DEBUG
+        print(
+        """
+
+        [ℹ️] NETWORK -> request:
+            method: \(method.rawValue),
+            url: \(url),
+            headers: \(String(describing: headers)),
+            parameters: \(String(describing: parameters))
+
+        """
+        )
+        #endif
+
         return try encoder.encode(request: request, with: parameters)
     }
 }
