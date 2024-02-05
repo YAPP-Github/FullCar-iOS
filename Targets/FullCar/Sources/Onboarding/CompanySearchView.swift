@@ -59,29 +59,33 @@ struct CompanySearchView: View {
                                 cornerRadius: 10
                             ))
 
-                    Button(action: {
-                        Task {
-                            await viewModel.fetchCompanyCoordinate(company)
-                        }
-                    }, label: {
-                        Text("검색")
-                    })
-                    .buttonStyle(.fullCar(
-                        font: .pretendard16(.semibold),
-                        horizontalPadding: 14,
-                        verticalPadding: 15,
-                        style: .palette(.primary_secondary)
-                    ))
+                    searchButton
                 }
             },
             state: $companySearchBarState
         )
     }
 
+    private var searchButton: some View {
+        Button(action: {
+            Task {
+                await viewModel.fetchCompanyCoordinate(company)
+            }
+        }, label: {
+            Text("검색")
+        })
+        .buttonStyle(.fullCar(
+            font: .pretendard16(.semibold),
+            horizontalPadding: 14,
+            verticalPadding: 15,
+            style: .palette(.primary_secondary)
+        ))
+    }
+
     private var locationList: some View {
         ScrollView {
             LazyVGrid(columns: [GridItem()], spacing: .zero, content: {
-                ForEach($viewModel.dummyData, id: \.self) { item in
+                ForEach($viewModel.locations, id: \.self) { item in
                     LocationListItem(location: item, company: company)
                 }
             })
