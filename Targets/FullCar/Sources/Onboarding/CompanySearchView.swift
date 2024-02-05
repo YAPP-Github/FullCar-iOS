@@ -42,42 +42,37 @@ struct CompanySearchView: View {
                 companySearchBarState = .focus
             }
         }
-//        .animation(.default, value: isSearchActive)
     }
 
     private var companySearchBar: some View {
-        VStack {
-            FCTextFieldView(
-                textField: {
-                    HStack {
-                        TextField("회사, 주소 검색", text: $company)
-                            .textFieldStyle(
-                                .fullCar(
-                                    type: .none,
-                                    state: $companySearchBarState,
-                                    padding: 16,
-                                    backgroundColor: .gray5,
-                                    cornerRadius: 10
-                                ))
+        FCTextFieldView(
+            textField: {
+                HStack {
+                    TextField("회사, 주소 검색", text: $company)
+                        .textFieldStyle(
+                            .fullCar(
+                                type: .none,
+                                state: $companySearchBarState,
+                                padding: 16,
+                                backgroundColor: .gray5,
+                                cornerRadius: 10
+                            ))
 
-                        Button(action: {
-                            companySearchBarState = .default
-                        }, label: {
-                            Text("검색")
-                        })
-                        .buttonStyle(.fullCar(
-                            font: .pretendard16(.semibold),
-                            horizontalPadding: 14,
-                            verticalPadding: 15,
-                            style: .palette(.primary_secondary)
-                        ))
-                    }
-                },
-                state: $companySearchBarState
-            )
-
-            Spacer()
-        }
+                    Button(action: {
+                        companySearchBarState = .default
+                    }, label: {
+                        Text("검색")
+                    })
+                    .buttonStyle(.fullCar(
+                        font: .pretendard16(.semibold),
+                        horizontalPadding: 14,
+                        verticalPadding: 15,
+                        style: .palette(.primary_secondary)
+                    ))
+                }
+            },
+            state: $companySearchBarState
+        )
     }
 }
 
