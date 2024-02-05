@@ -19,6 +19,10 @@ public extension Endpoint {
         case leave
         case refresh(refreshToken: String)
     }
+
+    enum Member {
+        case locationSearch(_ location: String, key: String)
+    }
 }
 
 extension Endpoint.Account: URLRequestConfigurable {
@@ -118,6 +122,48 @@ extension Endpoint.Home: URLRequestConfigurable {
     public var encoder: ParameterEncodable {
         switch self {
         case .fetch: return URLEncoding()
+        }
+    }
+}
+
+extension Endpoint.Member: URLRequestConfigurable {
+    public var url: URLConvertible {
+        switch self {
+        case .locationSearch: return "https://dapi.kakao.com"
+        }
+    }
+    
+    public var path: String? {
+        switch self {
+        case .locationSearch: return "/v2/local/search/keyword.json"
+        }
+    }
+    
+    public var method: HTTPMethod {
+        switch self {
+        case .locationSearch: return .get
+        }
+    }
+    
+    public var parameters: Parameters? {
+        switch self {
+        case .locationSearch(let location, _): return [
+            "query": "\(location)"
+        ]
+        }
+    }
+    
+    public var headers: [Header]? {
+        switch self {
+        case .locationSearch(_, let key): return [
+            .authorization("KakaoAK \(key)")
+        ]
+        }
+    }
+    
+    public var encoder: ParameterEncodable {
+        switch self {
+        case .locationSearch: return JSONEncoding()
         }
     }
 }
