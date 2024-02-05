@@ -16,6 +16,31 @@ import Dependencies
 final class OnboardingViewModel {
     @ObservationIgnored @Dependency(\.memberService) private var memberService
 
+    var locations: [LocalCoordinate] = []
+
+    var dummyData: [LocalCoordinate] = [
+        .init(
+            name: "네이버",
+            address: "경기 성남시 분당구 정자일로 95",
+            latitude: 127.10520633434606,
+            longitude: 37.3588600621634),
+        .init(
+            name: "네이버2",
+            address: "경기2 성남시 분당구 정자일로 95",
+            latitude: 127.10520633434606,
+            longitude: 37.3588600621634),
+        .init(
+            name: "네이버3",
+            address: "경기3 성남시 분당구 정자일로 95",
+            latitude: 127.10520633434606,
+            longitude: 37.3588600621634),
+        .init(
+            name: "네이버4",
+            address: "경기4 성남시 분당구 정자일로 95",
+            latitude: 127.10520633434606,
+            longitude: 37.3588600621634)
+    ]
+
     func isEmailValid(_ email: String) -> Bool {
         let emailPattern = "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,64}"
         let emailPred = NSPredicate(format:"SELF MATCHES %@", emailPattern)
@@ -28,7 +53,8 @@ final class OnboardingViewModel {
 
         // location search 실행
         do {
-            try await memberService.locationSearch(company, kakaoRestApiKey)
+            let coordinates = try await memberService.locationSearch(company, kakaoRestApiKey)
+            locations = coordinates
         } catch {
             print(error)
         }

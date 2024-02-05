@@ -1,5 +1,5 @@
 //
-//  CompanyListItem.swift
+//  LocationListItem.swift
 //  FullCar
 //
 //  Created by Sunny on 1/30/24.
@@ -7,8 +7,12 @@
 //
 
 import SwiftUI
+import FullCarKit
 
-struct CompanyListItem: View {
+struct LocationListItem: View {
+
+    @Binding var location: LocalCoordinate
+
     var body: some View {
         bodyView
     }
@@ -22,11 +26,11 @@ struct CompanyListItem: View {
                 .foregroundStyle(Color.gray40)
 
             VStack(alignment: .leading, spacing: 4) {
-                Text("NAVER")
+                Text(location.name)
                     .font(.pretendard16(.medium))
                     .foregroundStyle(Color.black80)
 
-                Text("경기 성남시 분당구 정자일로 95")
+                Text(location.address)
                     .font(.pretendard14(.semibold))
                     .foregroundStyle(Color.gray45)
             }
@@ -41,5 +45,10 @@ struct CompanyListItem: View {
 }
 
 #Preview {
-    CompanyListItem()
+    LocationListItem(location: .constant(.init(
+        name: "네이버",
+        address: "경기 성남시 분당구 정자일로 95",
+        latitude: 127.10520633434606,
+        longitude: 37.3588600621634)
+    ))
 }

@@ -36,6 +36,8 @@ struct CompanySearchView: View {
     private var bodyView: some View {
         VStack(spacing: .zero) {
             companySearchBar
+
+            locationList
         }
         .onAppear {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) {
@@ -59,7 +61,6 @@ struct CompanySearchView: View {
                             ))
 
                     Button(action: {
-                        print("검색✅ 버튼 눌렸습니다.")
                         Task {
                             await viewModel.fetchCompanyCoordinate(company)
                         }
@@ -76,6 +77,16 @@ struct CompanySearchView: View {
             },
             state: $companySearchBarState
         )
+    }
+
+    private var locationList: some View {
+        ScrollView {
+            LazyVGrid(columns: [GridItem()], content: {
+                ForEach($viewModel.dummyData, id: \.self) { item in
+                    LocationListItem(location: item)
+                }
+            })
+        }
     }
 }
 
