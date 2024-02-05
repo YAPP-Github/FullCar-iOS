@@ -10,7 +10,7 @@ import SwiftUI
 import Dependencies
 
 struct MemberAPI {
-    var locationSearch: (_ location: String, _ key: String) async throws -> [CompanyCoordinate]
+    var locationSearch: (_ location: String, _ key: String) async throws -> [LocalCoordinate]
 }
 
 extension MemberAPI: DependencyKey {
@@ -20,8 +20,8 @@ extension MemberAPI: DependencyKey {
                 let response: LocationResponse = try await NetworkClient.account.request(
                     endpoint: Endpoint.Member.locationSearch(location, key: key)
                 ).response()
-                let coordinates: [CompanyCoordinate] = response.locations.compactMap { location in
-                    return CompanyCoordinate(
+                let coordinates: [LocalCoordinate] = response.locations.compactMap { location in
+                    return LocalCoordinate(
                         name: location.placeName,
                         address: location.roadAddressName,
                         latitude: Double(location.y) ?? .zero,
