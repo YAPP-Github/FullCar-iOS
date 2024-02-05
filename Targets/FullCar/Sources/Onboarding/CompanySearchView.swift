@@ -36,7 +36,7 @@ struct CompanySearchView: View {
     }
 
     private var bodyView: some View {
-        VStack(spacing: .zero) {
+        VStack(spacing: 1) {
             companySearchBar
                 .padding(.horizontal, 20)
                 .padding(.top, 20)
@@ -81,7 +81,7 @@ struct CompanySearchView: View {
     private var locationList: some View {
         ScrollView {
             LazyVGrid(columns: [GridItem()], spacing: .zero, content: {
-                ForEach($viewModel.locations, id: \.self) { item in
+                ForEach($viewModel.dummyData, id: \.self) { item in
                     LocationListItem(location: item, company: company)
                 }
             })

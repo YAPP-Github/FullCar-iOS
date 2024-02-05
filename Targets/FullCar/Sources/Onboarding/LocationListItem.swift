@@ -10,8 +10,11 @@ import SwiftUI
 import FullCarKit
 
 struct LocationListItem: View {
+    @Environment(\.dismiss) private var dismiss
 
     @Binding var location: LocalCoordinate
+    @State private var isSelected: Bool = false
+
     var company: String
 
     var body: some View {
@@ -20,6 +23,15 @@ struct LocationListItem: View {
             .padding(.horizontal, 20)
             .padding(.vertical, 16)
             .border(width: 1, edges: [.bottom], color: .gray30)
+            .onTapGesture {
+                // 선택되면 background color 변경
+                isSelected = true
+                // 일정 시간 이후 dismiss
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                    dismiss()
+                }
+            }
+            .background(isSelected ? Color.gray10 : Color.white)
     }
 
     private var bodyView: some View {
