@@ -27,7 +27,7 @@ struct LocationListItem: View {
 
             VStack(alignment: .leading, spacing: 4) {
                 Text(location.name)
-                    .font(.pretendard16(.medium))
+                    .font(.pretendard16_19(.medium))
                     .foregroundStyle(Color.black80)
 
                 Text(location.address)

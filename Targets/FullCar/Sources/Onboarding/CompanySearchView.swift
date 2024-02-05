@@ -18,9 +18,11 @@ struct CompanySearchView: View {
 
     var body: some View {
         bodyView
-            .padding(.horizontal, 20)
-            .padding(.top, 20)
-            .padding(.bottom, 16)
+            .onAppear {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) {
+                    companySearchBarState = .focus
+                }
+            }
             .navigationBarStyle(
                 leadingView: {
                     NavigationButton(icon: .back, action: { dismiss() })
@@ -36,13 +38,10 @@ struct CompanySearchView: View {
     private var bodyView: some View {
         VStack(spacing: .zero) {
             companySearchBar
+                .padding(.horizontal, 20)
+                .padding(.top, 20)
 
             locationList
-        }
-        .onAppear {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) {
-                companySearchBarState = .focus
-            }
         }
     }
 
@@ -81,8 +80,8 @@ struct CompanySearchView: View {
 
     private var locationList: some View {
         ScrollView {
-            LazyVGrid(columns: [GridItem()], content: {
-                ForEach($viewModel.dummyData, id: \.self) { item in
+            LazyVGrid(columns: [GridItem()], spacing: .zero, content: {
+                ForEach($viewModel.locations, id: \.self) { item in
                     LocationListItem(location: item)
                 }
             })
