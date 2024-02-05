@@ -17,7 +17,7 @@ extension MemberAPI: DependencyKey {
     static var liveValue: MemberAPI {
         return MemberAPI(
             locationSearch: { location, key in
-                let coordinate: CompanyCoordinate = try await NetworkClient.main.request(
+                let coordinate: CompanyCoordinate = try await NetworkClient.account.request(
                     endpoint: Endpoint.Member.locationSearch(location, key: key)
                 ).response()
                 return coordinate

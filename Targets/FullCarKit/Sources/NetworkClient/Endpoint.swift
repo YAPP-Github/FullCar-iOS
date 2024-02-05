@@ -233,7 +233,7 @@ extension Endpoint.Member: URLRequestConfigurable {
     
     public var encoder: ParameterEncodable {
         switch self {
-        case .locationSearch: return JSONEncoding()
+        case .locationSearch: return URLEncoding()
         }
     }
 }

@@ -59,8 +59,9 @@ struct CompanySearchView: View {
                             ))
 
                     Button(action: {
+                        print("검색✅ 버튼 눌렸습니다.")
                         Task {
-                            await viewModel.locationSearch
+                            await viewModel.fetchCompanyCoordinate()
                         }
                     }, label: {
                         Text("검색")
