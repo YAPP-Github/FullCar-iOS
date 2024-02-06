@@ -51,9 +51,34 @@ struct TokenInterceptor: NetworkInterceptor {
         with error: Error, 
         options: NetworkRequestOptions
     ) async -> (URLRequest, RetryResult) {
-        // 여기에 401 에러일때, refresh 호출하는 로직이 들어가야 하나?
+        // access token 만료인 401 에러일 때만 실행
+        guard let httpResponse = response as? HTTPURLResponse,
+              httpResponse.isUnAuthorizedStatus() else {
+            return (urlRequest, .doNotRetry(with: error))
+        }
 
-        return (urlRequest, .doNotRetry(with: error))
+        do {
+            // access token 재발급
+            try await refresh()
+            return (urlRequest, .retry)
+        } catch {
+            return (urlRequest, .doNotRetry(with: error))
+        }
+    }
+
+    private func refresh() async throws {
+        @Dependency(\.tokenStorage) var tokenStorage
+
+        let credential = try await tokenStorage.loadToken()
+        let authResponse: ApiAuthTokenResponse = try await NetworkClient.account.request(
+            endpoint: Endpoint.Account.refresh(refreshToken: credential.refreshToken)
+        ).response()
+        let newCredential: AccountCredential = .init(
+            onBoardingFlag: credential.onBoardingFlag,
+            accessToken: authResponse.data.accessToken,
+            refreshToken: authResponse.data.refreshToken
+        )
+        await tokenStorage.save(token: newCredential)
     }
 }
 
@@ -94,4 +119,10 @@ extension HeaderInterceptor {
         headers.append(.contentType(value: "application/json"))
         return headers
     }()
+}
+
+extension HTTPURLResponse {
+    fileprivate func isUnAuthorizedStatus() -> Bool {
+        return 401 == statusCode
+    }
 }
