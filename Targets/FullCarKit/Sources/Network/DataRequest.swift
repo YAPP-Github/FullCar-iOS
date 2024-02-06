@@ -14,7 +14,10 @@ public final class DataRequest: NetworkRequestable {
     public let endpoint: URLRequestConfigurable
     public let options: NetworkRequestOptions
     public let interceptors: [NetworkInterceptor]
-    
+
+    private var retryCount: Int = 0
+    private var retryLimit: Int = 1
+
     public init(
         session: URLSession,
         task: URLSessionTask? = nil,
@@ -32,21 +35,45 @@ public final class DataRequest: NetworkRequestable {
     @MainActor
     public func response<Model: Decodable>(with decoder: JSONDecoder = .init()) async throws -> Model {
         let response = try await fetchResponse()
-        try self.validate(response: response)
-        let result: Model = try self.decode(with: decoder, response: response)
 
-        #if DEBUG
-        print(
-        """
+        do {
+            try self.validate(response: response)
+            let result: Model = try self.decode(with: decoder, response: response)
 
-        [ℹ️] NETWORK -> response status code:
-            \(result)
+            #if DEBUG
+            print(
+            """
 
-        """
-        )
-        #endif
+            [ℹ️] NETWORK -> response status code:
+                \(result)
 
-        return result
+            """
+            )
+            #endif
+
+            return result
+        } catch {
+            guard retryCount < retryLimit else {
+                throw error
+            }
+            retryCount += 1
+
+            let initialRequest = try endpoint.asURLRequest()
+            let (_, retryResult) = await retry(
+                request: initialRequest,
+                response: response.response ?? URLResponse(),
+                data: response.data,
+                error: error
+            )
+
+            switch retryResult {
+            case .retry:
+                let result: Model = try await self.response()
+                return result
+            case .doNotRetry(let error):
+                throw error
+            }
+        }
     }
 
     @MainActor
