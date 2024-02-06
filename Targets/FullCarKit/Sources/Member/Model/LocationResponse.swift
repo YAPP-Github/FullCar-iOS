@@ -8,7 +8,6 @@
 
 import Foundation
 
-// MARK: - Welcome
 struct LocationResponse: Decodable {
     let locations: [Location]
 
@@ -17,8 +16,7 @@ struct LocationResponse: Decodable {
     }
 }
 
-// MARK: - Document
-struct Location: Codable {
+struct Location: Decodable {
     let placeName: String
     let roadAddressName: String
     let x: String

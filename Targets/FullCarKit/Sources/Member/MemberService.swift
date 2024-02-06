@@ -10,7 +10,8 @@ import Foundation
 import Dependencies
 
 public struct MemberService {
-    public var locationSearch: (_ location: String, _ key: String) async throws -> [LocalCoordinate]
+    public var searchLocation: (_ location: String, _ key: String) async throws -> [LocalCoordinate]
+    public var checkNickname: (_ nickname: String) async throws -> Void
 }
 
 extension MemberService: DependencyKey {
@@ -18,9 +19,12 @@ extension MemberService: DependencyKey {
         @Dependency(\.memberAPI) var api
 
         return MemberService(
-            locationSearch: { location,key in
+            searchLocation: { location,key in
                 let coordinate = try await api.searchLocation(location, key)
                 return coordinate
+            },
+            checkNickname: { nickname in
+                try await api.checkNickname(nickname)
             }
         )
     }

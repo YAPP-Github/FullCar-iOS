@@ -33,7 +33,9 @@ extension MemberAPI: DependencyKey {
                 return coordinates
             },
             checkNickname: { nickname in
-                // 닉네임 불러라~
+                let response: ApiNicknameResponse = try await NetworkClient.main.request(
+                    endpoint: Endpoint.Member.check(nickname: nickname)
+                ).response()
             }
         )
     }
