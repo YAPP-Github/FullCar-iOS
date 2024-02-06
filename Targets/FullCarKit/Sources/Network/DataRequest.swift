@@ -40,17 +40,6 @@ public final class DataRequest: NetworkRequestable {
             try self.validate(response: response)
             let result: Model = try self.decode(with: decoder, response: response)
 
-            #if DEBUG
-            print(
-            """
-
-            [ℹ️] NETWORK -> response status code:
-                \(result)
-
-            """
-            )
-            #endif
-
             return result
         } catch {
             guard retryCount < retryLimit else {

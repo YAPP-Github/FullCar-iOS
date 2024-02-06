@@ -90,6 +90,17 @@ final class OnboardingViewModel {
             nicknameTextFieldState = .error("중복된 닉네임 입니다.")
         }
     }
+
+    func resetEmail() {
+        isEmailValid = false
+        emailTextFieldState = .default
+        isEmailRequestSent = false
+    }
+
+    func resetNickname() {
+        isNicknameValid = false
+        nicknameTextFieldState = .default
+    }
 }
 
 struct Onboarding {
@@ -132,7 +143,7 @@ struct OnboardingView: View {
     private var bodyView: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 40) {
-                companyTextField
+                emailTextField
 
                 if $viewModel.isEmailValid.wrappedValue {
                     nicknameTextField
@@ -152,7 +163,7 @@ struct OnboardingView: View {
     @ViewBuilder
     private var buttonView: some View {
         if !$viewModel.isEmailValid.wrappedValue {
-            sendEmailButton
+            emailButton
         } else if !$viewModel.isNicknameValid.wrappedValue {
             nicknameButton
         } else {
@@ -160,7 +171,7 @@ struct OnboardingView: View {
         }
     }
 
-    private var companyTextField: some View {
+    private var emailTextField: some View {
         FCTextFieldView(
             textField: {
                 TextField("\("gildong@fullcar.com")", text: $viewModel.email)
@@ -169,12 +180,11 @@ struct OnboardingView: View {
                         state: $viewModel.emailTextFieldState)
                     )
                     .onChange(of: $viewModel.email.wrappedValue) { _, newValue in
-                        // email textField 입력할 때마다 이메일 유효성 검사
                         Task {
+                            // email textField 입력할 때마다 이메일 유효성 검사
                             await viewModel.isEmailValid(newValue)
+                            await viewModel.resetEmail()
                         }
-
-                        // MARK: text field 수정할 때마다 state 변경되어야 함.
                     }
             },
             state: $viewModel.emailTextFieldState,
@@ -193,7 +203,9 @@ struct OnboardingView: View {
                         state: $viewModel.nicknameTextFieldState)
                     )
                     .onChange(of: $viewModel.nickname.wrappedValue) { _, _ in
-                        $viewModel.nicknameTextFieldState.wrappedValue = .default
+                        Task {
+                            await viewModel.resetNickname()
+                        }
                     }
             },
             state: $viewModel.nicknameTextFieldState,
@@ -240,7 +252,7 @@ struct OnboardingView: View {
         }
     }
 
-    private var sendEmailButton: some View {
+    private var emailButton: some View {
         VStack(spacing: 10) {
             if $viewModel.isEmailRequestSent.wrappedValue {
                 Text("메일이 오지 않나요? >")
