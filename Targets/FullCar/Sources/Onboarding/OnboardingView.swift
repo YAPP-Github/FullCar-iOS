@@ -16,6 +16,21 @@ import Dependencies
 final class OnboardingViewModel {
     @ObservationIgnored @Dependency(\.memberService) private var memberService
 
+    var email: String = ""
+    var emailTextFieldState: InputState = .default
+    // 이메일 확인이 모두 완료되었을 때
+    var isEmailValid: Bool = false
+    // 블랙리스트 이메일인지 검증하는 api 호출 여부
+    var isEmailRequestSent: Bool = false
+    // "인증메일 발송" 버튼 활성화 여부
+    var isEmailButtonActive: Bool = false
+
+    var nickname: String = ""
+    var nicknameTextFieldState: InputState = .default
+    var isNicknameValid: Bool = false
+
+    var gender: Onboarding.Gender = .none
+
     var locations: [LocalCoordinate] = []
 
     var member: MemberInformation? {
@@ -24,10 +39,10 @@ final class OnboardingViewModel {
         }
     }
 
-    func isEmailValid(_ email: String) -> Bool {
+    func isEmailValid(_ email: String) {
         let emailPattern = "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,64}"
         let emailPred = NSPredicate(format:"SELF MATCHES %@", emailPattern)
-        return emailPred.evaluate(with: email)
+        isEmailButtonActive = emailPred.evaluate(with: email)
     }
 
     // 이름...?
@@ -43,38 +58,51 @@ final class OnboardingViewModel {
         }
     }
 
-    func sendVerificationEmail(_ address: String) -> Bool {
-        sleep(2)
-        return true
+    func sendVerificationEmail() {
+        // api 호출 이후 (response 오기 전)
+        isEmailRequestSent = true
+        isEmailButtonActive = false
+        
+        // response 온 이후
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+            // case1) 이메일 인증 성공
+            self.isEmailValid = true
+            self.emailTextFieldState = .default
+
+            if false {
+                // case2) 이메일 인증 실패
+                self.isEmailValid = false
+                self.emailTextFieldState = .error("일치하는 메일 정보가 없습니다.")
+            }
+        }
     }
 
-    func sendVerificationNickname(_ nickname: String) async -> Bool {
+    func sendVerificationNickname() async {
         do {
+            // 닉네임 중복 확인 api 호출
             try await memberService.checkNickname(nickname)
-            return true
+            // case1) 닉네임 인증 성공
+            isNicknameValid = true
+            nicknameTextFieldState = .default
         } catch {
             print(error)
-            return false
+            isNicknameValid = false
+            nicknameTextFieldState = .error("중복된 닉네임 입니다.")
         }
+    }
+}
+
+struct Onboarding {
+    enum Gender: String, CaseIterable {
+        case female = "여성"
+        case male = "남성"
+        case notPublic = "공개안함"
+        case none
     }
 }
 
 struct OnboardingView: View {
     @Bindable var viewModel: OnboardingViewModel
-
-    @State private var email: String = ""
-    @State private var emailTextFieldState: InputState = .default
-    @State private var isEmailValid: Bool = false
-    // 블랙리스트 이메일인지 검증하는 api 호출 여부
-    @State private var isEmailRequestSent: Bool = false
-
-    @State private var nickname: String = ""
-    @State private var nicknameTextFieldState: InputState = .default
-    @State private var isNicknameValid: Bool = false
-
-    @State private var gender: Gender = .none
-
-    @State private var isEmailButtonActive: Bool = false
 
     var body: some View {
         GeometryReader { geometry in
@@ -106,11 +134,11 @@ struct OnboardingView: View {
             VStack(alignment: .leading, spacing: 40) {
                 companyTextField
 
-                if isEmailValid {
+                if $viewModel.isEmailValid.wrappedValue {
                     nicknameTextField
                 }
 
-                if isNicknameValid {
+                if $viewModel.isNicknameValid.wrappedValue {
                     genderPicker
                 }
             }
@@ -123,9 +151,9 @@ struct OnboardingView: View {
 
     @ViewBuilder
     private var buttonView: some View {
-        if !isEmailValid {
+        if !$viewModel.isEmailValid.wrappedValue {
             sendEmailButton
-        } else if !isNicknameValid {
+        } else if !$viewModel.isNicknameValid.wrappedValue {
             nicknameButton
         } else {
             genderButton
@@ -135,18 +163,21 @@ struct OnboardingView: View {
     private var companyTextField: some View {
         FCTextFieldView(
             textField: {
-                TextField("\("gildong@fullcar.com")", text: $email)
+                TextField("\("gildong@fullcar.com")", text: $viewModel.email)
                     .textFieldStyle(.fullCar(
-                        type: .check($isEmailValid),
-                        state: $emailTextFieldState)
+                        type: .check($viewModel.isEmailValid),
+                        state: $viewModel.emailTextFieldState)
                     )
-                    .onChange(of: email) { oldValue, newValue in
+                    .onChange(of: $viewModel.email.wrappedValue) { _, newValue in
+                        // email textField 입력할 때마다 이메일 유효성 검사
                         Task {
-                            isEmailButtonActive = await viewModel.isEmailValid(newValue)
+                            await viewModel.isEmailValid(newValue)
                         }
+
+                        // MARK: text field 수정할 때마다 state 변경되어야 함.
                     }
             },
-            state: $emailTextFieldState,
+            state: $viewModel.emailTextFieldState,
             headerText: "회사 메일을 입력해 주세요.",
             headerFont: .pretendard22(.bold),
             headerPadding: 20
@@ -156,13 +187,16 @@ struct OnboardingView: View {
     private var nicknameTextField: some View {
         FCTextFieldView(
             textField: {
-                TextField("10자 이내로 입력해주세요.", text: $nickname)
+                TextField("10자 이내로 입력해주세요.", text: $viewModel.nickname)
                     .textFieldStyle(.fullCar(
-                        type: .check($isNicknameValid),
-                        state: $nicknameTextFieldState)
+                        type: .check($viewModel.isNicknameValid),
+                        state: $viewModel.nicknameTextFieldState)
                     )
+                    .onChange(of: $viewModel.nickname.wrappedValue) { _, _ in
+                        $viewModel.nicknameTextFieldState.wrappedValue = .default
+                    }
             },
-            state: $nicknameTextFieldState,
+            state: $viewModel.nicknameTextFieldState,
             headerText: "얍주식회사에 재직중인 회원님!\n뭐라고 불러드릴까요?",
             headerFont: .pretendard22(.bold),
             headerPadding: 20
@@ -174,14 +208,14 @@ struct OnboardingView: View {
             SectionView(
                 content: {
                     HStack(spacing: 6) {
-                        ForEach(Gender.allCases, id: \.self) { genderType in
+                        ForEach(Onboarding.Gender.allCases, id: \.self) { genderType in
                             if genderType != .none {
                                 Button(action: {
-                                    gender = genderType
+                                    $viewModel.gender.wrappedValue = genderType
                                 }, label: {
                                     Text(genderType.rawValue)
                                 })
-                                .buttonStyle(.chip(genderType == gender))
+                                .buttonStyle(.chip(genderType == $viewModel.gender.wrappedValue))
                             }
                         }
                     }
@@ -193,7 +227,7 @@ struct OnboardingView: View {
                     )
                 }, 
                 footer: {
-                    if gender == .notPublic {
+                    if $viewModel.gender.wrappedValue == .notPublic {
                         let notPublic: Message = .information("성별 미공개 시 게시글 노출률이 낮아질 수 있어요.")
                         Text(notPublic.description)
                             .font(.pretendard14(.semibold))
@@ -208,46 +242,30 @@ struct OnboardingView: View {
 
     private var sendEmailButton: some View {
         VStack(spacing: 10) {
-            if isEmailRequestSent {
+            if $viewModel.isEmailRequestSent.wrappedValue {
                 Text("메일이 오지 않나요? >")
                     .foregroundStyle(Color.fullCar_primary)
                     .font(.pretendard14(.semibold))
             }
 
             Button(action: {
-                // email 블랙리스트 여부 api 호출
-                isEmailRequestSent = true
-                isEmailButtonActive = false
-
                 Task {
-                    if await viewModel.sendVerificationEmail(email) {
-                        // api response에 따라 Button 활성, 비활성 여부
-                        isEmailValid = true
-                        // 회사 메일이 인증 완료되었음으로, emailTextFieldState 변경
-                        // 닉네임 textField로 포커스 변경하고 싶은데,,
-                        emailTextFieldState = .default
-                    }
+                    await viewModel.sendVerificationEmail()
+                    // MARK: 닉네임 textField로 포커스 변경하고 싶은데,,
                 }
-                // api response success -> 인증메일 발송 버튼 대신 "다음" 버튼 + 닉네임 textfield 생성
-                // api response fail -> emailTextFieldState = .error로 변경
-                    // 그 후 email이 한자로도 변경되면 해당 버튼 active 활성화
             }, label: {
                 Text("인증메일 발송")
                     .frame(maxWidth: .infinity)
             })
             .buttonStyle(.fullCar(style: .palette(.primary_white)))
-            .disabled(!isEmailButtonActive)
+            .disabled(!$viewModel.isEmailButtonActive.wrappedValue)
         }
     }
 
     private var nicknameButton: some View {
         Button(action: {
             Task {
-                if await viewModel.sendVerificationNickname(nickname) {
-                    // 닉네임 유효성 검사가 통과할 경우,
-                    isNicknameValid = true
-                    nicknameTextFieldState = .default
-                }
+                await viewModel.sendVerificationNickname()
             }
         }, label: {
             Text("다음")
@@ -264,15 +282,6 @@ struct OnboardingView: View {
                 .frame(maxWidth: .infinity)
         })
         .buttonStyle(.fullCar(style: .palette(.primary_white)))
-    }
-}
-
-extension OnboardingView {
-    enum Gender: String, CaseIterable {
-        case female = "여성"
-        case male = "남성"
-        case notPublic = "공개안함"
-        case none
     }
 }
 
