@@ -18,28 +18,11 @@ final class OnboardingViewModel {
 
     var locations: [LocalCoordinate] = []
 
-    var dummyData: [LocalCoordinate] = [
-        .init(
-            name: "네이버",
-            address: "경기 성남시 분당구 정자일로 95",
-            latitude: 127.10520633434606,
-            longitude: 37.3588600621634),
-        .init(
-            name: "NAVER2",
-            address: "경기2 성남시 분당구 정자일로 95",
-            latitude: 127.10520633434606,
-            longitude: 37.3588600621634),
-        .init(
-            name: "네이버3",
-            address: "경기3 성남시 분당구 정자일로 95",
-            latitude: 127.10520633434606,
-            longitude: 37.3588600621634),
-        .init(
-            name: "NAVER4",
-            address: "경기4 성남시 분당구 정자일로 95",
-            latitude: 127.10520633434606,
-            longitude: 37.3588600621634)
-    ]
+    var member: MemberInformation? {
+        didSet {
+            print("멤버 변경됌. \(member)")
+        }
+    }
 
     func isEmailValid(_ email: String) -> Bool {
         let emailPattern = "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,64}"
@@ -59,6 +42,16 @@ final class OnboardingViewModel {
             print(error)
         }
     }
+
+    func sendVerificationEmail(_ address: String) -> Bool {
+        sleep(2)
+        return true
+    }
+
+    func sendVerificationNickname(_ nickname: String) -> Bool {
+        sleep(2)
+        return true
+    }
 }
 
 struct OnboardingView: View {
@@ -70,9 +63,9 @@ struct OnboardingView: View {
     // 블랙리스트 이메일인지 검증하는 api 호출 여부
     @State private var isEmailRequestSent: Bool = false
 
-    @State private var nickName: String = ""
-    @State private var nickNameTextFieldState: InputState = .default
-    @State private var isNickNameValid: Bool = false
+    @State private var nickname: String = ""
+    @State private var nicknameTextFieldState: InputState = .default
+    @State private var isNicknameValid: Bool = false
 
     @State private var gender: Gender = .none
 
@@ -86,6 +79,8 @@ struct OnboardingView: View {
                 Spacer()
 
                 buttonView
+                    .padding(.bottom, 16)
+                    .padding(.horizontal, 20)
             }
             .frame(width: geometry.size.width, height: geometry.size.height)
         }
@@ -107,10 +102,10 @@ struct OnboardingView: View {
                 companyTextField
 
                 if isEmailValid {
-                    nickNameTextField
+                    nicknameTextField
                 }
 
-                if isNickNameValid {
+                if isNicknameValid {
                     genderPicker
                 }
             }
@@ -125,11 +120,10 @@ struct OnboardingView: View {
     private var buttonView: some View {
         if !isEmailValid {
             sendEmailButton
-                .padding(.bottom, 16)
-                .padding(.horizontal, 20)
-                .debug()
+        } else if !isNicknameValid {
+            nicknameButton
         } else {
-
+            genderButton
         }
     }
 
@@ -154,16 +148,16 @@ struct OnboardingView: View {
         )
     }
 
-    private var nickNameTextField: some View {
+    private var nicknameTextField: some View {
         FCTextFieldView(
             textField: {
-                TextField("10자 이내로 입력해주세요.", text: $nickName)
+                TextField("10자 이내로 입력해주세요.", text: $nickname)
                     .textFieldStyle(.fullCar(
-                        type: .check($isNickNameValid),
-                        state: $nickNameTextFieldState)
+                        type: .check($isNicknameValid),
+                        state: $nicknameTextFieldState)
                     )
             },
-            state: $nickNameTextFieldState,
+            state: $nicknameTextFieldState,
             headerText: "얍주식회사에 재직중인 회원님!\n뭐라고 불러드릴까요?",
             headerFont: .pretendard22(.bold),
             headerPadding: 20
@@ -219,7 +213,16 @@ struct OnboardingView: View {
                 // email 블랙리스트 여부 api 호출
                 isEmailRequestSent = true
                 isEmailButtonActive = false
-                // api response에 따라 Button 활성, 비활성 여부
+
+                Task {
+                    if await viewModel.sendVerificationEmail(email) {
+                        // api response에 따라 Button 활성, 비활성 여부
+                        isEmailValid = true
+                        // 회사 메일이 인증 완료되었음으로, emailTextFieldState 변경
+                        // 닉네임 textField로 포커스 변경하고 싶은데,,
+                        emailTextFieldState = .default
+                    }
+                }
                 // api response success -> 인증메일 발송 버튼 대신 "다음" 버튼 + 닉네임 textfield 생성
                 // api response fail -> emailTextFieldState = .error로 변경
                     // 그 후 email이 한자로도 변경되면 해당 버튼 active 활성화
@@ -232,14 +235,30 @@ struct OnboardingView: View {
         }
     }
 
-    private var completionButton: some View {
+    private var nicknameButton: some View {
         Button(action: {
+            Task {
+                if await viewModel.sendVerificationNickname(nickname) {
+                    // 닉네임 유효성 검사가 통과할 경우,
+                    isNicknameValid = true
+                    nicknameTextFieldState = .default
+                }
+            }
         }, label: {
             Text("다음")
                 .frame(maxWidth: .infinity)
         })
         .buttonStyle(.fullCar(style: .palette(.primary_white)))
-//        .disabled(/*@START_MENU_TOKEN@*/true/*@END_MENU_TOKEN@*/)
+    }
+
+    private var genderButton: some View {
+        Button(action: {
+            // 온보딩 완료!
+        }, label: {
+            Text("완료")
+                .frame(maxWidth: .infinity)
+        })
+        .buttonStyle(.fullCar(style: .palette(.primary_white)))
     }
 }
 
