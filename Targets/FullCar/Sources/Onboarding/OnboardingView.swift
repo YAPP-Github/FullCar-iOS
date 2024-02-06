@@ -32,11 +32,11 @@ final class OnboardingViewModel {
 
     // 이름...?
     func fetchCompanyCoordinate(_ company: String) async {
+        // 실제 api가 호출되는 FullCarKit에는 api key에 접근할 수 없음. 따라서 FullCar에서 파라미터로 api key를 전달하는 방식이어야 하는데,, 괜춘할지?
         guard let kakaoRestApiKey = Bundle.main.kakaoRestApiKey else { return }
 
-        // location search 실행
         do {
-            let coordinates = try await memberService.locationSearch(company, kakaoRestApiKey)
+            let coordinates = try await memberService.searchLocation(company, kakaoRestApiKey)
             locations = coordinates
         } catch {
             print(error)
@@ -48,9 +48,14 @@ final class OnboardingViewModel {
         return true
     }
 
-    func sendVerificationNickname(_ nickname: String) -> Bool {
-        sleep(2)
-        return true
+    func sendVerificationNickname(_ nickname: String) async -> Bool {
+        do {
+            try await memberService.checkNickname(nickname)
+            return true
+        } catch {
+            print(error)
+            return false
+        }
     }
 }
 
