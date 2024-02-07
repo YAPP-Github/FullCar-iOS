@@ -34,12 +34,6 @@ final class OnboardingViewModel {
 
     var locations: [LocalCoordinate] = []
 
-    var member: MemberInformation? {
-        didSet {
-            print("멤버 변경됌. \(member)")
-        }
-    }
-
     func updateEmailValidation() {
         let emailPattern = "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,64}"
         let emailPred = NSPredicate(format:"SELF MATCHES %@", emailPattern)
