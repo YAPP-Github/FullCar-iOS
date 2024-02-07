@@ -33,36 +33,23 @@ final class OnboardingViewModel {
     var gender: Onboarding.Gender = .none
 
     var locations: [LocalCoordinate] = []
+}
 
+// MARK: Email 관련 함수
+extension OnboardingViewModel {
+    /// Email 형식 유효성 검사 함수
     func updateEmailValidation() {
         let emailPattern = "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,64}"
         let emailPred = NSPredicate(format:"SELF MATCHES %@", emailPattern)
         isEmailButtonActive = emailPred.evaluate(with: email)
     }
 
-    func updateNicknameValidation() {
-        let nicknamePattern = "^[가-힣A-Za-z0-9]{2,10}$"
-        let nicknamePred = NSPredicate(format:"SELF MATCHES %@", nicknamePattern)
-        isNicknameButtonActive = nicknamePred.evaluate(with: nickname)
-    }
-
-    func fetchCompanyCoordinate(_ company: String) async {
-        // 실제 api가 호출되는 FullCarKit에는 api key에 접근할 수 없음. 따라서 FullCar에서 파라미터로 api key를 전달하는 방식이어야 하는데,, 괜춘할지?
-        guard let kakaoRestApiKey = Bundle.main.kakaoRestApiKey else { return }
-
-        do {
-            let coordinates = try await memberService.searchLocation(company, kakaoRestApiKey)
-            locations = coordinates
-        } catch {
-            print(error)
-        }
-    }
-
+    /// 본인확인 이메일 전송 api 호출
     func sendVerificationEmail() {
         // api 호출 이후 (response 오기 전)
         isEmailRequestSent = true
         isEmailButtonActive = false
-        
+
         // response 온 이후
         DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
             // case1) 이메일 인증 성공
@@ -77,6 +64,23 @@ final class OnboardingViewModel {
         }
     }
 
+    func resetEmail() {
+        isEmailValid = false
+        emailTextFieldState = .default
+        isEmailRequestSent = false
+    }
+}
+
+// MARK: Nickname 관련 함수
+extension OnboardingViewModel {
+    /// Nickname 형식 유효성 검사 함수 - 2~10자, 한글/숫자/영문, 띄어쓰기불가
+    func updateNicknameValidation() {
+        let nicknamePattern = "^[가-힣A-Za-z0-9]{2,10}$"
+        let nicknamePred = NSPredicate(format:"SELF MATCHES %@", nicknamePattern)
+        isNicknameButtonActive = nicknamePred.evaluate(with: nickname)
+    }
+
+    /// 닉네임 중복 확인 api 호출
     func sendVerificationNickname() async {
         do {
             // 닉네임 중복 확인 api 호출
@@ -91,15 +95,25 @@ final class OnboardingViewModel {
         }
     }
 
-    func resetEmail() {
-        isEmailValid = false
-        emailTextFieldState = .default
-        isEmailRequestSent = false
-    }
-
     func resetNickname() {
         isNicknameValid = false
         nicknameTextFieldState = .default
+    }
+}
+
+// MARK: Company 관련 함수
+extension OnboardingViewModel {
+    /// 특정 검색어로 장소 리스트 검색
+    func fetchCompanyCoordinate(_ company: String) async {
+        // 실제 api가 호출되는 FullCarKit에는 api key에 접근할 수 없음. 따라서 FullCar에서 파라미터로 api key를 전달하는 방식이어야 하는데,, 괜춘할지?
+        guard let kakaoRestApiKey = Bundle.main.kakaoRestApiKey else { return }
+
+        do {
+            let coordinates = try await memberService.searchLocation(company, kakaoRestApiKey)
+            locations = coordinates
+        } catch {
+            print(error)
+        }
     }
 }
 
@@ -167,7 +181,7 @@ struct OnboardingView: View {
         } else if !$viewModel.isNicknameValid.wrappedValue {
             nicknameButton
         } else {
-            genderButton
+            completionButton
         }
     }
 
@@ -288,7 +302,7 @@ struct OnboardingView: View {
         .disabled(!$viewModel.isNicknameButtonActive.wrappedValue)
     }
 
-    private var genderButton: some View {
+    private var completionButton: some View {
         Button(action: {
             // 온보딩 완료!
         }, label: {
