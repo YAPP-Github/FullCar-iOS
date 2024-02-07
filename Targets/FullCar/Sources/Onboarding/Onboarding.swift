@@ -167,11 +167,10 @@ struct OnboardingView: View {
     private var bodyView: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 40) {
-//                emailTextField
                 Onboarding.EmailInput.TextFieldView(viewModel: viewModel)
 
                 if $viewModel.isEmailValid.wrappedValue {
-                    nicknameTextField
+                    Onboarding.NicknameInput.TextFieldView(viewModel: viewModel)
                 }
 
                 if $viewModel.isNicknameValid.wrappedValue {
@@ -190,32 +189,10 @@ struct OnboardingView: View {
         if !$viewModel.isEmailValid.wrappedValue {
             Onboarding.EmailInput.ButtonView(viewModel: viewModel)
         } else if !$viewModel.isNicknameValid.wrappedValue {
-            nicknameButton
+            Onboarding.NicknameInput.ButtonView(viewModel: viewModel)
         } else {
             completionButton
         }
-    }
-
-    private var nicknameTextField: some View {
-        FCTextFieldView(
-            textField: {
-                TextField("10자 이내로 입력해주세요.", text: $viewModel.nickname)
-                    .textFieldStyle(.fullCar(
-                        type: .check($viewModel.isNicknameValid),
-                        state: $viewModel.nicknameTextFieldState)
-                    )
-                    .onChange(of: $viewModel.nickname.wrappedValue) { _, _ in
-                        Task {
-                            await viewModel.updateNicknameValidation()
-                            await viewModel.resetNickname()
-                        }
-                    }
-            },
-            state: $viewModel.nicknameTextFieldState,
-            headerText: "얍주식회사에 재직중인 회원님!\n뭐라고 불러드릴까요?",
-            headerFont: .pretendard22(.bold),
-            headerPadding: 20
-        )
     }
 
     private var genderPicker: some View {
@@ -253,19 +230,6 @@ struct OnboardingView: View {
                 footerTopPadding: 8
             )
         }
-    }
-
-    private var nicknameButton: some View {
-        Button(action: {
-            Task {
-                await viewModel.sendVerificationNickname()
-            }
-        }, label: {
-            Text("다음")
-                .frame(maxWidth: .infinity)
-        })
-        .buttonStyle(.fullCar(style: .palette(.primary_white)))
-        .disabled(!$viewModel.isNicknameButtonActive.wrappedValue)
     }
 
     private var completionButton: some View {
