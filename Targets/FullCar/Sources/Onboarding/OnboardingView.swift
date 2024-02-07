@@ -28,6 +28,7 @@ final class OnboardingViewModel {
     var nickname: String = ""
     var nicknameTextFieldState: InputState = .default
     var isNicknameValid: Bool = false
+    var isNicknameButtonActive: Bool = false
 
     var gender: Onboarding.Gender = .none
 
@@ -39,13 +40,18 @@ final class OnboardingViewModel {
         }
     }
 
-    func isEmailValid(_ email: String) {
+    func updateEmailValidation() {
         let emailPattern = "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,64}"
         let emailPred = NSPredicate(format:"SELF MATCHES %@", emailPattern)
         isEmailButtonActive = emailPred.evaluate(with: email)
     }
 
-    // 이름...?
+    func updateNicknameValidation() {
+        let nicknamePattern = "^[가-힣A-Za-z0-9]{2,10}$"
+        let nicknamePred = NSPredicate(format:"SELF MATCHES %@", nicknamePattern)
+        isNicknameButtonActive = nicknamePred.evaluate(with: nickname)
+    }
+
     func fetchCompanyCoordinate(_ company: String) async {
         // 실제 api가 호출되는 FullCarKit에는 api key에 접근할 수 없음. 따라서 FullCar에서 파라미터로 api key를 전달하는 방식이어야 하는데,, 괜춘할지?
         guard let kakaoRestApiKey = Bundle.main.kakaoRestApiKey else { return }
@@ -179,10 +185,10 @@ struct OnboardingView: View {
                         type: .check($viewModel.isEmailValid),
                         state: $viewModel.emailTextFieldState)
                     )
-                    .onChange(of: $viewModel.email.wrappedValue) { _, newValue in
+                    .onChange(of: $viewModel.email.wrappedValue) {
                         Task {
                             // email textField 입력할 때마다 이메일 유효성 검사
-                            await viewModel.isEmailValid(newValue)
+                            await viewModel.updateEmailValidation()
                             await viewModel.resetEmail()
                         }
                     }
@@ -204,6 +210,7 @@ struct OnboardingView: View {
                     )
                     .onChange(of: $viewModel.nickname.wrappedValue) { _, _ in
                         Task {
+                            await viewModel.updateNicknameValidation()
                             await viewModel.resetNickname()
                         }
                     }
@@ -284,6 +291,7 @@ struct OnboardingView: View {
                 .frame(maxWidth: .infinity)
         })
         .buttonStyle(.fullCar(style: .palette(.primary_white)))
+        .disabled(!$viewModel.isNicknameButtonActive.wrappedValue)
     }
 
     private var genderButton: some View {
