@@ -140,17 +140,14 @@ struct OnboardingView: View {
     @Bindable var viewModel: Onboarding.ViewModel
 
     var body: some View {
-        GeometryReader { geometry in
-            VStack(spacing: .zero) {
-                bodyView
+        VStack(spacing: .zero) {
+            bodyView
 
-                Spacer()
+            Spacer()
 
-                buttonView
-                    .padding(.bottom, 16)
-                    .padding(.horizontal, 20)
-            }
-            .frame(width: geometry.size.width, height: geometry.size.height)
+            buttonView
+                .padding(.bottom, 16)
+                .padding(.horizontal, 20)
         }
         .navigationBarStyle(
             leadingView: {
@@ -174,7 +171,7 @@ struct OnboardingView: View {
                 }
 
                 if $viewModel.isNicknameValid.wrappedValue {
-                    genderPicker
+                    Onboarding.GenderInput.PickerView(viewModel: viewModel)
                 }
             }
             .padding(.top, 32)
@@ -191,55 +188,8 @@ struct OnboardingView: View {
         } else if !$viewModel.isNicknameValid.wrappedValue {
             Onboarding.NicknameInput.ButtonView(viewModel: viewModel)
         } else {
-            completionButton
+            Onboarding.GenderInput.ButtonView(viewModel: viewModel)
         }
-    }
-
-    private var genderPicker: some View {
-        VStack(alignment: .leading, spacing: 20) {
-            SectionView(
-                content: {
-                    HStack(spacing: 6) {
-                        ForEach(Onboarding.Gender.allCases, id: \.self) { genderType in
-                            if genderType != .none {
-                                Button(action: {
-                                    $viewModel.gender.wrappedValue = genderType
-                                }, label: {
-                                    Text(genderType.rawValue)
-                                })
-                                .buttonStyle(.chip(genderType == $viewModel.gender.wrappedValue))
-                            }
-                        }
-                    }
-                },
-                header: {
-                    HeaderLabel(
-                        title: "베스트드라이버님의 성별을 알려주세요.",
-                        font: .pretendard22(.bold)
-                    )
-                }, 
-                footer: {
-                    if $viewModel.gender.wrappedValue == .notPublic {
-                        let notPublic: Message = .information("성별 미공개 시 게시글 노출률이 낮아질 수 있어요.")
-                        Text(notPublic.description)
-                            .font(.pretendard14(.semibold))
-                            .foregroundStyle(notPublic.fontColor)
-                    }
-                },
-                headerBottomPadding: 20,
-                footerTopPadding: 8
-            )
-        }
-    }
-
-    private var completionButton: some View {
-        Button(action: {
-            // 온보딩 완료!
-        }, label: {
-            Text("완료")
-                .frame(maxWidth: .infinity)
-        })
-        .buttonStyle(.fullCar(style: .palette(.primary_white)))
     }
 }
 
