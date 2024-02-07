@@ -12,6 +12,7 @@ import Dependencies
 public struct MemberService {
     public var searchLocation: (_ location: String, _ key: String) async throws -> [LocalCoordinate]
     public var checkNickname: (_ nickname: String) async throws -> Void
+    public var registerMember: (_ member: MemberInformation) async throws -> Void
 }
 
 extension MemberService: DependencyKey {
@@ -25,6 +26,9 @@ extension MemberService: DependencyKey {
             },
             checkNickname: { nickname in
                 try await api.checkNickname(nickname)
+            },
+            registerMember: { member in
+                try await api.register(member)
             }
         )
     }
