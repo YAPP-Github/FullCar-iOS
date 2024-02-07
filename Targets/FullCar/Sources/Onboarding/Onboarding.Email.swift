@@ -1,5 +1,5 @@
 //
-//  Onboarding.EmailInput.swift
+//  Onboarding.Email.swift
 //  FullCar
 //
 //  Created by Sunny on 2/7/24.
@@ -9,7 +9,7 @@
 import SwiftUI
 import FullCarUI
 
-extension Onboarding.EmailInput {
+extension Onboarding.Email {
     @MainActor
     struct TextFieldView: View {
         @Bindable var viewModel: Onboarding.ViewModel

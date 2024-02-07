@@ -1,5 +1,5 @@
 //
-//  Onboarding.GenderInput.swift
+//  Onboarding.Gender.swift
 //  FullCar
 //
 //  Created by Sunny on 2/7/24.
@@ -9,7 +9,7 @@
 import SwiftUI
 import FullCarUI
 
-extension Onboarding.GenderInput {
+extension Onboarding.Gender {
     @MainActor
     struct PickerView: View {
         @Bindable var viewModel: Onboarding.ViewModel
@@ -72,13 +72,5 @@ extension Onboarding.GenderInput {
             })
             .buttonStyle(.fullCar(style: .palette(.primary_white)))
         }
-    }
-}
-
-#Preview {
-    VStack(spacing: 100) {
-        Onboarding.GenderInput.PickerView(viewModel: .init())
-
-        Onboarding.GenderInput.ButtonView(viewModel: .init())
     }
 }

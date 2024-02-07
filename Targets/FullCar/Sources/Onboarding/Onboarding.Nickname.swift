@@ -1,5 +1,5 @@
 //
-//  Onboarding.NicknameInput.swift
+//  Onboarding.Nickname.swift
 //  FullCar
 //
 //  Created by Sunny on 2/7/24.
@@ -9,7 +9,7 @@
 import SwiftUI
 import FullCarUI
 
-extension Onboarding.NicknameInput {
+extension Onboarding.Nickname {
     @MainActor
     struct TextFieldView: View {
         @Bindable var viewModel: Onboarding.ViewModel

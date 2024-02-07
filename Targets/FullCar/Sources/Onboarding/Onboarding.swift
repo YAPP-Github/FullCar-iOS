@@ -12,13 +12,9 @@ import FullCarKit
 import Dependencies
 
 struct Onboarding {
-    enum CompanySearch { }
-    enum EmailInput { }
-    enum NicknameInput { }
-    enum GenderInput { }
-}
-
-extension Onboarding {
+    enum Company { }
+    enum Email { }
+    enum Nickname { }
     enum Gender: String, CaseIterable {
         case female = "여성"
         case male = "남성"
@@ -34,6 +30,16 @@ extension Onboarding {
         @ObservationIgnored 
         @Dependency(\.memberService) private var memberService
 
+        // MARK: Company Input
+        var locations: [LocalCoordinate] = []
+        var company: String = ""
+        var companyTextFieldState: InputState = .default
+        var isSearchActive: Bool = false
+
+        // MARK: CompanySearch
+        var companySearchBarState: InputState = .default
+
+        // MARK: Email
         var email: String = ""
         var emailTextFieldState: InputState = .default
         // 이메일 확인이 모두 완료되었을 때
@@ -43,14 +49,14 @@ extension Onboarding {
         // "인증메일 발송" 버튼 활성화 여부
         var isEmailButtonActive: Bool = false
 
+        // MARK: Nickname
         var nickname: String = ""
         var nicknameTextFieldState: InputState = .default
         var isNicknameValid: Bool = false
         var isNicknameButtonActive: Bool = false
 
+        // MARK: Gender
         var gender: Onboarding.Gender = .none
-
-        var locations: [LocalCoordinate] = []
     }
 }
 
@@ -164,14 +170,14 @@ struct OnboardingView: View {
     private var bodyView: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 40) {
-                Onboarding.EmailInput.TextFieldView(viewModel: viewModel)
+                Onboarding.Email.TextFieldView(viewModel: viewModel)
 
                 if $viewModel.isEmailValid.wrappedValue {
-                    Onboarding.NicknameInput.TextFieldView(viewModel: viewModel)
+                    Onboarding.Nickname.TextFieldView(viewModel: viewModel)
                 }
 
                 if $viewModel.isNicknameValid.wrappedValue {
-                    Onboarding.GenderInput.PickerView(viewModel: viewModel)
+                    Onboarding.Gender.PickerView(viewModel: viewModel)
                 }
             }
             .padding(.top, 32)
@@ -184,11 +190,11 @@ struct OnboardingView: View {
     @ViewBuilder
     private var buttonView: some View {
         if !$viewModel.isEmailValid.wrappedValue {
-            Onboarding.EmailInput.ButtonView(viewModel: viewModel)
+            Onboarding.Email.ButtonView(viewModel: viewModel)
         } else if !$viewModel.isNicknameValid.wrappedValue {
-            Onboarding.NicknameInput.ButtonView(viewModel: viewModel)
+            Onboarding.Nickname.ButtonView(viewModel: viewModel)
         } else {
-            Onboarding.GenderInput.ButtonView(viewModel: viewModel)
+            Onboarding.Gender.ButtonView(viewModel: viewModel)
         }
     }
 }
