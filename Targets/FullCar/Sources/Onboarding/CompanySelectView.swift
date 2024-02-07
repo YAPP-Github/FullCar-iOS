@@ -10,7 +10,7 @@ import SwiftUI
 import FullCarUI
 
 struct CompanySelectView: View {
-    @Bindable var viewModel: OnboardingViewModel
+    @Bindable var viewModel: Onboarding.ViewModel
 
     @State var company: String = ""
     @State private var companyTextFieldState: InputState = .default

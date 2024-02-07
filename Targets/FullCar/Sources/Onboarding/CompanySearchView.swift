@@ -11,7 +11,7 @@ import FullCarUI
 
 struct CompanySearchView: View {
     @Environment(\.dismiss) private var dismiss
-    @Bindable var viewModel: OnboardingViewModel
+    @Bindable var viewModel: Onboarding.ViewModel
 
     @State private var companySearchBarState: InputState = .default
     @State var company: String = ""

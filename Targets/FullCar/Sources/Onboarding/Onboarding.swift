@@ -1,5 +1,5 @@
 //
-//  OnboardingView.swift
+//  Onboarding.swift
 //  FullCar
 //
 //  Created by Sunny on 1/25/24.
@@ -11,32 +11,51 @@ import FullCarUI
 import FullCarKit
 import Dependencies
 
-@MainActor
-@Observable
-final class OnboardingViewModel {
-    @ObservationIgnored @Dependency(\.memberService) private var memberService
+struct Onboarding {
+    enum CompanySearch { }
+    enum EmailInput { }
+    enum NicknameInput { }
+    enum GenderInput { }
+}
 
-    var email: String = ""
-    var emailTextFieldState: InputState = .default
-    // 이메일 확인이 모두 완료되었을 때
-    var isEmailValid: Bool = false
-    // 블랙리스트 이메일인지 검증하는 api 호출 여부
-    var isEmailRequestSent: Bool = false
-    // "인증메일 발송" 버튼 활성화 여부
-    var isEmailButtonActive: Bool = false
+extension Onboarding {
+    enum Gender: String, CaseIterable {
+        case female = "여성"
+        case male = "남성"
+        case notPublic = "공개안함"
+        case none
+    }
+}
 
-    var nickname: String = ""
-    var nicknameTextFieldState: InputState = .default
-    var isNicknameValid: Bool = false
-    var isNicknameButtonActive: Bool = false
+extension Onboarding {
+    @MainActor
+    @Observable
+    final class ViewModel {
+        @ObservationIgnored 
+        @Dependency(\.memberService) private var memberService
 
-    var gender: Onboarding.Gender = .none
+        var email: String = ""
+        var emailTextFieldState: InputState = .default
+        // 이메일 확인이 모두 완료되었을 때
+        var isEmailValid: Bool = false
+        // 블랙리스트 이메일인지 검증하는 api 호출 여부
+        var isEmailRequestSent: Bool = false
+        // "인증메일 발송" 버튼 활성화 여부
+        var isEmailButtonActive: Bool = false
 
-    var locations: [LocalCoordinate] = []
+        var nickname: String = ""
+        var nicknameTextFieldState: InputState = .default
+        var isNicknameValid: Bool = false
+        var isNicknameButtonActive: Bool = false
+
+        var gender: Onboarding.Gender = .none
+
+        var locations: [LocalCoordinate] = []
+    }
 }
 
 // MARK: Email 관련 함수
-extension OnboardingViewModel {
+extension Onboarding.ViewModel {
     /// Email 형식 유효성 검사 함수
     func updateEmailValidation() {
         let emailPattern = "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,64}"
@@ -45,7 +64,7 @@ extension OnboardingViewModel {
     }
 
     /// 본인확인 이메일 전송 api 호출
-    func sendVerificationEmail() {
+    func sendVerificationEmail() async {
         // api 호출 이후 (response 오기 전)
         isEmailRequestSent = true
         isEmailButtonActive = false
@@ -64,7 +83,7 @@ extension OnboardingViewModel {
         }
     }
 
-    func resetEmail() {
+    func resetEmailStatus() {
         isEmailValid = false
         emailTextFieldState = .default
         isEmailRequestSent = false
@@ -72,7 +91,7 @@ extension OnboardingViewModel {
 }
 
 // MARK: Nickname 관련 함수
-extension OnboardingViewModel {
+extension Onboarding.ViewModel {
     /// Nickname 형식 유효성 검사 함수 - 2~10자, 한글/숫자/영문, 띄어쓰기불가
     func updateNicknameValidation() {
         let nicknamePattern = "^[가-힣A-Za-z0-9]{2,10}$"
@@ -102,7 +121,7 @@ extension OnboardingViewModel {
 }
 
 // MARK: Company 관련 함수
-extension OnboardingViewModel {
+extension Onboarding.ViewModel {
     /// 특정 검색어로 장소 리스트 검색
     func fetchCompanyCoordinate(_ company: String) async {
         // 실제 api가 호출되는 FullCarKit에는 api key에 접근할 수 없음. 따라서 FullCar에서 파라미터로 api key를 전달하는 방식이어야 하는데,, 괜춘할지?
@@ -117,17 +136,8 @@ extension OnboardingViewModel {
     }
 }
 
-struct Onboarding {
-    enum Gender: String, CaseIterable {
-        case female = "여성"
-        case male = "남성"
-        case notPublic = "공개안함"
-        case none
-    }
-}
-
 struct OnboardingView: View {
-    @Bindable var viewModel: OnboardingViewModel
+    @Bindable var viewModel: Onboarding.ViewModel
 
     var body: some View {
         GeometryReader { geometry in
@@ -157,7 +167,8 @@ struct OnboardingView: View {
     private var bodyView: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 40) {
-                emailTextField
+//                emailTextField
+                Onboarding.EmailInput.TextFieldView(viewModel: viewModel)
 
                 if $viewModel.isEmailValid.wrappedValue {
                     nicknameTextField
@@ -177,35 +188,12 @@ struct OnboardingView: View {
     @ViewBuilder
     private var buttonView: some View {
         if !$viewModel.isEmailValid.wrappedValue {
-            emailButton
+            Onboarding.EmailInput.ButtonView(viewModel: viewModel)
         } else if !$viewModel.isNicknameValid.wrappedValue {
             nicknameButton
         } else {
             completionButton
         }
-    }
-
-    private var emailTextField: some View {
-        FCTextFieldView(
-            textField: {
-                TextField("\("gildong@fullcar.com")", text: $viewModel.email)
-                    .textFieldStyle(.fullCar(
-                        type: .check($viewModel.isEmailValid),
-                        state: $viewModel.emailTextFieldState)
-                    )
-                    .onChange(of: $viewModel.email.wrappedValue) {
-                        Task {
-                            // email textField 입력할 때마다 이메일 유효성 검사
-                            await viewModel.updateEmailValidation()
-                            await viewModel.resetEmail()
-                        }
-                    }
-            },
-            state: $viewModel.emailTextFieldState,
-            headerText: "회사 메일을 입력해 주세요.",
-            headerFont: .pretendard22(.bold),
-            headerPadding: 20
-        )
     }
 
     private var nicknameTextField: some View {
@@ -264,28 +252,6 @@ struct OnboardingView: View {
                 headerBottomPadding: 20,
                 footerTopPadding: 8
             )
-        }
-    }
-
-    private var emailButton: some View {
-        VStack(spacing: 10) {
-            if $viewModel.isEmailRequestSent.wrappedValue {
-                Text("메일이 오지 않나요? >")
-                    .foregroundStyle(Color.fullCar_primary)
-                    .font(.pretendard14(.semibold))
-            }
-
-            Button(action: {
-                Task {
-                    await viewModel.sendVerificationEmail()
-                    // MARK: 닉네임 textField로 포커스 변경하고 싶은데,,
-                }
-            }, label: {
-                Text("인증메일 발송")
-                    .frame(maxWidth: .infinity)
-            })
-            .buttonStyle(.fullCar(style: .palette(.primary_white)))
-            .disabled(!$viewModel.isEmailButtonActive.wrappedValue)
         }
     }
 
