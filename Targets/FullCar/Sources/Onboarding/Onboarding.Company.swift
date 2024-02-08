@@ -68,9 +68,7 @@ extension Onboarding.Company {
                 headerPadding: 20
             )
             .onTapGesture {
-                withAnimation {
-                    viewModel.isSearchActive.toggle()
-                }
+                viewModel.isSearchActive.toggle()
             }
         }
     }
@@ -156,4 +154,8 @@ extension Onboarding.Company {
             }
         }
     }
+}
+
+#Preview {
+    Onboarding.Company.InputView(viewModel: .init())
 }

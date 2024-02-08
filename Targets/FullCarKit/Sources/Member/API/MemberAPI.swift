@@ -9,14 +9,14 @@
 import SwiftUI
 import Dependencies
 
-struct MemberAPI {
-    var searchLocation: (_ location: String, _ key: String) async throws -> [LocalCoordinate]
-    var checkNickname: (_ nickname: String) async throws -> Void
-    var register: (_ member: MemberInformation) async throws -> Void
+public struct MemberAPI {
+    public var searchLocation: (_ location: String, _ key: String) async throws -> [LocalCoordinate]
+    public var checkNickname: (_ nickname: String) async throws -> Void
+    public var register: (_ member: MemberInformation) async throws -> Void
 }
 
 extension MemberAPI: DependencyKey {
-    static var liveValue: MemberAPI {
+    public static var liveValue: MemberAPI {
         return MemberAPI(
             searchLocation: { location, key in
                 let response: LocationResponse = try await NetworkClient.account.request(
@@ -49,7 +49,7 @@ extension MemberAPI: DependencyKey {
 }
 
 extension DependencyValues {
-    var memberAPI: MemberAPI {
+    public var memberAPI: MemberAPI {
         get { self[MemberAPI.self] }
         set { self[MemberAPI.self] = newValue }
     }

@@ -28,7 +28,7 @@ extension Onboarding {
     @Observable
     final class ViewModel {
         @ObservationIgnored 
-        @Dependency(\.memberService) private var memberService
+        @Dependency(\.onbardingAPI) private var onboardingAPI
 
         // MARK: Company Input
         var locations: [LocalCoordinate] = []
@@ -109,7 +109,7 @@ extension Onboarding.ViewModel {
     func sendVerificationNickname() async {
         do {
             // 닉네임 중복 확인 api 호출
-            try await memberService.checkNickname(nickname)
+            try await onboardingAPI.check(nickname: nickname)
             // case1) 닉네임 인증 성공
             isNicknameValid = true
             nicknameTextFieldState = .default
@@ -130,11 +130,8 @@ extension Onboarding.ViewModel {
 extension Onboarding.ViewModel {
     /// 특정 검색어로 장소 리스트 검색
     func fetchCompanyCoordinate(_ company: String) async {
-        // 실제 api가 호출되는 FullCarKit에는 api key에 접근할 수 없음. 따라서 FullCar에서 파라미터로 api key를 전달하는 방식이어야 하는데,, 괜춘할지?
-        guard let kakaoRestApiKey = Bundle.main.kakaoRestApiKey else { return }
-
         do {
-            let coordinates = try await memberService.searchLocation(company, kakaoRestApiKey)
+            let coordinates = try await onboardingAPI.search(location: company)
             locations = coordinates
         } catch {
             print(error)
