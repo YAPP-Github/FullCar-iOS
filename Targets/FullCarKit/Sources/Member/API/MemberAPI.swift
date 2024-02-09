@@ -35,10 +35,9 @@ extension MemberAPI: DependencyKey {
                 return coordinates
             },
             checkNickname: { nickname in
-                let response: ApiNicknameResponse = try await NetworkClient.main.request(
+                try await NetworkClient.main.request(
                     endpoint: Endpoint.Member.check(nickname: nickname)
                 ).response()
-                // MARK: 닉네임 중복 검사 이후 Retrun 필요한가?
             },
             register: { member in
                 try await NetworkClient.main.request(
