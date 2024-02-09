@@ -74,7 +74,6 @@ struct TokenInterceptor: NetworkInterceptor {
             endpoint: Endpoint.Account.refresh(refreshToken: credential.refreshToken)
         ).response()
         let newCredential: AccountCredential = .init(
-            onBoardingFlag: credential.onBoardingFlag,
             accessToken: authResponse.data.accessToken,
             refreshToken: authResponse.data.refreshToken
         )

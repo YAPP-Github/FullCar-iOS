@@ -28,7 +28,6 @@ extension AccountService: DependencyKey {
                 guard credential.accessTokenExpiration > Date() else {
                     let response = try await api.refresh(credential.refreshToken)
                     let newCredential: AccountCredential = .init(
-                        onBoardingFlag: credential.onBoardingFlag,
                         accessToken: response.accessToken,
                         refreshToken: response.refreshToken
                     )
@@ -65,7 +64,6 @@ extension AccountService: TestDependencyKey {
             hasValidToken: { return false },
             login: { accessToken in
                 let credential = AccountCredential(
-                    onBoardingFlag: false,
                     accessToken: "Test Access Token",
                     refreshToken: "Test Refresh Token"
                 )

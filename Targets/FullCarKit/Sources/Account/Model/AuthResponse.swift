@@ -13,7 +13,6 @@ struct ApiAuthResponse: Decodable {
 }
 
 struct AuthResponse: Decodable {
-    let onBoardingFlag: Bool
     let accessToken: String
     let refreshToken: String
 }
