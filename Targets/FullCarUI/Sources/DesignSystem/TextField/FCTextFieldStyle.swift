@@ -30,10 +30,10 @@ public struct FCTextFieldStyle: TextFieldStyle {
                     state = newValue ? .focus : .default
                 }
                 .onChange(of: state) { oldValue, newValue in
-                    if case .focus = state {
-                        // 임시 주석
-                        print("FCTextFieldStyle의 state가 변경됨에 따라 @FocusState true로 변경")
+                    if case .focus = newValue {
                         isFocused = true
+                    } else if case .default = newValue {
+                        isFocused = false
                     }
                 }
 
