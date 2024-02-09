@@ -26,7 +26,7 @@ extension Onboarding.Email {
                             type: .check($viewModel.isEmailValid),
                             state: $viewModel.emailTextFieldState)
                         )
-                        .onChange(of: $viewModel.email.wrappedValue) {
+                        .onChange(of: viewModel.email) {
                             // email textField 입력할 때마다 이메일 유효성 검사
                             viewModel.updateEmailValidation()
                             viewModel.resetEmailStatus()

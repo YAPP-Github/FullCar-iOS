@@ -34,7 +34,6 @@ extension Onboarding {
         var locations: [LocalCoordinate] = []
         var company: String = ""
         var companyTextFieldState: InputState = .default
-        var isSearchActive: Bool = false
 
         // MARK: CompanySearch
         var companySearchBarState: InputState = .default

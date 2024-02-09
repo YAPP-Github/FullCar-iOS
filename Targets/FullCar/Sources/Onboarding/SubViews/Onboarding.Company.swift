@@ -11,31 +11,39 @@ import FullCarUI
 
 extension Onboarding.Company {
     @MainActor
+    struct BodyView: View {
+        @Bindable var viewModel: Onboarding.ViewModel
+
+        @State private var isSearchViewAppear: Bool = false
+
+        var body: some View {
+            if !isSearchViewAppear {
+                InputView(viewModel: viewModel, isSearchViewAppear: $isSearchViewAppear)
+            } else {
+                SearchView(viewModel: viewModel, isSearchViewAppear: $isSearchViewAppear)
+            }
+        }
+    }
+
+    @MainActor
     struct InputView: View {
         @Bindable var viewModel: Onboarding.ViewModel
 
-        var body: some View {
-            NavigationStack {
-                bodyView
-                    .padding(.horizontal, 20)
-                    .padding(.top, 32)
-                    .padding(.bottom, 16)
-                    .navigationBarStyle(
-                        leadingView: { },
-                        centerView: {
-                            Text("회원 가입")
-                                .font(.pretendard18(.bold))
-                        },
-                        trailingView: { }
-                    )
-                    .navigationDestination(isPresented: $viewModel.isSearchActive) {
-                        Onboarding.Company.SearchView(viewModel: viewModel)
-                    }
-            }
-        }
+        @Binding var isSearchViewAppear: Bool
 
-        private var bodyView: some View {
+        var body: some View {
             companyTextFieldView
+                .padding(.horizontal, 20)
+                .padding(.top, 32)
+                .padding(.bottom, 16)
+                .navigationBarStyle(
+                    leadingView: { },
+                    centerView: {
+                        Text("회원 가입")
+                            .font(.pretendard18(.bold))
+                    },
+                    trailingView: { }
+                )
         }
 
         private var companyTextFieldView: some View {
@@ -56,9 +64,9 @@ extension Onboarding.Company {
         private var companyTextField: some View {
             FCTextFieldView(
                 textField: {
-                    TextField("회사, 주소 검색", text: $viewModel.company)
+                    TextField("회사, 주소 검색", text: .constant(""))
                         .textFieldStyle(.fullCar(
-                            type: viewModel.company.isEmpty ? .search : .check(.constant(true)),
+                            type: .search,
                             state: $viewModel.companyTextFieldState)
                         )
                 },
@@ -68,15 +76,18 @@ extension Onboarding.Company {
                 headerPadding: 20
             )
             .onTapGesture {
-                viewModel.isSearchActive.toggle()
+                withAnimation {
+                    isSearchViewAppear = true
+                }
             }
         }
     }
 
     @MainActor
     struct SearchView: View {
-        @Environment(\.dismiss) private var dismiss
         @Bindable var viewModel: Onboarding.ViewModel
+
+        @Binding var isSearchViewAppear: Bool
 
         var body: some View {
             bodyView
@@ -87,10 +98,14 @@ extension Onboarding.Company {
                 }
                 .navigationBarStyle(
                     leadingView: {
-                        NavigationButton(icon: .back, action: { dismiss() })
+                        NavigationButton(icon: .back, action: {
+                            withAnimation {
+                                isSearchViewAppear = false
+                            }
+                        })
                     },
                     centerView: {
-                        Text("회사 입력")
+                        Text("회사 검색")
                             .font(.pretendard18(.bold))
                     },
                     trailingView: { }
@@ -157,5 +172,5 @@ extension Onboarding.Company {
 }
 
 #Preview {
-    Onboarding.Company.InputView(viewModel: .init())
+    Onboarding.Company.BodyView(viewModel: .init())
 }
