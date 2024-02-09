@@ -54,10 +54,13 @@ struct HomeView: View {
     private var bodyView: some View {
         if viewModel.error != nil {
             errorView(imageName: "error_home")
+                .transition(.fadeInOut)
         } else if viewModel.carPullList.isEmpty {
             errorView(imageName: "empty_home")
+                .transition(.fadeInOut)
         } else {
             carPullList(viewModel.carPullList)
+                .transition(.fadeInOut)
         }
     }
     private func errorView(imageName: String) -> some View {
@@ -72,9 +75,11 @@ struct HomeView: View {
                 if viewModel.apiIsInFlight {
                     ProgressView().id(UUID())
                         .progressViewStyle(CircularProgressViewStyle(tint: Color.white))
+                        .transition(.fadeInOut)
                         .frame(width: 116)
                 } else {
                     Text("다시 불러오기")
+                        .transition(.fadeInOut)
                         .frame(width: 116)
                 }
             }
