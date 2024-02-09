@@ -58,6 +58,20 @@ extension Onboarding {
     }
 }
 
+// MARK: Company 관련 함수
+extension Onboarding.ViewModel {
+    /// 특정 검색어로 장소 리스트 검색
+    func fetchCompanyCoordinate(_ company: String) async -> [LocalCoordinate] {
+        do {
+            let coordinates = try await onboardingAPI.search(location: company)
+            return coordinates
+        } catch {
+            print(error)
+            return []
+        }
+    }
+}
+
 // MARK: Email 관련 함수
 extension Onboarding.ViewModel {
     /// Email 형식 유효성 검사 함수
@@ -128,16 +142,20 @@ extension Onboarding.ViewModel {
     }
 }
 
-// MARK: Company 관련 함수
+// MARK: 그외 Onboarding 관련 함수
 extension Onboarding.ViewModel {
-    /// 특정 검색어로 장소 리스트 검색
-    func fetchCompanyCoordinate(_ company: String) async -> [LocalCoordinate] {
+    func register() async {
         do {
-            let coordinates = try await onboardingAPI.search(location: company)
-            return coordinates
+            guard let company = company else { return }
+            let member: MemberInformation = .init(
+                company: company, 
+                email: email,
+                nickName: nickname,
+                gender: gender.rawValue
+            )
+            try await onboardingAPI.register(member: member)
         } catch {
             print(error)
-            return []
         }
     }
 }

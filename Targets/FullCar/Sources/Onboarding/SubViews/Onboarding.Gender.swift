@@ -25,11 +25,11 @@ extension Onboarding.Gender {
                         ForEach(Onboarding.Gender.allCases, id: \.self) { genderType in
                             if genderType != .none {
                                 Button(action: {
-                                    $viewModel.gender.wrappedValue = genderType
+                                    viewModel.gender = genderType
                                 }, label: {
                                     Text(genderType.rawValue)
                                 })
-                                .buttonStyle(.chip(genderType == $viewModel.gender.wrappedValue))
+                                .buttonStyle(.chip(genderType == viewModel.gender))
                             }
                         }
                     }
@@ -42,7 +42,7 @@ extension Onboarding.Gender {
                     .frame(width: 335, alignment: .leading)
                 },
                 footer: {
-                    if $viewModel.gender.wrappedValue == .notPublic {
+                    if viewModel.gender == .notPublic {
                         let notPublic: Message = .information("성별 미공개 시 게시글 노출률이 낮아질 수 있어요.")
                         Text(notPublic.description)
                             .font(.pretendard14(.semibold))
@@ -65,7 +65,9 @@ extension Onboarding.Gender {
 
         private var bodyView: some View {
             Button(action: {
-                // 온보딩 완료!
+                Task {
+                    await viewModel.register()
+                }
             }, label: {
                 Text("완료")
                     .frame(maxWidth: .infinity)

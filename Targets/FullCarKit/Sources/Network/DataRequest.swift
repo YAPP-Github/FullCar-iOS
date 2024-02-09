@@ -34,13 +34,28 @@ public final class DataRequest: NetworkRequestable {
     
     @MainActor
     public func response<Model: Decodable>(with decoder: JSONDecoder = .init()) async throws -> Model {
+        let response = try await performRequest()
+        let result: Model = try self.decode(with: decoder, response: response)
+
+        return result
+    }
+
+    @MainActor
+    public func response() async throws {
+        _ = try await performRequest()
+    }
+
+    private func performRequest() async throws -> NetworkResponse {
         let response = try await fetchResponse()
 
         do {
             try self.validate(response: response)
-            let result: Model = try self.decode(with: decoder, response: response)
 
-            return result
+            return .init(
+                data: response.data,
+                response: response.response,
+                error: nil
+            )
         } catch {
             guard retryCount < retryLimit else {
                 throw error
@@ -57,18 +72,11 @@ public final class DataRequest: NetworkRequestable {
 
             switch retryResult {
             case .retry:
-                let result: Model = try await self.response()
-                return result
+                return try await performRequest()
             case .doNotRetry(let error):
                 throw error
             }
         }
-    }
-
-    @MainActor
-    public func response() async throws {
-        let response = try await fetchResponse()
-        try self.validate(response: response)
     }
 
     private func fetchResponse() async throws -> NetworkResponse {
