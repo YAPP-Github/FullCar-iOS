@@ -32,10 +32,13 @@ extension Onboarding {
 
         // MARK: Company Input
         var company: LocalCoordinate?
-        var companyTextFieldState: InputState = .default
 
         // MARK: CompanySearch
         var companySearchBarState: InputState = .default
+
+        // MARK: 화면 이동
+        var isSearchViewAppear: Bool = false
+        var isOnboardingViewAppear: Bool = false
 
         // MARK: Email
         var email: String = ""
@@ -138,63 +141,68 @@ extension Onboarding.ViewModel {
     }
 }
 
-struct OnboardingView: View {
-    @Bindable var viewModel: Onboarding.ViewModel
+extension Onboarding {
+    @MainActor
+    struct BodyView: View {
+        @Bindable var viewModel: Onboarding.ViewModel
 
-    var body: some View {
-        VStack(spacing: .zero) {
-            bodyView
+        var body: some View {
+            NavigationStack {
+                VStack(spacing: .zero) {
+                    bodyView
 
-            Spacer()
+                    Spacer()
 
-            buttonView
-                .padding(.bottom, 16)
-                .padding(.horizontal, 20)
-        }
-        .navigationBarStyle(
-            leadingView: {
-                NavigationButton(icon: .back, action: { })
-            },
-            centerView: {
-                Text("회원 가입")
-                    .font(.pretendard18(.bold))
-            },
-            trailingView: { }
-        )
-    }
-
-    private var bodyView: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: 40) {
-                Onboarding.Email.TextFieldView(viewModel: viewModel)
-
-                if $viewModel.isEmailValid.wrappedValue {
-                    Onboarding.Nickname.TextFieldView(viewModel: viewModel)
+                    buttonView
+                        .padding(.bottom, 16)
+                        .padding(.horizontal, 20)
                 }
-
-                if $viewModel.isNicknameValid.wrappedValue {
-                    Onboarding.Gender.PickerView(viewModel: viewModel)
-                }
+                .navigationBarStyle(
+                    leadingView: {
+                        NavigationButton(icon: .back, action: { })
+                    },
+                    centerView: {
+                        Text("회원 가입")
+                            .font(.pretendard18(.bold))
+                    },
+                    trailingView: { }
+                )
             }
-            .padding(.top, 32)
-            .padding(.horizontal, 20)
         }
-        .scrollBounceBehavior(.basedOnSize)
-        .scrollIndicators(.hidden)
-    }
 
-    @ViewBuilder
-    private var buttonView: some View {
-        if !$viewModel.isEmailValid.wrappedValue {
-            Onboarding.Email.ButtonView(viewModel: viewModel)
-        } else if !$viewModel.isNicknameValid.wrappedValue {
-            Onboarding.Nickname.ButtonView(viewModel: viewModel)
-        } else {
-            Onboarding.Gender.ButtonView(viewModel: viewModel)
+        private var bodyView: some View {
+            ScrollView {
+                VStack(alignment: .leading, spacing: 40) {
+                    Onboarding.Email.TextFieldView(viewModel: viewModel)
+
+                    if $viewModel.isEmailValid.wrappedValue {
+                        Onboarding.Nickname.TextFieldView(viewModel: viewModel)
+                    }
+
+                    if $viewModel.isNicknameValid.wrappedValue {
+                        Onboarding.Gender.PickerView(viewModel: viewModel)
+                    }
+                }
+                .padding(.top, 32)
+                .padding(.horizontal, 20)
+            }
+            .scrollBounceBehavior(.basedOnSize)
+            .scrollIndicators(.hidden)
+        }
+
+        @ViewBuilder
+        private var buttonView: some View {
+            if !$viewModel.isEmailValid.wrappedValue {
+                Onboarding.Email.ButtonView(viewModel: viewModel)
+            } else if !$viewModel.isNicknameValid.wrappedValue {
+                Onboarding.Nickname.ButtonView(viewModel: viewModel)
+            } else {
+                Onboarding.Gender.ButtonView(viewModel: viewModel)
+            }
         }
     }
 }
 
 #Preview {
-    OnboardingView(viewModel: .init())
+    Onboarding.BodyView(viewModel: .init())
 }
