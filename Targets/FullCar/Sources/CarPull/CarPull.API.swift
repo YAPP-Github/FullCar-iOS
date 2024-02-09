@@ -59,35 +59,40 @@ extension CarPull.API: DependencyKey {
     static let previewValue: CarPull.API = .init(
         fetch: {
             _, _ in
-            return CommonResponse<CarPull.Model.Fetch>(
-                status: 200,
-                message: "",
-                data: CarPull.Model.Fetch(
-                    size: 20,
-                    carPullList: [
-                        .mock(),
-                        .mock(),
-                        .mock(),
-                        .mock(),
-                        .mock(),
-                        .mock(),
-                        .mock(),
-                        .mock(),
-                        .mock(),
-                        .mock(),
-                        .mock(),
-                        .mock(),
-                        .mock(),
-                        .mock(),
-                        .mock(),
-                        .mock(),
-                        .mock(),
-                        .mock(),
-                        .mock(),
-                        .mock(),
-                    ]
-                )
+            try? await Task.sleep(for: .seconds(1))
+            if Bool.random() {
+        throw NSError(domain: "", code: 1)
+    } else {
+        return CommonResponse<CarPull.Model.Fetch>(
+            status: 200,
+            message: "",
+            data: CarPull.Model.Fetch(
+                size: 20,
+                carPullList: [
+                    .mock(),
+                    .mock(),
+                    .mock(),
+                    .mock(),
+                    .mock(),
+                    .mock(),
+                    .mock(),
+                    .mock(),
+                    .mock(),
+                    .mock(),
+                    .mock(),
+                    .mock(),
+                    .mock(),
+                    .mock(),
+                    .mock(),
+                    .mock(),
+                    .mock(),
+                    .mock(),
+                    .mock(),
+                    .mock(),
+                ]
             )
+        )
+    }
         },
         register: {
             _,

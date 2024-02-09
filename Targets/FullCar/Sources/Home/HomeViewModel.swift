@@ -23,8 +23,9 @@ final class HomeViewModel {
     @Dependency(\.carpullAPI) private var carpullAPI
     
     var paths: [Destination] = []
-    var carPullList: [CarPull.Model.Information] = []
-    var apiIsInFlight: Bool = false
+    private(set) var carPullList: [CarPull.Model.Information] = []
+    private(set) var apiIsInFlight: Bool = false
+    private(set) var error: Error?
     
     private var currentPage: Int = 1
     private var homeResponse: CommonResponse<CarPull.Model.Fetch>?
@@ -45,6 +46,7 @@ final class HomeViewModel {
             defer { apiIsInFlight = false }
             
             let response = try await carpullAPI.fetch(page: currentPage)
+            self.error = .none
             self.homeResponse = response
             
             if page == 1 {
@@ -56,13 +58,14 @@ final class HomeViewModel {
             currentPage += 1
         }
         catch {
-            // some error handling
+            self.error = error
         }
     }
     
     @Sendable
     func refreshable() async {
         clear()
+        await fetchCarPulls(page: 1)
     }
     
     func onCardTapped(_ carpull: CarPull.Model.Information) async {
@@ -75,10 +78,12 @@ final class HomeViewModel {
         paths.append(.detail(detailViewModel))
     }
     
+    func retryButtonTapped() async {
+        await fetchCarPulls(page: 1)
+    }
+    
     private func clear() {
         self.currentPage = 1
-        self.carPullList.removeAll()
-        self.homeResponse = .none
     }
 }
 
