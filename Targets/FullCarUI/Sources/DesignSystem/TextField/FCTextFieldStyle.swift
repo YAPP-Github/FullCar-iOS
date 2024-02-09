@@ -20,9 +20,11 @@ public struct FCTextFieldStyle: TextFieldStyle {
     public typealias Configuration = TextField<Self._Label>
 
     public func _body(configuration: Configuration) -> some View {
-        HStack {
+        HStack(spacing: .zero) {
             configuration
                 .font(.pretendard16_19(.semibold))
+                .padding(.vertical, padding)
+                .padding(.leading, padding)
                 .focused($isFocused)
                 // 에러 상태일 땐, focus상태여도 error상태 그대로 유지
                 .onChange(of: isFocused) { oldValue, newValue in
@@ -57,7 +59,7 @@ public struct FCTextFieldStyle: TextFieldStyle {
                     .foregroundStyle(Color.gray45)
             }
         }
-        .padding(padding)
+        .padding(.trailing, padding)
         .background(backgroundColor)
         .cornerRadius(radius: cornerRadius, corners: .allCorners)
         .overlay(

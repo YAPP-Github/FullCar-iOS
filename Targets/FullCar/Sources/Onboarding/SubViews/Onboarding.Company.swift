@@ -33,18 +33,23 @@ extension Onboarding.Company {
         @Binding var isSearchViewAppear: Bool
 
         var body: some View {
-            companyTextFieldView
-                .padding(.horizontal, 20)
-                .padding(.top, 32)
-                .padding(.bottom, 16)
-                .navigationBarStyle(
-                    leadingView: { },
-                    centerView: {
-                        Text("회원 가입")
-                            .font(.pretendard18(.bold))
-                    },
-                    trailingView: { }
-                )
+            NavigationStack {
+                companyTextFieldView
+                    .padding(.horizontal, 20)
+                    .padding(.top, 32)
+                    .padding(.bottom, 16)
+                    .navigationBarStyle(
+                        leadingView: { },
+                        centerView: {
+                            Text("회원 가입")
+                                .font(.pretendard18(.bold))
+                        },
+                        trailingView: { }
+                    )
+                    .navigationDestination(isPresented: $viewModel.isOnboardingViewAppear) {
+                        Onboarding.BodyView(viewModel: viewModel)
+                    }
+            }
         }
 
         private var companyTextFieldView: some View {
@@ -68,10 +73,10 @@ extension Onboarding.Company {
                     TextField("회사, 주소 검색", text: .constant(""))
                         .textFieldStyle(.fullCar(
                             type: .search,
-                            state: $viewModel.companyTextFieldState)
+                            state: .constant(.default))
                         )
                 },
-                state: $viewModel.companyTextFieldState,
+                state: .constant(.default),
                 headerText: "안전한 카풀을 위해\n본인의 회사를 선택해 주세요.",
                 headerFont: .pretendard22(.bold),
                 headerPadding: 20
@@ -172,6 +177,7 @@ extension Onboarding.Company {
                         LocationListItem(location: item, company: keyword)
                             .onTapGesture {
                                 viewModel.company = item.wrappedValue
+                                viewModel.isOnboardingViewAppear = true
                             }
                     }
                 })
