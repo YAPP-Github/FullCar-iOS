@@ -53,7 +53,7 @@ struct LocationListItem: View {
                 .font(.pretendard16_19(.medium))
                 .foregroundStyle(Color.black80)
 
-            Text(location.address)
+            Text(location.address ?? "")
                 .font(.pretendard14(.semibold))
                 .foregroundStyle(Color.gray45)
         }

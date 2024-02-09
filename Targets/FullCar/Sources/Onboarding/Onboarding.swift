@@ -16,10 +16,19 @@ struct Onboarding {
     enum Email { }
     enum Nickname { }
     enum Gender: String, CaseIterable {
-        case female = "여성"
-        case male = "남성"
-        case notPublic = "공개안함"
-        case none
+        case female = "FEMALE"
+        case male = "MALE"
+        case notPublic = "NONE"
+        case notSelect
+
+        var title: String {
+            switch self {
+            case .female: return "여성"
+            case .male: return "남성"
+            case .notPublic: return "공개안함"
+            case .notSelect: return ""
+            }
+        }
     }
 }
 
@@ -54,7 +63,7 @@ extension Onboarding {
         var isNicknameValid: Bool = false
 
         // MARK: Gender
-        var gender: Onboarding.Gender = .none
+        var gender: Onboarding.Gender = .notSelect
     }
 }
 

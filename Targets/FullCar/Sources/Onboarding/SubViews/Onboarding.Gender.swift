@@ -23,11 +23,11 @@ extension Onboarding.Gender {
                 content: {
                     HStack(spacing: 6) {
                         ForEach(Onboarding.Gender.allCases, id: \.self) { genderType in
-                            if genderType != .none {
+                            if genderType != .notSelect {
                                 Button(action: {
                                     viewModel.gender = genderType
                                 }, label: {
-                                    Text(genderType.rawValue)
+                                    Text(genderType.title)
                                 })
                                 .buttonStyle(.chip(genderType == viewModel.gender))
                             }
