@@ -14,6 +14,7 @@ public struct MemberAPI {
     public var checkNickname: (_ nickname: String) async throws -> Void
     public var register: (_ member: MemberInformation) async throws -> Void
     public var send: (_ email: String) async throws -> Void
+    public var fetch: () async throws -> MemberInformation
 }
 
 extension MemberAPI: DependencyKey {
@@ -48,6 +49,13 @@ extension MemberAPI: DependencyKey {
                 try await NetworkClient.main.request(
                     endpoint: Endpoint.Member.send(email: email)
                 ).response()
+            },
+            fetch: {
+                let response: ApiMemberResponse = try await NetworkClient.main.request(
+                    endpoint: Endpoint.Member.fetch
+                ).response()
+
+                return response.data.toDomain()
             }
         )
     }

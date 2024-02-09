@@ -36,6 +36,7 @@ public extension Endpoint {
         case check(nickname: String)
         case register(member: MemberInformation)
         case send(email: String)
+        case fetch
     }
 }
 
@@ -195,7 +196,7 @@ extension Endpoint.Member: URLRequestConfigurable {
     public var url: URLConvertible {
         switch self {
         case .search: return "https://dapi.kakao.com"
-        case .check, .register, .send: return "http://43.200.176.240:8080"
+        case .check, .register, .send, .fetch: return "http://43.200.176.240:8080"
         }
     }
     
@@ -205,12 +206,13 @@ extension Endpoint.Member: URLRequestConfigurable {
         case .check: return "/api/v1/members/onboarding/nickname"
         case .register: return "/api/v1/members/onboarding"
         case .send: return "/api/v1/members/onboarding/company/email"
+        case .fetch: return "/api/v1/members"
         }
     }
     
     public var method: HTTPMethod {
         switch self {
-        case .search: return .get
+        case .search, .fetch: return .get
         case .check, .register, .send: return .post
         }
     }
@@ -234,6 +236,7 @@ extension Endpoint.Member: URLRequestConfigurable {
         case .send(let email): return [
             "email": email
         ]
+        default: return nil
         }
     }
     
@@ -242,13 +245,13 @@ extension Endpoint.Member: URLRequestConfigurable {
         case .search(_, let key): return [
             .authorization("KakaoAK \(key)")
         ]
-        case .check, .register, .send: return nil
+        default: return nil
         }
     }
     
     public var encoder: ParameterEncodable {
         switch self {
-        case .search: return URLEncoding()
+        case .search, .fetch: return URLEncoding()
         case .check, .register, .send: return JSONEncoding()
         }
     }
