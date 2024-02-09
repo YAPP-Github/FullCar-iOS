@@ -26,9 +26,8 @@ extension Onboarding.Nickname {
                             type: .check($viewModel.isNicknameValid),
                             state: $viewModel.nicknameTextFieldState)
                         )
-                        .onChange(of: $viewModel.nickname.wrappedValue) { _, _ in
-                            viewModel.updateNicknameValidation()
-                            viewModel.resetNickname()
+                        .onChange(of: viewModel.nickname) {
+                            viewModel.isNicknameValid = false
                         }
                 },
                 state: $viewModel.nicknameTextFieldState,
@@ -57,7 +56,7 @@ extension Onboarding.Nickname {
                     .frame(maxWidth: .infinity)
             })
             .buttonStyle(.fullCar(style: .palette(.primary_white)))
-            .disabled(!$viewModel.isNicknameButtonActive.wrappedValue)
+            .disabled(!viewModel.isNicknameValidation())
         }
     }
 }

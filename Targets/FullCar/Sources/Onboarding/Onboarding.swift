@@ -30,15 +30,13 @@ extension Onboarding {
         @ObservationIgnored 
         @Dependency(\.onbardingAPI) private var onboardingAPI
 
-        // MARK: Company Input
-        var company: LocalCoordinate?
-
-        // MARK: CompanySearch
-        var companySearchBarState: InputState = .default
-
         // MARK: 화면 이동
         var isSearchViewAppear: Bool = false
         var isOnboardingViewAppear: Bool = false
+
+        // MARK: Company
+        var company: LocalCoordinate?
+        var companySearchBarState: InputState = .default
 
         // MARK: Email
         var email: String = ""
@@ -54,7 +52,6 @@ extension Onboarding {
         var nickname: String = ""
         var nicknameTextFieldState: InputState = .default
         var isNicknameValid: Bool = false
-        var isNicknameButtonActive: Bool = false
 
         // MARK: Gender
         var gender: Onboarding.Gender = .none
@@ -109,10 +106,10 @@ extension Onboarding.ViewModel {
 // MARK: Nickname 관련 함수
 extension Onboarding.ViewModel {
     /// Nickname 형식 유효성 검사 함수 - 2~10자, 한글/숫자/영문, 띄어쓰기불가
-    func updateNicknameValidation() {
+    func isNicknameValidation() -> Bool {
         let nicknamePattern = "^[가-힣A-Za-z0-9]{2,10}$"
         let nicknamePred = NSPredicate(format:"SELF MATCHES %@", nicknamePattern)
-        isNicknameButtonActive = nicknamePred.evaluate(with: nickname)
+        return nicknamePred.evaluate(with: nickname)
     }
 
     /// 닉네임 중복 확인 api 호출
@@ -128,11 +125,6 @@ extension Onboarding.ViewModel {
             isNicknameValid = false
             nicknameTextFieldState = .error("중복된 닉네임 입니다.")
         }
-    }
-
-    func resetNickname() {
-        isNicknameValid = false
-        nicknameTextFieldState = .default
     }
 }
 
@@ -218,6 +210,8 @@ extension Onboarding {
     }
 }
 
+#if DEBUG
 #Preview {
     Onboarding.BodyView(viewModel: .init())
 }
+#endif
