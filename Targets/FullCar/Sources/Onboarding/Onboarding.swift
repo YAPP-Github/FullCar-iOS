@@ -31,8 +31,7 @@ extension Onboarding {
         @Dependency(\.onbardingAPI) private var onboardingAPI
 
         // MARK: Company Input
-        var locations: [LocalCoordinate] = []
-        var company: String = ""
+        var company: LocalCoordinate?
         var companyTextFieldState: InputState = .default
 
         // MARK: CompanySearch
@@ -128,12 +127,13 @@ extension Onboarding.ViewModel {
 // MARK: Company 관련 함수
 extension Onboarding.ViewModel {
     /// 특정 검색어로 장소 리스트 검색
-    func fetchCompanyCoordinate(_ company: String) async {
+    func fetchCompanyCoordinate(_ company: String) async -> [LocalCoordinate] {
         do {
             let coordinates = try await onboardingAPI.search(location: company)
-            locations = coordinates
+            return coordinates
         } catch {
             print(error)
+            return []
         }
     }
 }

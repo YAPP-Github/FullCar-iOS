@@ -8,6 +8,7 @@
 
 import SwiftUI
 import FullCarUI
+import FullCarKit
 
 extension Onboarding.Company {
     @MainActor
@@ -87,6 +88,8 @@ extension Onboarding.Company {
     struct SearchView: View {
         @Bindable var viewModel: Onboarding.ViewModel
 
+        @State var keyword: String = ""
+        @State var locations: [LocalCoordinate] = []
         @Binding var isSearchViewAppear: Bool
 
         var body: some View {
@@ -126,7 +129,7 @@ extension Onboarding.Company {
             FCTextFieldView(
                 textField: {
                     HStack {
-                        TextField("회사, 주소 검색", text: $viewModel.company)
+                        TextField("회사, 주소 검색", text: $keyword)
                             .textFieldStyle(
                                 .fullCar(
                                     type: .none,
@@ -146,7 +149,10 @@ extension Onboarding.Company {
         private var searchButton: some View {
             Button(action: {
                 Task {
-                    await viewModel.fetchCompanyCoordinate(viewModel.company)
+                    let coordinates = await viewModel.fetchCompanyCoordinate(keyword)
+                    self.locations = coordinates
+
+                    viewModel.companySearchBarState = .default
                 }
             }, label: {
                 Text("검색")
@@ -162,8 +168,11 @@ extension Onboarding.Company {
         private var locationList: some View {
             ScrollView {
                 LazyVGrid(columns: [GridItem()], spacing: .zero, content: {
-                    ForEach($viewModel.locations, id: \.self) { item in
-                        LocationListItem(location: item, company: viewModel.company)
+                    ForEach($locations, id: \.self) { item in
+                        LocationListItem(location: item, company: keyword)
+                            .onTapGesture {
+                                viewModel.company = item.wrappedValue
+                            }
                     }
                 })
             }
