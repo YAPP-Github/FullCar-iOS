@@ -29,6 +29,9 @@ final class CarPullRegisterViewModel {
     var driversMood: Driver.Mood?
     var periodType: CarPull.Model.PeriodType?
     
+    var error: Error?
+    var apiIsInFlight: Bool = false
+    
     var isValid: Bool {
         !wishPlaceText.isEmpty && wishPlaceText.count <= 20 && 
         periodType != nil && 
@@ -45,17 +48,30 @@ final class CarPullRegisterViewModel {
     }
     
     func nextButtonTapped() async {
+        // TODO: 차량 등록 여부 검증
+        
         do {
-            let res = try await carpullAPI.register(
+            guard 
+                let moneyAmount = Int(wishCostText),
+                let periodType 
+            else { return }
+            
+            self.apiIsInFlight = true
+            defer { self.apiIsInFlight = false }
+            
+            let response = try await carpullAPI.register(
                 pickupLocation: wishPlaceText,
-                periodType: periodType!,
-                money: Int(wishCostText)!,
+                periodType: periodType,
+                money: moneyAmount,
                 content: wishToSayText,
                 moodType: driversMood
             )
+            
+            // TODO: 카풀 등록 완료 얼럿
+            // TODO: 비워버리고 탭을 홈으로
         }
         catch {
-            print(error)
+            self.error = error
         }
     }
 }
@@ -67,25 +83,6 @@ struct CarPullRegisterView: View {
     
     var body: some View {
         _body
-        // FIXME: 탭으로 변경
-            .navigationBarStyle(
-                leadingView: {
-                    Button {
-                        
-                    } label: {
-                        Image(icon: .back)
-                            .resizable()
-                            .renderingMode(.template)
-                            .foregroundStyle(Color.black)
-                            .frame(width: 24, height: 24)
-                    }
-                }, centerView: {
-                    Text("카풀 등록")
-                        .font(.pretendard18(.bold))
-                }, trailingView: {
-                    EmptyView() 
-                }
-            )
     }
     
     private var _body: some View {
@@ -225,7 +222,7 @@ struct CarPullRegisterView: View {
         Button {
             Task { await viewModel.nextButtonTapped() }
         } label: {
-            Text("다음")
+            Text("등록하기")
                 .frame(maxWidth: .infinity)
         }
         .buttonStyle(

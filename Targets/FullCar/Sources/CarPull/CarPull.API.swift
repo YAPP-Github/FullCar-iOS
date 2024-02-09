@@ -57,7 +57,8 @@ extension CarPull.API: DependencyKey {
     )
     #if DEBUG
     static let previewValue: CarPull.API = .init(
-        fetch: { _, _ in
+        fetch: {
+            _, _ in
             return CommonResponse<CarPull.Model.Fetch>(
                 status: 200,
                 message: "",
@@ -88,9 +89,23 @@ extension CarPull.API: DependencyKey {
                 )
             )
         },
-        register: { _, _, _, _, _ in
-            fatalError()
-//            return .init(status: 200, message: "", data: .init())
+        register: {
+            _,
+            _,
+            _,
+            _,
+            _ in
+            return .init(
+                id: 200,
+                pickupLocation: "장지역 2번 출구",
+                periodType: .once,
+                money: 20000,
+                content: "123123",
+                moodType: .quiet,
+                companyName: "카카오페이",
+                gender: .male,
+                createdAt: .now
+            )
         }
     )
     #endif
