@@ -27,9 +27,8 @@ extension Onboarding.Email {
                             state: $viewModel.emailTextFieldState)
                         )
                         .onChange(of: viewModel.email) {
-                            // email textField 입력할 때마다 이메일 유효성 검사
-                            viewModel.updateEmailValidation()
-                            viewModel.resetEmailStatus()
+                            viewModel.isEmailRequestSent = false
+                            viewModel.isEmailAddressValid = false
                         }
                 },
                 state: $viewModel.emailTextFieldState,
@@ -41,7 +40,16 @@ extension Onboarding.Email {
     }
 
     @MainActor
-    struct ButtonView: View {
+    struct NumberView: View {
+        @Bindable var viewModel: Onboarding.ViewModel
+
+        var body: some View {
+            Text("인증번호 뷰 올것임.")
+        }
+    }
+
+    @MainActor
+    struct SendButtonView: View {
         @Bindable var viewModel: Onboarding.ViewModel
 
         var body: some View {
@@ -50,7 +58,7 @@ extension Onboarding.Email {
 
         private var bodyView: some View {
             VStack(spacing: 10) {
-                if $viewModel.isEmailRequestSent.wrappedValue {
+                if viewModel.isEmailRequestSent {
                     Text("메일이 오지 않나요? >")
                         .foregroundStyle(Color.fullCar_primary)
                         .font(.pretendard14(.semibold))
@@ -58,16 +66,49 @@ extension Onboarding.Email {
 
                 Button(action: {
                     Task {
-                        await viewModel.sendVerificationEmail()
-                        // MARK: 닉네임 textField로 포커스 변경하고 싶은데,,
+                        await viewModel.sendEmail()
                     }
                 }, label: {
                     Text("인증메일 발송")
                         .frame(maxWidth: .infinity)
                 })
                 .buttonStyle(.fullCar(style: .palette(.primary_white)))
-                .disabled(!$viewModel.isEmailButtonActive.wrappedValue)
+                .disabled(!viewModel.isEmailValidation() == !viewModel.isEmailRequestSent)
             }
         }
     }
+
+    @MainActor
+    struct CertificationButtonView: View {
+        @Bindable var viewModel: Onboarding.ViewModel
+
+        var body: some View {
+            bodyView
+        }
+
+        private var bodyView: some View {
+            Button(action: {
+                Task {
+                    await viewModel.checkAuthenticationNumber()
+                    // MARK: 닉네임 textField로 포커스 변경하고 싶은데,,
+                }
+            }, label: {
+                Text("다음")
+                    .frame(maxWidth: .infinity)
+            })
+            .buttonStyle(.fullCar(style: .palette(.primary_white)))
+        }
+    }
 }
+
+#if DEBUG
+#Preview {
+    VStack(spacing: 30) {
+        Onboarding.Email.TextFieldView(viewModel: .init())
+
+        Onboarding.Email.NumberView(viewModel: .init())
+
+        Onboarding.Email.SendButtonView(viewModel: .init())
+    }
+}
+#endif

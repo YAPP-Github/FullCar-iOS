@@ -15,6 +15,7 @@ extension Onboarding {
         private var search: (_ location: String) async throws -> [LocalCoordinate]
         private var check: (_ nickname: String) async throws -> Void
         private var register: (_ member: MemberInformation) async throws -> Void
+        private var send: (_ email: String) async throws -> Void
 
         func search(location: String) async throws -> [LocalCoordinate] {
             return try await self.search(location)
@@ -24,6 +25,9 @@ extension Onboarding {
         }
         func register(member: MemberInformation) async throws -> Void {
             return try await self.register(member)
+        }
+        func send(email: String) async throws -> Void {
+            return try await self.send(email)
         }
     }
 }
@@ -43,6 +47,9 @@ extension Onboarding.API: DependencyKey {
             },
             register: { member in
                 try await api.register(member)
+            },
+            send: { email in
+                try await api.send(email)
             }
         )
     }

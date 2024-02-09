@@ -43,12 +43,12 @@ extension Onboarding {
         // MARK: Email
         var email: String = ""
         var emailTextFieldState: InputState = .default
-        // 이메일 확인이 모두 완료되었을 때
-        var isEmailValid: Bool = false
         // 블랙리스트 이메일인지 검증하는 api 호출 여부
         var isEmailRequestSent: Bool = false
-        // "인증메일 발송" 버튼 활성화 여부
-        var isEmailButtonActive: Bool = false
+        // 이메일 블랙리스트 확인 완료
+        var isEmailAddressValid: Bool = false
+        // 회사 이메일 인증 절차 모두 완료
+        var isEmailValid: Bool = false
 
         // MARK: Nickname
         var nickname: String = ""
@@ -64,36 +64,45 @@ extension Onboarding {
 // MARK: Email 관련 함수
 extension Onboarding.ViewModel {
     /// Email 형식 유효성 검사 함수
-    func updateEmailValidation() {
+    func isEmailValidation() -> Bool {
         let emailPattern = "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,64}"
         let emailPred = NSPredicate(format:"SELF MATCHES %@", emailPattern)
-        isEmailButtonActive = emailPred.evaluate(with: email)
+        return emailPred.evaluate(with: email)
     }
 
     /// 본인확인 이메일 전송 api 호출
-    func sendVerificationEmail() async {
-        // api 호출 이후 (response 오기 전)
-        isEmailRequestSent = true
-        isEmailButtonActive = false
+    func sendEmail() async {
+        do {
+            isEmailRequestSent = true
+            emailTextFieldState = .default
 
-        // response 온 이후
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-            // case1) 이메일 인증 성공
-            self.isEmailValid = true
-            self.emailTextFieldState = .default
+            try await onboardingAPI.send(email: email)
 
-            if false {
-                // case2) 이메일 인증 실패
-                self.isEmailValid = false
-                self.emailTextFieldState = .error("일치하는 메일 정보가 없습니다.")
-            }
+            isEmailAddressValid = true
+        } catch {
+            // 이메일 전송 실패
+            print(error)
+            isEmailRequestSent = false
+            emailTextFieldState = .error("일치하는 메일 정보가 없습니다.")
+
+            isEmailAddressValid = false
         }
     }
 
-    func resetEmailStatus() {
-        isEmailValid = false
-        emailTextFieldState = .default
-        isEmailRequestSent = false
+    func checkAuthenticationNumber() async {
+//        do {
+//
+//        } catch {
+//            print(error)
+//        }
+
+        // case1) 이메일 인증 성공
+        self.isEmailValid = true
+
+        if false {
+            // case2) 이메일 인증 실패
+            self.isEmailValid = false
+        }
     }
 }
 
@@ -175,11 +184,15 @@ extension Onboarding {
                 VStack(alignment: .leading, spacing: 40) {
                     Onboarding.Email.TextFieldView(viewModel: viewModel)
 
-                    if $viewModel.isEmailValid.wrappedValue {
+                    if viewModel.isEmailAddressValid {
+                        Onboarding.Email.NumberView(viewModel: viewModel)
+                    }
+
+                    if viewModel.isEmailValid {
                         Onboarding.Nickname.TextFieldView(viewModel: viewModel)
                     }
 
-                    if $viewModel.isNicknameValid.wrappedValue {
+                    if viewModel.isNicknameValid {
                         Onboarding.Gender.PickerView(viewModel: viewModel)
                     }
                 }
@@ -192,9 +205,11 @@ extension Onboarding {
 
         @ViewBuilder
         private var buttonView: some View {
-            if !$viewModel.isEmailValid.wrappedValue {
-                Onboarding.Email.ButtonView(viewModel: viewModel)
-            } else if !$viewModel.isNicknameValid.wrappedValue {
+            if !viewModel.isEmailAddressValid {
+                Onboarding.Email.SendButtonView(viewModel: viewModel)
+            } else if !viewModel.isEmailValid {
+                Onboarding.Email.CertificationButtonView(viewModel: viewModel)
+            } else if !viewModel.isNicknameValid {
                 Onboarding.Nickname.ButtonView(viewModel: viewModel)
             } else {
                 Onboarding.Gender.ButtonView(viewModel: viewModel)

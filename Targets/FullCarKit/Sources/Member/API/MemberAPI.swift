@@ -13,6 +13,7 @@ public struct MemberAPI {
     public var searchLocation: (_ location: String, _ key: String) async throws -> [LocalCoordinate]
     public var checkNickname: (_ nickname: String) async throws -> Void
     public var register: (_ member: MemberInformation) async throws -> Void
+    public var send: (_ email: String) async throws -> Void
 }
 
 extension MemberAPI: DependencyKey {
@@ -42,6 +43,11 @@ extension MemberAPI: DependencyKey {
             register: { member in
                 try await NetworkClient.main.request(
                     endpoint: Endpoint.Member.register(member: member)
+                ).response()
+            },
+            send: { email in
+                try await NetworkClient.main.request(
+                    endpoint: Endpoint.Member.send(email: email)
                 ).response()
             }
         )
