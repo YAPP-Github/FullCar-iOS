@@ -19,12 +19,7 @@ struct MemberResponse: Decodable {
     let companyName: String
     let email: String
     let gender: String
-    let carID: CarID
-
-    enum CodingKeys: String, CodingKey {
-        case nickname, companyName, email, gender
-        case carID = "carId"
-    }
+    let carId: Int?
 }
 
 extension MemberResponse {
@@ -34,11 +29,7 @@ extension MemberResponse {
             email: self.email,
             nickName: self.nickname,
             gender: self.gender,
-            carId: self.carID.id
+            carId: self.carId
         )
     }
-}
-
-struct CarID: Decodable {
-    let id: Int
 }
