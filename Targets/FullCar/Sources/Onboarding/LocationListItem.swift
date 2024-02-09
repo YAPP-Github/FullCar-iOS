@@ -14,6 +14,7 @@ struct LocationListItem: View {
     @State private var isSelected: Bool = false
 
     var company: String
+    var onTap: (() -> Void)?
 
     var body: some View {
         bodyView
@@ -23,12 +24,8 @@ struct LocationListItem: View {
             .border(width: 1, edges: [.bottom], color: .gray30)
             .background(isSelected ? Color.gray10 : Color.white)
             .onTapGesture {
-                // 선택되면 background color 변경
                 isSelected = true
-                // 화면이 넘어가야 함....
-//                DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                    // dismiss?
-//                }
+                onTap?()
             }
     }
 
