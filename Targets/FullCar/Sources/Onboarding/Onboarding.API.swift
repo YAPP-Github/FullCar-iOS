@@ -16,6 +16,7 @@ extension Onboarding {
         private var check: (_ nickname: String) async throws -> Void
         private var register: (_ member: MemberInformation) async throws -> Void
         private var send: (_ email: String) async throws -> Void
+        private var fetch: () async throws -> MemberInformation
 
         func search(location: String) async throws -> [LocalCoordinate] {
             return try await self.search(location)
@@ -28,6 +29,10 @@ extension Onboarding {
         }
         func send(email: String) async throws -> Void {
             return try await self.send(email)
+        }
+        func isOnboardingCompleted() async throws -> Bool {
+            let member = try await self.fetch()
+            return !member.company.name.isEmpty
         }
     }
 }
@@ -50,6 +55,12 @@ extension Onboarding.API: DependencyKey {
             },
             send: { email in
                 try await api.send(email)
+            },
+            fetch: {
+                let member = try await api.fetch()
+
+                // 유저 정보 저장
+                return member
             }
         )
     }

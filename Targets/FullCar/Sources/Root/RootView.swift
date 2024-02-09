@@ -18,7 +18,8 @@ import KakaoSDKCommon
 @MainActor
 @Observable
 final class RootViewModel {
-    @ObservationIgnored @Dependency(\.accountService) private var account
+    @ObservationIgnored @Dependency(\.fullCarAccount) private var fullCarAccount
+    @ObservationIgnored @Dependency(\.onbardingAPI) private var onboardingAPI
 
     var appState: FullCar.State = FullCar.shared.appState
 
@@ -28,8 +29,11 @@ final class RootViewModel {
     // 토큰이 없으면 로그인 화면으로
     func onFirstTask() async {
         do {
-            let isValidToken = try await account.hasValidToken()
-            appState = isValidToken ? .tab : .login
+            if try await fullCarAccount.hasValidToken {
+                appState = try await onboardingAPI.isOnboardingCompleted() ? .tab : .onboarding
+            } else {
+                appState = .login
+            }
 
             #if DEBUG
             print("[✅][RootView.swift] -> 자동 로그인 성공!")
@@ -84,6 +88,8 @@ struct RootView: View {
                 
         case .login:
             LoginView(viewModel: .init())
+        case .onboarding:
+            Onboarding.Company.BodyView(viewModel: .init())
         case .tab:
             FullCarTabView(viewModel: .init())
         }

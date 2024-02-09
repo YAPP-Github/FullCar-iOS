@@ -15,7 +15,13 @@ import Dependencies
 import FullCarKit
 
 final class FullCarAccount: NSObject {
-    @Dependency(\.accountService.login) var login
+    @Dependency(\.accountService) var accountService
+
+    var hasValidToken: Bool {
+        get async throws {
+            return try await accountService.hasValidToken()
+        }
+    }
 
     private var continuation: CheckedContinuation<String, Error>?
 
@@ -40,7 +46,7 @@ final class FullCarAccount: NSObject {
             deviceToken: AppDelegate.shared?.deviceToken ?? "456"
         )
 
-        try await login(request)
+        try await accountService.login(request)
     }
 
     private func authenticateWithKakao() {

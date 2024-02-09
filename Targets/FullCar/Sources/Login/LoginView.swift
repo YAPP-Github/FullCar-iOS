@@ -15,14 +15,15 @@ import Dependencies
 @Observable
 final class LoginViewModel {
     @ObservationIgnored @Dependency(\.fullCarAccount) var account
+    @ObservationIgnored @Dependency(\.onbardingAPI) private var onboardingAPI
 
     let fullCar = FullCar.shared
 
     func loginButtonTapped(for type: SocialType) async {
         do {
             try await account.performLogin(type)
-            fullCar.appState = .tab
 
+            fullCar.appState = try await onboardingAPI.isOnboardingCompleted() ? .tab : .onboarding
             #if DEBUG
             print("[✅][LoginViewModel.swift] -> 로그인 성공!")
             #endif
