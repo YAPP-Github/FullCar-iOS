@@ -13,7 +13,7 @@ import FullCarKit
 @MainActor
 struct CallListDetailView: View {
     
-    var viewModel: CallListDetailViewModel
+    @Bindable var viewModel: CallListDetailViewModel
     
     var body: some View {
         _body
@@ -35,6 +35,11 @@ struct CallListDetailView: View {
                 },
                 trailingView: { }
             )
+            .fullScreenCover(isPresented: $viewModel.fullSheetOpen, onDismiss: {
+                viewModel.onBackButtonTapped()
+            }, content: {
+                CallResultView()
+            })
     }
     
     private var _body: some View {
@@ -197,9 +202,15 @@ struct CallListDetailView: View {
     }
     
     private var requestAcceptButton: some View {
-        Button { 
-            withAnimation(.smooth) {
-                viewModel.typingState = .typing
+        Button {
+            
+            switch viewModel.typingState {
+            case .waiting:
+                withAnimation(.smooth) {
+                    viewModel.typingState = .typing
+                }
+            case .typing:
+                viewModel.fullSheetOpen = true
             }
         }
     label: { Text(viewModel.typingState == .waiting ? "요청승인" : "완료") }
@@ -228,19 +239,4 @@ struct CallListDetailView: View {
             )
         )
     }
-}
-
-
-#Preview {
-    CallListDetailView(viewModel: .init(callListDetailViewType: .CallPullDeatils,
-                                        carPullData: .init(id: 0,
-                                                           pickupLocation: "봉천역",
-                                                           periodType: .oneWeek,
-                                                           money: 1000, content: "타이틀",
-                                                           moodType: .quiet,
-                                                           formState: .ACCEPT,
-                                                           carpoolState: .OPEN,
-                                                           nickname: "알뜰한 물개",
-                                                           companyName: "회사이름", gender: .female, resultMessage: nil,
-                                                           createdAt: Date())))
 }

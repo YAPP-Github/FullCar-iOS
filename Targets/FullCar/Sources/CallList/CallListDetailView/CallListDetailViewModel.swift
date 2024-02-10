@@ -37,11 +37,14 @@ final class CallListDetailViewModel {
     var onBackButtonTapped: () -> Void = unimplemented("onBackButtonTapped")
     
     var toggleOpen: Bool = false
+    
     var toggleRotate: CGFloat = 0
     
     var carpullData: CarPull.Model.Information
     
     var typingState: CallListDetailView.TypingState = .waiting
+    
+    var fullSheetOpen: Bool = false
     
     // 요청승인시 사용하는 데이터들
     var myCallNumber: String = ""
