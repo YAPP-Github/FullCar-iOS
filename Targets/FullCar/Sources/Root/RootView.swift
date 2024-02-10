@@ -18,7 +18,7 @@ import KakaoSDKCommon
 @MainActor
 @Observable
 final class RootViewModel {
-    @ObservationIgnored @Dependency(\.fullCarAccount) private var fullCarAccount
+    @ObservationIgnored @Dependency(\.loginAPI) private var loginAPI
     @ObservationIgnored @Dependency(\.onbardingAPI) private var onboardingAPI
 
     var appState: FullCar.State = FullCar.shared.appState
@@ -87,7 +87,7 @@ struct RootView: View {
 //            Image("런치스크린 이미지 나오면!", bundle: .main)
                 
         case .login:
-            LoginView(viewModel: .init())
+            Login.BodyView(viewModel: .init())
         case .onboarding:
             Onboarding.Company.BodyView(viewModel: .init())
         case .tab:
