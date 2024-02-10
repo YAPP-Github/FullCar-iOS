@@ -27,12 +27,51 @@ extension CarPull {
             let money: Int
             let content: String
             let moodType: Driver.Mood?
-            let formState: String?
-            let carpoolState: String?
+            let formState: FormStateType?
+            let carpoolState: CarPoolStateType?
             let nickname: String?
             let companyName: String
             let gender: Driver.Gender?
+            let resultMessage: ResultMessage?
             let createdAt: Date
+        }
+//        
+//        "resultMessage": {
+//              "contact": "string",
+//              "toPassenger": "string"
+//            }
+        
+        struct ResultMessage: Decodable, Hashable {
+            let contact: String
+            let toPassenger: String?
+        }
+        
+        enum FormStateType: String, Decodable, CaseIterable, CustomStringConvertible {
+            case REQUEST = "REQUEST"
+            case ACCEPT = "ACCEPT"
+            case REJECT = "REJECT"
+            
+            var description: String {
+                switch self {
+                case .ACCEPT: "매칭 성공"
+                case .REJECT: "매칭 취소"
+                case .REQUEST: "요청중"
+                }
+            }
+        }
+        
+        enum CarPoolStateType: String, Decodable, CaseIterable, CustomStringConvertible {
+            case OPEN = "OPEN"
+            case CLOSE = "CLOSE"
+            
+            var description: String {
+                switch self {
+                case .OPEN:
+                    return "OPEN"
+                case .CLOSE:
+                    return "CLOSE"
+                }
+            }
         }
         
         enum PeriodType: String, Decodable, CaseIterable, CustomStringConvertible {
@@ -52,11 +91,6 @@ extension CarPull {
                 }
             }
         }
-        
-        enum CarPullState: String, Decodable {
-            case open = "OPEN"
-            case close = "CLOSE"
-        }
     }
 }
 
@@ -70,11 +104,12 @@ extension CarPull.Model.Information {
             money: 10000,
             content: "월수금만 카풀하실 분 구합니다. 봉천역 2번출구에서 픽업할 예정이고 시간약속 잘지키시면 좋을것 같아···",
             moodType: .quiet,
-            formState: "ACCEPT",
-            carpoolState: "OPEN",
+            formState: .ACCEPT,
+            carpoolState: .OPEN,
             nickname: "",
             companyName: "카카오페이",
             gender: .female,
+            resultMessage: nil,
             createdAt: .now
         )
     }

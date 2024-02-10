@@ -44,10 +44,17 @@ struct CallListDetailView: View {
                 requestView
             }
             
-            HStack {
-                requestDisableButton
+            switch viewModel.callListDetailViewType {
+            case .ReceivedRequestDetails:
+                HStack {
+                    requestDisableButton
+                    requestAcceptButton
+                }
+            case .CallPullDeatils:
                 requestAcceptButton
+            default: EmptyView()
             }
+            
         }
     }
     
@@ -98,10 +105,10 @@ struct CallListDetailView: View {
                                                 periodType: .oneWeek,
                                                 money: 1000, content: "타이틀",
                                                 moodType: .quiet,
-                                                formState: "ACCEPT",
-                                                carpoolState: "OPEN",
+                                                formState: .ACCEPT,
+                                                carpoolState: .OPEN,
                                                 nickname: "알뜰한 물개",
-                                                companyName: "회사이름", gender: .female, createdAt: Date()))
+                                                companyName: "회사이름", gender: .female, resultMessage: nil, createdAt: Date()))
                 
                 Rectangle()
                     .foregroundStyle(Color.gray10)
@@ -121,9 +128,19 @@ struct CallListDetailView: View {
         VStack(spacing: 0) {
             HStack(spacing: 0) {
                 
-                Text("요청받은 내역")
-                    .font(.pretendard17(.bold))
-                    .foregroundStyle(Color.black80)
+                switch viewModel.callListDetailViewType {
+                case .SentRequestDetails:
+                    Text("요청한 내역")
+                        .font(.pretendard17(.bold))
+                        .foregroundStyle(Color.black80)
+                case .ReceivedRequestDetails:
+                    Text("요청받은 내역")
+                        .font(.pretendard17(.bold))
+                        .foregroundStyle(Color.black80)
+                case .CallPullDeatils:
+                    EmptyView()
+                }
+
                 Spacer()
             }
             .padding(.all, 20)
@@ -132,6 +149,14 @@ struct CallListDetailView: View {
                 .padding(.horizontal, 18)
             
             CarPull.CardView(carPull: viewModel.carpullData)
+            
+            switch viewModel.carpullData.formState {
+            case .ACCEPT, .REJECT:
+                CarPullDeatilDescriptionView(item: viewModel.carpullData)
+            default:
+                EmptyView()
+            }
+            
         }
 
     }
@@ -176,8 +201,9 @@ struct CallListDetailView: View {
                                                            periodType: .oneWeek,
                                                            money: 1000, content: "타이틀",
                                                            moodType: .quiet,
-                                                           formState: "ACCEPT",
-                                                           carpoolState: "OPEN",
+                                                           formState: .ACCEPT,
+                                                           carpoolState: .OPEN,
                                                            nickname: "알뜰한 물개",
-                                                           companyName: "회사이름", gender: .female, createdAt: Date())))
+                                                           companyName: "회사이름", gender: .female, resultMessage: nil,
+                                                           createdAt: Date())))
 }

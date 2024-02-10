@@ -13,8 +13,8 @@ import Observation
 
 struct CallListItem: View {
     
-    private(set) var isOpen: FullCar.CallPullOpenState = .OPEN
-    private(set) var status: FullCar.CallStatus = .REJECT
+    private(set) var isOpen: CarPull.Model.CarPoolStateType = .OPEN
+    private(set) var status: CarPull.Model.FormStateType = .REJECT
     private(set) var item: CarPull.Model.Information
     
     var isLast: Bool = false
@@ -73,7 +73,7 @@ extension CallListItem {
         ZStack {
             RoundedRectangle(cornerRadius: 3)
                 .foregroundStyle(getColor(back: true))
-            Text(status.rawValue)
+            Text(status.description)
                 .foregroundStyle(getColor())
                 .font(.system(size: 12))
                 .bold()

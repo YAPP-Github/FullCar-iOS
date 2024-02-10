@@ -20,8 +20,8 @@ struct CallRequestListView: View {
             LazyVGrid(columns: [GridItem()], content: {
                 
                 ForEach(data, id: \.self) { item in
-                    CallListItem(isOpen: FullCar.CallPullOpenState(rawValue: item.carpoolState ?? "OPEN") ?? .OPEN,
-                                 status: FullCar.CallStatus.replace(item.formState ?? ""),
+                    CallListItem(isOpen: item.carpoolState ?? .OPEN,
+                                 status: item.formState ?? .ACCEPT,
                                  item: item,
                                  isLast: item.id == data.last?.id)
                     .contentShape(Rectangle())
