@@ -9,13 +9,19 @@
 import Foundation
 
 public struct MemberInformation: Decodable {
-    public let company: LocalCoordinate
-    public let email: String
-    public let nickname: String
-    public let gender: String
+    public var company: LocalCoordinate
+    public var email: String
+    public var nickname: String
+    public var gender: String
     public var carId: Int?
 
-    public init(company: LocalCoordinate, email: String, nickName: String, gender: String, carId: Int? = nil) {
+    public init(
+        company: LocalCoordinate,
+        email: String,
+        nickName: String,
+        gender: String,
+        carId: Int? = nil
+    ) {
         self.company = company
         self.email = email
         self.nickname = nickName

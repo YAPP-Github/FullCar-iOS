@@ -29,7 +29,7 @@ final class RootViewModel {
     // 토큰이 없으면 로그인 화면으로
     func onFirstTask() async {
         do {
-            if try await fullCarAccount.hasValidToken {
+            if try await loginAPI.hasValidToken {
                 appState = try await onboardingAPI.isOnboardingCompleted() ? .tab : .onboarding
             } else {
                 appState = .login

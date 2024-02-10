@@ -15,20 +15,20 @@ struct ApiMemberResponse: Decodable {
 }
 
 struct MemberResponse: Decodable {
-    let nickname: String
-    let companyName: String
-    let email: String
-    let gender: String
+    let nickname: String?
+    let companyName: String?
+    let email: String?
+    let gender: String?
     let carId: Int?
 }
 
 extension MemberResponse {
     func toDomain() -> MemberInformation {
         return .init(
-            company: .init(name: self.companyName),
-            email: self.email,
-            nickName: self.nickname,
-            gender: self.gender,
+            company: .init(name: self.companyName ?? ""),
+            email: self.email ?? "",
+            nickName: self.nickname ?? "",
+            gender: self.gender ?? "",
             carId: self.carId
         )
     }
