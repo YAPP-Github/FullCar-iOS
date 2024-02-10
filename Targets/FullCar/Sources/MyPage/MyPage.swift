@@ -7,6 +7,8 @@
 //
 
 import SwiftUI
+
+import Dependencies
 import FullCarUI
 
 struct MyPage {
@@ -23,12 +25,27 @@ extension MyPage {
     @MainActor
     @Observable
     final class ViewModel {
-        func logout() {
+        @ObservationIgnored
+        @Dependency(\.myPageAPI) private var myPageAPI
 
+        func logout() async {
+            do {
+                try await myPageAPI.logout()
+            } catch {
+                print(error)
+
+                // 로그아웃 실패했을시?
+            }
         }
 
-        func leave() {
-            
+        func leave() async {
+            do {
+                try await myPageAPI.leave()
+            } catch {
+                print(error)
+
+                // 탈퇴 실패했을시?
+            }
         }
     }
 }
