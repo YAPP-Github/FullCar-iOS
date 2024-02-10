@@ -39,15 +39,22 @@ struct CallListDetailView: View {
     
     private var _body: some View {
         VStack(spacing: 0) {
-            ScrollView {
-                toggleView
-                requestView
+            
+            ScrollViewReader { reader in
+                ScrollView {
+                    toggleView
+                    requestView(reader)
+                }
             }
             
             switch viewModel.callListDetailViewType {
             case .ReceivedRequestDetails:
                 HStack {
-                    requestDisableButton
+                    
+                    if viewModel.typingState != .typing {
+                        requestDisableButton
+                    }
+                    
                     requestAcceptButton
                 }
             case .CallPullDeatils:
@@ -68,7 +75,6 @@ struct CallListDetailView: View {
                 }
                 
                 withAnimation(.smooth) {
-                    
                     viewModel.toggleRotate += 180
                 }
             }, label: {
@@ -123,7 +129,7 @@ struct CallListDetailView: View {
         }
     }
     
-    private var requestView: some View {
+    private func requestView(_ reader: ScrollViewProxy) -> some View {
         
         VStack(spacing: 0) {
             HStack(spacing: 0) {
@@ -150,32 +156,63 @@ struct CallListDetailView: View {
             
             CarPull.CardView(carPull: viewModel.carpullData)
             
+            switch viewModel.callListDetailViewType {
+            case .SentRequestDetails:
+                sentRequestDetailReceiveMessageView
+            case .ReceivedRequestDetails:
+                receivedDetailInputView(reader)
+            default:
+                EmptyView()
+            }
+        }
+
+    }
+    
+    private func receivedDetailInputView(_ reader: ScrollViewProxy) -> some View {
+        Group {
+            if viewModel.typingState == .typing {
+                CarPullAcceptTypingView(viewModel: viewModel)
+                    .id("acceptTyping")
+                    .task {
+                        try? await Task.sleep(for: .seconds(0.5))
+                        await MainActor.run {
+                            withAnimation {
+                                reader.scrollTo("acceptTyping")
+                            }
+                        }
+                    }
+            }
+        }
+    }
+
+    private var sentRequestDetailReceiveMessageView: some View {
+        Group {
             switch viewModel.carpullData.formState {
             case .ACCEPT, .REJECT:
                 CarPullDeatilDescriptionView(item: viewModel.carpullData)
             default:
                 EmptyView()
             }
-            
         }
-
     }
-
     
     private var requestAcceptButton: some View {
         Button { 
-            
+            withAnimation(.smooth) {
+                viewModel.typingState = .typing
+            }
         }
-        label: { Text("요청승인") }
+    label: { Text(viewModel.typingState == .waiting ? "요청승인" : "완료") }
         .buttonStyle(
             .fullCar(
                 font: .pretendard17(.bold),
-                horizontalPadding: 85,
+                horizontalPadding: viewModel.callListDetailViewType == .CallPullDeatils || viewModel.typingState == .typing ? 160 : 85,
                 verticalPadding: 17,
                 radius: 8,
-                style: .palette(.primary_white)
+                style: .palette(viewModel.typingState != .typing ? .primary_white : viewModel.myCallNumber.count > 0 ? .primary_white : .gray60)
             )
         )
+        .disabled(viewModel.typingState == .typing && viewModel.myCallNumber.count == 0)
     }
     
     private var requestDisableButton: some View {
