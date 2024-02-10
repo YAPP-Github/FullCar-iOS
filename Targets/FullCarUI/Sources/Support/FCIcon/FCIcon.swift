@@ -32,6 +32,7 @@ public extension FCIcon {
         case appleLogo
         case messageText
         case resultSuccess
+        case resultDenied
     }
 }
 
@@ -48,6 +49,7 @@ extension FCIcon.Symbol {
         case .kakaoLogo: return "kakaoLogo"
         case .messageText: return "message-text"
         case .resultSuccess: return "resultSuccess"
+        case .resultDenied: return "resultDenied"
         default: return ""
         }
     }

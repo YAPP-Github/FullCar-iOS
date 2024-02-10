@@ -8,27 +8,52 @@
 
 import SwiftUI
 
+extension CallResultView {
+    enum CallResultType {
+    case success
+    case denied
+    }
+}
+
 struct CallResultView: View {
     
     @Environment(\.dismiss) var dismiss
+    
+    var type: CallResultType = .success
     
     var body: some View {
         
         ScrollView {
             VStack(spacing: .zero) {
-                                
-                Image(icon: .resultSuccess)
-                    .padding(.top, 60)
+                
+                switch type {
+                case .success:
+                    Image(icon: .resultSuccess)
+                        .padding(.top, 60)
+                case .denied:
+                    Image(icon: .resultDenied)
+                        .padding(.top, 60)
+                }
+                
                 
                 Text("탑승 요청을")
                     .font(.pretendard28(.bold))
                     .multilineTextAlignment(.center)
                     .padding(.top, 30)
                 
-                Text("승인했습니다.")
-                    .font(.pretendard28(.bold))
-                    .multilineTextAlignment(.center)
-                    .padding(.top, 5)
+                switch type {
+                case .success:
+                    Text("승인했습니다.")
+                        .font(.pretendard28(.bold))
+                        .multilineTextAlignment(.center)
+                        .padding(.top, 5)
+                case .denied:
+                    Text("거절했습니다.")
+                        .font(.pretendard28(.bold))
+                        .multilineTextAlignment(.center)
+                        .padding(.top, 5)
+                }
+                
                 
                 CarPull.CardView(carPull: .init(id: 0,
                                                 pickupLocation: "봉천역",

@@ -46,6 +46,9 @@ final class CallListDetailViewModel {
     
     var fullSheetOpen: Bool = false
     
+    var carPullResultType: CallResultView.CallResultType = .success
+    var alertOpen: Bool = false
+    
     // 요청승인시 사용하는 데이터들
     var myCallNumber: String = ""
     var myCallNumberState: InputState = .default

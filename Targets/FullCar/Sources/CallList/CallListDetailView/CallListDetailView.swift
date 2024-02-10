@@ -38,7 +38,16 @@ struct CallListDetailView: View {
             .fullScreenCover(isPresented: $viewModel.fullSheetOpen, onDismiss: {
                 viewModel.onBackButtonTapped()
             }, content: {
-                CallResultView()
+                CallResultView(type: viewModel.carPullResultType)
+            })
+            .alert("요청을 거절 하시겠어요?", isPresented: $viewModel.alertOpen, actions: {
+                
+                Button(role: .destructive, action: {
+                    viewModel.carPullResultType = .denied
+                    viewModel.fullSheetOpen = true
+                }, label: {
+                    Text("거절하기")
+                })
             })
     }
     
@@ -210,6 +219,7 @@ struct CallListDetailView: View {
                     viewModel.typingState = .typing
                 }
             case .typing:
+                viewModel.carPullResultType = .success
                 viewModel.fullSheetOpen = true
             }
         }
@@ -227,7 +237,9 @@ struct CallListDetailView: View {
     }
     
     private var requestDisableButton: some View {
-        Button { }
+        Button {
+            viewModel.alertOpen = true
+        }
         label: { Text("요청거절") }
         .buttonStyle(
             .fullCar(
