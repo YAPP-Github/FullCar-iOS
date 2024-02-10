@@ -32,6 +32,13 @@ final class CallListDetailViewModel {
     
     var toggleOpen: Bool = false
     var toggleRotate: CGFloat = 0
+    
+    var carpullData: CarPull.Model.Information
+    
+    init(callListDetailViewType: CallListDetailView.CallListDetailViewType, carPullData: CarPull.Model.Information) {
+        self.callListDetailViewType = callListDetailViewType
+        self.carpullData = carPullData
+    }
 }
 
 

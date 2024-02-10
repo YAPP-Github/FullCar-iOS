@@ -38,9 +38,27 @@ public extension FullCar {
         case receive
     }
     
+    enum CallPullOpenState: String, Hashable {
+        case OPEN = "OPEN"
+        case CLOSE = "CLOSE"
+    }
+    
     enum CallStatus: String, Hashable {
-        case waiting = "요청중"
-        case success = "매칭 성공"
-        case failure = "매칭 취소"
+        case REQUEST = "요청중"
+        case ACCEPT = "매칭 성공"
+        case REJECT = "매칭 취소"
+        
+        public static func replace(_ value: String) -> CallStatus {
+            switch value {
+            case "REQUEST":
+                return .REQUEST
+            case "ACCEPT":
+                return .ACCEPT
+            case "REJECT":
+                return .REJECT
+            default:
+                return .ACCEPT
+            }
+        }
     }
 }

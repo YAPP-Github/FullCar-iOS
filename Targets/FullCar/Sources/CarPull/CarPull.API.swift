@@ -107,6 +107,9 @@ extension CarPull.API: DependencyKey {
                 money: 20000,
                 content: "123123",
                 moodType: .quiet,
+                formState: "ACCEPT",
+                carpoolState: "OPEN",
+                nickname: "알뜰한 물개",
                 companyName: "카카오페이",
                 gender: .male,
                 createdAt: .now

@@ -52,11 +52,13 @@ struct CallListView: View {
                     content:  {
                 
                 CallRequestListView(data: $viewModel.dummyData) { item in
-                    viewModel.onAcceptTapped()
+                    viewModel.onAcceptTapped(type: .SentRequestDetails, data: item)
                 }
                     .tag(FullCar.CallListTab.request)
                 
-                CallReceiveListView(data: $viewModel.dummyData)
+                CallReceiveListView(data: $viewModel.dummyData) { item in
+                    viewModel.onAcceptTapped(type: .ReceivedRequestDetails, data: item)
+                }
                     .tag(FullCar.CallListTab.receive)
             })
             .tabViewStyle(.page(indexDisplayMode: .never))

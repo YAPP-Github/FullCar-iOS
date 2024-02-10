@@ -7,18 +7,28 @@
 //
 
 import SwiftUI
+import FullCarKit
 
 struct CallReceiveListView: View {
     
-    @Binding var data: [Dummy]
+    @Binding var data: [CarPull.Model.Information]
+    
+    var onTapGesture: ((CarPull.Model.Information) -> ())
     
     var body: some View {
         ScrollView {
             LazyVGrid(columns: [GridItem()], content: {
                 
                 ForEach(data, id: \.self) { item in
-                    CallListItem(status: item.status,
+                    CallListItem(isOpen: FullCar.CallPullOpenState(rawValue: item.carpoolState ?? "OPEN") ?? .OPEN,
+                                 status: FullCar.CallStatus(rawValue: item.formState ?? "ACCEPT") ?? .ACCEPT,
+                                 item: item,
                                  isLast: item.id == data.last?.id)
+                    .contentShape(Rectangle())
+                    .clipShape(Rectangle())
+                    .onTapGesture {
+                        onTapGesture(item)
+                    }
                 }
             })
         }

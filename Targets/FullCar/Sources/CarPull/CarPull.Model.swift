@@ -27,6 +27,9 @@ extension CarPull {
             let money: Int
             let content: String
             let moodType: Driver.Mood?
+            let formState: String?
+            let carpoolState: String?
+            let nickname: String?
             let companyName: String
             let gender: Driver.Gender?
             let createdAt: Date
@@ -67,6 +70,9 @@ extension CarPull.Model.Information {
             money: 10000,
             content: "월수금만 카풀하실 분 구합니다. 봉천역 2번출구에서 픽업할 예정이고 시간약속 잘지키시면 좋을것 같아···",
             moodType: .quiet,
+            formState: "ACCEPT",
+            carpoolState: "OPEN",
+            nickname: "",
             companyName: "카카오페이",
             gender: .female,
             createdAt: .now

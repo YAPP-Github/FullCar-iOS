@@ -16,6 +16,28 @@ struct CallListDetailView: View {
     var viewModel: CallListDetailViewModel
     
     var body: some View {
+        _body
+            .navigationBarStyle(
+                leadingView: {
+                    NavigationButton(icon: .back, action: {
+                        viewModel.onBackButtonTapped()
+                    })
+                },
+                centerView: {
+                    switch viewModel.callListDetailViewType {
+                    case .SentRequestDetails, .ReceivedRequestDetails:
+                        Text("요청 상세")
+                            .font(.pretendard18(.bold))
+                    case .CallPullDeatils:
+                        Text("카풀 상세")
+                            .font(.pretendard18(.bold))
+                    }
+                },
+                trailingView: { }
+            )
+    }
+    
+    private var _body: some View {
         VStack(spacing: 0) {
             ScrollView {
                 toggleView
@@ -27,19 +49,6 @@ struct CallListDetailView: View {
                 requestAcceptButton
             }
         }
-        .navigationBarStyle(
-            leadingView: {
-                NavigationButton(icon: .back, action: {
-                    viewModel.onBackButtonTapped()
-                })
-            },
-            centerView: {
-                Text("요청 상세")
-                    .font(.pretendard18(.bold))
-            },
-            trailingView: { }
-        )
-        
     }
     
     private var toggleView: some View {
@@ -58,9 +67,21 @@ struct CallListDetailView: View {
             }, label: {
                 HStack(spacing: 0) {
                     
-                    Text("카풀 상세")
-                        .font(.pretendard17(.bold))
-                        .foregroundStyle(Color.black80)
+                    switch viewModel.callListDetailViewType {
+                    // 보낸 요청 상세
+                    case .SentRequestDetails:
+                        Text("카풀 상세")
+                            .font(.pretendard17(.bold))
+                            .foregroundStyle(Color.black80)
+                    // 받은 요청 상세
+                    case .ReceivedRequestDetails:
+                        Text("내가 등록한 카풀")
+                            .font(.pretendard17(.bold))
+                            .foregroundStyle(Color.black80)
+                    // 카풀 상세
+                    default: EmptyView()
+                    }
+                    
                     Spacer()
                     
                     Image(systemName: "chevron.down")
@@ -72,7 +93,15 @@ struct CallListDetailView: View {
             
             if viewModel.toggleOpen {
                 
-                CarPull.CardView(carPull: .init(id: 0, pickupLocation: "봉천역", periodType: .oneWeek, money: 1000, content: "타이틀", moodType: .quiet, companyName: "회사이름", gender: .female, createdAt: Date()))
+                CarPull.CardView(carPull: .init(id: 0,
+                                                pickupLocation: "봉천역",
+                                                periodType: .oneWeek,
+                                                money: 1000, content: "타이틀",
+                                                moodType: .quiet,
+                                                formState: "ACCEPT",
+                                                carpoolState: "OPEN",
+                                                nickname: "알뜰한 물개",
+                                                companyName: "회사이름", gender: .female, createdAt: Date()))
                 
                 Rectangle()
                     .foregroundStyle(Color.gray10)
@@ -102,7 +131,7 @@ struct CallListDetailView: View {
             Divider()
                 .padding(.horizontal, 18)
             
-            CarPull.CardView(carPull: .init(id: 4, pickupLocation: "봉천역 2번 출구에서 출발할게요~", periodType: .once, money: 48000, content: "월수금만 카풀하실 분 구합니다. 봉천역 2번출구에서 픽업할 예정이고 시간약속 잘지키시면 좋을 것 같습니다! 비용은 제시해주셔도 됩니다.", moodType: .quiet, companyName: "현대자동차", gender: .male, createdAt: Date()))
+            CarPull.CardView(carPull: viewModel.carpullData)
         }
 
     }
@@ -139,6 +168,16 @@ struct CallListDetailView: View {
     }
 }
 
+
 #Preview {
-    CallListDetailView(viewModel: .init())
+    CallListDetailView(viewModel: .init(callListDetailViewType: .CallPullDeatils,
+                                        carPullData: .init(id: 0,
+                                                           pickupLocation: "봉천역",
+                                                           periodType: .oneWeek,
+                                                           money: 1000, content: "타이틀",
+                                                           moodType: .quiet,
+                                                           formState: "ACCEPT",
+                                                           carpoolState: "OPEN",
+                                                           nickname: "알뜰한 물개",
+                                                           companyName: "회사이름", gender: .female, createdAt: Date())))
 }
