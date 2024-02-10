@@ -23,7 +23,13 @@ extension MyPage {
     @MainActor
     @Observable
     final class ViewModel {
+        func logout() {
 
+        }
+
+        func leave() {
+            
+        }
     }
 }
 
@@ -62,7 +68,7 @@ extension MyPage {
                 navigationItemLink(Text("공지사항"), icon: .note, text: "공지사항")
                 navigationItemLink(Text("1:1 문의"), icon: .chat, text: "1:1 문의")
                 navigationItemLink(Text("약관 및 정책"), icon: .shield_check, text: "약관 및 정책")
-                navigationItemLink(Text("설정"), icon: .setting, text: "설정")
+                navigationItemLink(MyPage.Setting.BodyView(viewModel: viewModel), icon: .setting, text: "설정")
             }
         }
 

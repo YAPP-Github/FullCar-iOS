@@ -27,7 +27,8 @@ struct FullCarApp: App {
 
     var body: some Scene {
         WindowGroup {
-            RootView(viewModel: .init())
+            MyPage.BodyView(viewModel: .init())
+//            RootView(viewModel: .init())
         }
     }
 }
