@@ -29,7 +29,9 @@ struct CallListDetailView: View {
         }
         .navigationBarStyle(
             leadingView: {
-                NavigationButton(icon: .back, action: { })
+                NavigationButton(icon: .back, action: {
+                    viewModel.onBackButtonTapped()
+                })
             },
             centerView: {
                 Text("요청 상세")
@@ -107,7 +109,9 @@ struct CallListDetailView: View {
 
     
     private var requestAcceptButton: some View {
-        Button { }
+        Button { 
+            
+        }
         label: { Text("요청승인") }
         .buttonStyle(
             .fullCar(

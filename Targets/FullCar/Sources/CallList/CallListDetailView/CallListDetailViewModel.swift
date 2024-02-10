@@ -11,9 +11,23 @@ import FullCarKit
 import Observation
 import Dependencies
 
+extension CallListDetailView {
+    enum CallListDetailViewType {
+    /// 보낸 요청 상세
+    case SentRequestDetails
+    /// 받은 요청 상세
+    case ReceivedRequestDetails
+    /// 카풀 상세
+    case CallPullDeatils
+    }
+}
+
 @MainActor
 @Observable
 final class CallListDetailViewModel {
+    
+    var callListDetailViewType: CallListDetailView.CallListDetailViewType = .SentRequestDetails
+    
     var onBackButtonTapped: () -> Void = unimplemented("onBackButtonTapped")
     
     var toggleOpen: Bool = false
