@@ -39,7 +39,7 @@ struct FullCarTabView: View {
                 }
                 .tag(FullCar.Tab.experiment)
             
-            SettingsView(viewModel: .init())
+            MyPage.BodyView(viewModel: .init())
                 .tabItem { 
                     Text("setting")
                 }
