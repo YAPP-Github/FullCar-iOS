@@ -27,16 +27,23 @@ final class RootViewModel {
     // 홈으로 이동할거고
     // 토큰이 없으면 로그인 화면으로
     func onFirstTask() async {
-        try? await Task.sleep(for: .seconds(1))
-        #if DEBUG
-        appState = .tab
-        #else
-        if ((try? await account.hasValidToken()) != nil) {
+        do {
+            let isValidToken = try await account.hasValidToken()
+            appState = isValidToken ? .tab : .login
+
+            #if DEBUG
+            
             appState = .tab
-        } else {
+            print("[✅][RootView.swift] -> 자동 로그인 성공!")
+            #endif
+        } catch {
             appState = .login
+
+            #if DEBUG
+            appState = .tab
+            print("[🆘][RootView.swift] -> 자동 로그인 실패 : \(error)")
+            #endif
         }
-        #endif
     }
 
     func setupFirebase() async {
@@ -79,13 +86,7 @@ struct RootView: View {
 //            Image("런치스크린 이미지 나오면!", bundle: .main)
                 
         case .login:
-            LoginView(
-                viewModel: withDependencies({
-                    $0.accountService = .testValue
-                }, operation: {
-                    LoginViewModel()
-                })
-            )
+            LoginView(viewModel: .init())
         case .tab:
             FullCarTabView(viewModel: .init())
         }

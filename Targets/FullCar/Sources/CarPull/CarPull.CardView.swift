@@ -31,25 +31,27 @@ extension CarPull {
                         .foregroundStyle(Color.fullCar_primary)
                     Spacer()
                     
-                    if let postState = carPull.postState {
-                        FCBadge(postState: postState)
-                    }
-                    
+                    // FIXME: postState
+                    FCBadge(postState: .recruite)
                 }
                 .padding(.bottom, 14)
                 
-                Text(carPull.title)
+                Text(carPull.pickupLocation)
                     .font(.pretendard17(.bold))
                     .padding(.bottom, 12)
                 
-                Text(carPull.description)
+                Text(carPull.content)
                     .font(.pretendard16(.regular))
                     .padding(.bottom, 10)
                 
-                if let driver = carPull.driver {
-                    HStack(spacing: 6) {
-                        FCBadge(gender: driver.gender)
-                        FCBadge(mood: driver.mood)
+
+                
+                HStack(spacing: 6) {
+                    if let gender = carPull.gender {
+                        FCBadge(gender: gender)
+                    }
+                    if let moodType = carPull.moodType {
+                        FCBadge(mood: moodType)
                     }
                 }
                 
@@ -79,7 +81,7 @@ extension CarPull {
 #if DEBUG
 #Preview {
     VStack {
-        CarPull.CardView(carPull: .mock)
+        CarPull.CardView(carPull: .mock())
             .debug()
     }
     .frame(maxWidth: .infinity, maxHeight: .infinity)

@@ -17,35 +17,45 @@ struct Dummy: Hashable {
 }
 
 @MainActor
-@Observable
-final class CallListViewModel {
-    var selection: FullCar.CallListTab = .request
-    
-    var dummyData: [Dummy] = [.init(status: .waiting),
-                              .init(status: .failure),
-                              .init(status: .waiting),
-                              .init(status: .success),
-                              .init(status: .waiting),
-                              .init(status: .waiting),
-                              .init(status: .success),
-                              .init(status: .success),
-                              .init(status: .success)]
-}
-
-
 struct CallListView: View {
     @Bindable var viewModel: CallListViewModel
     
     var body: some View {
         
+        NavigationStack(path: $viewModel.paths) {
+            _body
+                .navigationDestination(for: CallListViewModel.Destination.self) { destination in
+                    switch destination {
+                    case let .detail(callListDetailViewModel):
+                        CallListDetailView(viewModel: callListDetailViewModel)
+                    }
+                }
+                .navigationBarStyle(
+                    leadingView: { },
+                    centerView: {
+                        Text("요청내역")
+                            .font(.pretendard18(.bold))
+                            
+                    },
+                    trailingView: { }
+                )
+        }
+    }
+    
+    
+    private var _body: some View {
         VStack(spacing: 0) {
             CallListTabView(selection: $viewModel.selection)
                 .padding(.top, 20)
             
             TabView(selection: $viewModel.selection,
                     content:  {
-                CallRequestListView(data: $viewModel.dummyData)
+                
+                CallRequestListView(data: $viewModel.dummyData) { item in
+                    viewModel.onAcceptTapped()
+                }
                     .tag(FullCar.CallListTab.request)
+                
                 CallReceiveListView(data: $viewModel.dummyData)
                     .tag(FullCar.CallListTab.receive)
             })
@@ -53,14 +63,6 @@ struct CallListView: View {
             .transition(.slide)
             
         }
-        .navigationBarStyle(
-            leadingView: { },
-            centerView: {
-                Text("요청내역")
-                    .font(.pretendard18(.bold))
-            },
-            trailingView: { }
-        )
     }
 }
 

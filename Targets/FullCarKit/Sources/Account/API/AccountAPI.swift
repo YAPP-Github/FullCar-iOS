@@ -10,21 +10,24 @@ import Foundation
 import Dependencies
 
 struct AccountAPI {
-    var login: (_ accessToken: String) async throws -> AccountCredential
+    var login: (_ request: AuthRequest) async throws -> AccountCredential
     var logout: () async throws -> Void
     var leave: () async throws -> Void
-    var refresh: (_ refreshToken: String) async throws -> AccountCredential
+    var refresh: (_ refreshToken: String) async throws -> AuthTokenResponse
 }
 
 extension AccountAPI: DependencyKey {
     static var liveValue: AccountAPI {
         return  AccountAPI(
-            login: { accessToken in
-                // 추후 서버에서 받아온 데이터 타입으로 설정
-                let newCredential: AccountCredential = try await NetworkClient.main.request(
-                    endpoint: Endpoint.Account.login(accessToken: accessToken)
+            login: { request in
+                let response: ApiAuthResponse = try await NetworkClient.account.request(
+                    endpoint: Endpoint.Account.login(request: request)
                 ).response()
-                return newCredential
+                let authResponse = response.data
+
+                return .init(onBoardingFlag: authResponse.onBoardingFlag,
+                             accessToken: authResponse.accessToken,
+                             refreshToken: authResponse.refreshToken)
             },
             logout: {
                 try await NetworkClient.main.request(
@@ -39,10 +42,11 @@ extension AccountAPI: DependencyKey {
                 ).response()
             },
             refresh: { refreshToken in
-                let newCredential: AccountCredential = try await NetworkClient.main.request(
+                let response: ApiAuthTokenResponse = try await NetworkClient.account.request(
                     endpoint: Endpoint.Account.refresh(refreshToken: refreshToken)
                 ).response()
-                return newCredential
+
+                return response.data
             })
     }
 }

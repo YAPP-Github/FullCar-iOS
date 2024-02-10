@@ -12,6 +12,8 @@ struct CallRequestListView: View {
     
     @Binding var data: [Dummy]
     
+    var onTapGesture: ((Dummy) -> ())
+    
     var body: some View {
         ScrollView {
             LazyVGrid(columns: [GridItem()], content: {
@@ -19,6 +21,9 @@ struct CallRequestListView: View {
                 ForEach(data, id: \.self) { item in
                     CallListItem(status: item.status,
                                  isLast: item.id == data.last?.id)
+                    .onTapGesture {
+                        onTapGesture(item)
+                    }
                 }
             })
         }

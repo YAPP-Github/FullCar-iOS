@@ -8,6 +8,8 @@
 
 import Foundation
 import Observation
+import Dependencies
+import XCTestDynamicOverlay
 
 @MainActor
 @Observable
@@ -18,21 +20,34 @@ final class CarPullDetailViewModel {
         case inProcess
     }
     
-    var requestStatus: RequestStatus = .beforeBegin
+    var requestStatus: RequestStatus
     let carPull: CarPull.Model.Response
-    let information: Car.Information
+    var information: Car.Information?
+    var onBackButtonTapped: () -> Void = unimplemented("onBackButtonTapped")
     
     init(
-        requestStatus: RequestStatus,
-        carPull: CarPull.Model.Response,
-        information: Car.Information
+        requestStatus: RequestStatus = .beforeBegin,
+        carPull: CarPull.Model.Response
     ) {
         self.requestStatus = requestStatus
         self.carPull = carPull
-        self.information = information
+    }
+    
+    func onFirstTask() async {
+        // TODO: API call
     }
     
     func beginRequestButtonTapped() {
         requestStatus = .inProcess
     }
 } 
+
+extension CarPullDetailViewModel: Hashable {
+    nonisolated static func == (lhs: CarPullDetailViewModel, rhs: CarPullDetailViewModel) -> Bool {
+        return lhs === rhs
+    }
+    
+    nonisolated func hash(into hasher: inout Hasher) {
+        hasher.combine(ObjectIdentifier(self))
+    }
+}

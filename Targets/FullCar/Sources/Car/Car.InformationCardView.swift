@@ -25,11 +25,11 @@ extension Car {
                     .font(.pretendard17(.bold))
                     .padding(.bottom, 16)
                     .foregroundStyle(Color.black80)
-                rowView(title: "차량 번호", content: information.number.encryptedText)
+                rowView(title: "차량 번호", content: information.carNumber.encryptedText)
                     .padding(.bottom, 12)
-                rowView(title: "차량 종류", content: "\(information.model) · \(information.manufacturer)")
+                rowView(title: "차량 종류", content: "\(information.carName) · \(information.carBrand)")
                     .padding(.bottom, 12)
-                rowView(title: "차량 색상", content: information.color)
+                rowView(title: "차량 색상", content: information.carColor)
             }
             .padding(.all, 20)
         }

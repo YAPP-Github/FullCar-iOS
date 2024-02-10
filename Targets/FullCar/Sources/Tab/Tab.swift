@@ -27,11 +27,25 @@ struct FullCarTabView: View {
                     Text("home")
                 }
                 .tag(FullCar.Tab.home)
+
             CallListView(viewModel: .init())
                 .tabItem {
                     Text("요청")
                 }
                 .tag(FullCar.Tab.request)
+
+            CarPullRegisterView(viewModel: .init())
+                .tabItem { 
+                    Text("register")
+                }
+                .tag(FullCar.Tab.register)
+            
+            Car.Register.BodyView(viewModel: .init())
+                .tabItem { 
+                    Text("car experiment")
+                }
+                .tag(FullCar.Tab.experiment)
+            
             SettingsView(viewModel: .init())
                 .tabItem { 
                     Text("setting")

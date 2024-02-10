@@ -10,10 +10,10 @@ import SwiftUI
 import FullCarUI
 import FullCarKit
 
-struct CallListDeatilView: View {
+@MainActor
+struct CallListDetailView: View {
     
-    @State var toggleOpen: Bool = false
-    @State var toggleRotate: CGFloat = 0
+    var viewModel: CallListDetailViewModel
     
     var body: some View {
         VStack(spacing: 0) {
@@ -46,12 +46,12 @@ struct CallListDeatilView: View {
             Button(action: {
                 
                 withAnimation(.easeInOut(duration: 0.3)) {
-                    toggleOpen.toggle()
+                    viewModel.toggleOpen.toggle()
                 }
                 
                 withAnimation(.smooth) {
                     
-                    toggleRotate += 180
+                    viewModel.toggleRotate += 180
                 }
             }, label: {
                 HStack(spacing: 0) {
@@ -62,26 +62,26 @@ struct CallListDeatilView: View {
                     Spacer()
                     
                     Image(systemName: "chevron.down")
-                        .rotationEffect(.degrees(toggleRotate))
+                        .rotationEffect(.degrees(viewModel.toggleRotate))
                         .foregroundStyle(Color.black80)
                 }
                 .padding(.all, 20)
             })
             
-            if toggleOpen {
+            if viewModel.toggleOpen {
                 
-                CarPull.CardView(carPull: .init(companyName: "카카오페이", title: "타이틀", description: "설명", driver: .init(gender: .female, mood: .quiet), postState: .recruite))
+                CarPull.CardView(carPull: .init(id: 0, pickupLocation: "봉천역", periodType: .oneWeek, money: 1000, content: "타이틀", moodType: .quiet, companyName: "회사이름", gender: .female, createdAt: Date()))
                 
                 Rectangle()
                     .foregroundStyle(Color.gray10)
                     .frame(height: 8, alignment: .center)
                 
-                Car.InformationCardView(information: .init(number: "23루 3334", model: "SUV", manufacturer: "볼보", color: "화이트"))
-            } else {
-                Rectangle()
-                    .foregroundStyle(Color.gray10)
-                    .frame(height: 8, alignment: .center)
+                Car.InformationCardView(information: .init(id: 1, carNumber: "23루 4343", carName: "SUV", carBrand: "볼보", carColor: "화이트"))
             }
+            
+            Rectangle()
+                .foregroundStyle(Color.gray10)
+                .frame(height: 8, alignment: .center)
         }
     }
     
@@ -100,7 +100,7 @@ struct CallListDeatilView: View {
             Divider()
                 .padding(.horizontal, 18)
             
-            CarPull.CardView(carPull: .init(companyName: "카카오페이", title: "타이틀", description: "설명", driver: nil, postState: nil))
+            CarPull.CardView(carPull: .init(id: 1, pickupLocation: "봉천역 3번 출구", periodType: .oneWeek, money: 1000, content: "안녕하세요~ 동네분 만나서 좋네요!\n카풀은 처음이라 안전운전 부탁드려요! ", moodType: nil, companyName: "회사", gender: nil, createdAt: Date()))
         }
 
     }
@@ -136,5 +136,5 @@ struct CallListDeatilView: View {
 }
 
 #Preview {
-    CallListDeatilView()
+    CallListDetailView(viewModel: .init())
 }

@@ -34,6 +34,18 @@ public final class DataRequest: NetworkRequestable {
         let response = try await fetchResponse()
         try self.validate(response: response)
         let result: Model = try self.decode(with: decoder, response: response)
+
+        #if DEBUG
+        print(
+        """
+
+        [ℹ️] NETWORK -> response status code:
+            \(result)
+
+        """
+        )
+        #endif
+
         return result
     }
 
@@ -47,6 +59,16 @@ public final class DataRequest: NetworkRequestable {
         let initialRequest = try endpoint.asURLRequest()
         let urlRequest = try await adapt(request: initialRequest)
         let response = try await dataTask(with: urlRequest)
+
+        #if DEBUG
+        print(
+        """
+        [ℹ️] NETWORK -> response: 
+            \(response.response)
+        """
+        )
+        #endif
+
         return response
     }
     
