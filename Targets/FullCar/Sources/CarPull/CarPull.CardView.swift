@@ -14,7 +14,7 @@ extension CarPull {
     @MainActor
     struct CardView: View {
         
-        let carPull: CarPull.Model.Response
+        let carPull: CarPull.Model.Information
         
         var body: some View {
             bodyView

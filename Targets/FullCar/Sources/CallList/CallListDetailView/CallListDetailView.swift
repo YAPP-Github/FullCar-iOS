@@ -102,7 +102,7 @@ struct CallListDetailView: View {
             Divider()
                 .padding(.horizontal, 18)
             
-            CarPull.CardView(carPull: .init(id: 1, pickupLocation: "봉천역 3번 출구", periodType: .oneWeek, money: 1000, content: "안녕하세요~ 동네분 만나서 좋네요!\n카풀은 처음이라 안전운전 부탁드려요! ", moodType: nil, companyName: "회사", gender: nil, createdAt: Date()))
+            CarPull.CardView(carPull: .init(id: 4, pickupLocation: "봉천역 2번 출구에서 출발할게요~", periodType: .once, money: 48000, content: "월수금만 카풀하실 분 구합니다. 봉천역 2번출구에서 픽업할 예정이고 시간약속 잘지키시면 좋을 것 같습니다! 비용은 제시해주셔도 됩니다.", moodType: .quiet, companyName: "현대자동차", gender: .male, createdAt: Date()))
         }
 
     }

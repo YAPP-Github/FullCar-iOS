@@ -20,14 +20,15 @@ final class HomeViewModel {
     }
     
     @ObservationIgnored
-    @Dependency(\.homeAPI) private var homeAPI
+    @Dependency(\.carpullAPI) private var carpullAPI
     
     var paths: [Destination] = []
-    var carPullList: [CarPull.Model.Response] = []
-    var apiIsInFlight: Bool = false
+    private(set) var carPullList: [CarPull.Model.Information] = []
+    private(set) var apiIsInFlight: Bool = false
+    private(set) var error: Error?
     
     private var currentPage: Int = 1
-    private var homeResponse: Home.Model.Response?
+    private var homeResponse: CommonResponse<CarPull.Model.Fetch>?
     
     func onFirstTask() async {
         await fetchCarPulls(page: currentPage)
@@ -44,7 +45,8 @@ final class HomeViewModel {
             apiIsInFlight = true
             defer { apiIsInFlight = false }
             
-            let response = try await homeAPI.fetch(page: currentPage)
+            let response = try await carpullAPI.fetch(page: currentPage)
+            self.error = .none
             self.homeResponse = response
             
             if page == 1 {
@@ -56,16 +58,17 @@ final class HomeViewModel {
             currentPage += 1
         }
         catch {
-            // some error handling
+            self.error = error
         }
     }
     
     @Sendable
     func refreshable() async {
         clear()
+        await fetchCarPulls(page: 1)
     }
     
-    func onCardTapped(_ carpull: CarPull.Model.Response) async {
+    func onCardTapped(_ carpull: CarPull.Model.Information) async {
         guard paths.isEmpty else { return }
         let detailViewModel = CarPullDetailViewModel(carPull: carpull)
         // TODO: 먼저 지워지는거 수정
@@ -75,10 +78,12 @@ final class HomeViewModel {
         paths.append(.detail(detailViewModel))
     }
     
+    func retryButtonTapped() async {
+        await fetchCarPulls(page: 1)
+    }
+    
     private func clear() {
         self.currentPage = 1
-        self.carPullList.removeAll()
-        self.homeResponse = .none
     }
 }
 

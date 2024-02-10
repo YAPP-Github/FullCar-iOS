@@ -52,13 +52,42 @@ struct HomeView: View {
     }
     @ViewBuilder
     private var bodyView: some View {
-        if viewModel.carPullList.isEmpty {
-            Color.red
+        if viewModel.error != nil {
+            errorView(imageName: "error_home")
+                .transition(.fadeInOut)
+        } else if viewModel.carPullList.isEmpty {
+            errorView(imageName: "empty_home")
+                .transition(.fadeInOut)
         } else {
             carPullList(viewModel.carPullList)
+                .transition(.fadeInOut)
         }
     }
-    private func carPullList(_ list: [CarPull.Model.Response]) -> some View {
+    private func errorView(imageName: String) -> some View {
+        VStack(spacing: .zero) {
+            Image("error_home", bundle: .main)
+                .padding(.bottom, 24)
+            Button {
+                Task {
+                    await viewModel.retryButtonTapped()
+                }
+            } label: {
+                if viewModel.apiIsInFlight {
+                    ProgressView().id(UUID())
+                        .progressViewStyle(CircularProgressViewStyle(tint: Color.white))
+                        .transition(.fadeInOut)
+                        .frame(width: 116)
+                } else {
+                    Text("다시 불러오기")
+                        .transition(.fadeInOut)
+                        .frame(width: 116)
+                }
+            }
+            .buttonStyle(.fullCar(horizontalPadding: 16, style: .palette(.primary_white)))
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+    }
+    private func carPullList(_ list: [CarPull.Model.Information]) -> some View {
         ScrollView(.vertical) { 
             LazyVStack(spacing: .zero) {
                 ForEach(Array(list.enumerated()), id: \.element) { index, carpull in
@@ -77,9 +106,6 @@ struct HomeView: View {
         }
         .scrollIndicators(.hidden)
         .refreshable(action: viewModel.refreshable)
-    }
-    private var emptyView: some View {
-        Color.red
     }
 }
 

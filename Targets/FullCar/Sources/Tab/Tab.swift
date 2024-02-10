@@ -40,7 +40,7 @@ struct FullCarTabView: View {
                 }
                 .tag(FullCar.Tab.register)
             
-            Car.Register.BodyView(viewModel: .init())
+            CarPullRegisterView(viewModel: .init())
                 .tabItem { 
                     Text("car experiment")
                 }
