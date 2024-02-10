@@ -71,6 +71,7 @@ extension Onboarding.Company {
                             type: .search,
                             state: .constant(.default))
                         )
+                        .disabled(true)
                 },
                 state: .constant(.default),
                 headerText: "안전한 카풀을 위해\n본인의 회사를 선택해 주세요.",
@@ -91,6 +92,7 @@ extension Onboarding.Company {
 
         @State var keyword: String = ""
         @State var locations: [LocalCoordinate] = []
+        @State var onSearchButtonTapped: Bool = false
 
         var body: some View {
             bodyView
@@ -153,6 +155,7 @@ extension Onboarding.Company {
                     self.locations = coordinates
 
                     viewModel.companySearchBarState = .default
+                    onSearchButtonTapped = true
                 }
             }, label: {
                 Text("검색")
@@ -167,21 +170,29 @@ extension Onboarding.Company {
 
         private var locationList: some View {
             ScrollView {
-                LazyVGrid(columns: [GridItem()], spacing: .zero, content: {
-                    ForEach($locations, id: \.self) { item in
-                        LocationListItem(location: item, company: keyword, onTap: {
-                            viewModel.company = item.wrappedValue
+                if locations.isEmpty && onSearchButtonTapped {
+                    emptyLocationList
+                } else {
+                    LazyVGrid(columns: [GridItem()], spacing: .zero, content: {
+                        ForEach($locations, id: \.self) { item in
+                            LocationListItem(location: item, company: keyword, onTap: {
+                                viewModel.company = item.wrappedValue
 
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                                withAnimation {
-                                    viewModel.isSearchViewAppear = false
-                                    viewModel.isOnboardingViewAppear = true
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                                    withAnimation {
+                                        viewModel.isSearchViewAppear = false
+                                        viewModel.isOnboardingViewAppear = true
+                                    }
                                 }
-                            }
-                        })
-                    }
-                })
+                            })
+                        }
+                    })
+                }
             }
+        }
+
+        private var emptyLocationList: some View {
+            Text("검색 결과가 없어요~")
         }
     }
 }
