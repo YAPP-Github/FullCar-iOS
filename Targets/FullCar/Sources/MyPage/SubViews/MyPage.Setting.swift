@@ -21,6 +21,8 @@ extension MyPage.Setting {
         @State private var isShowingLogoutAlert = false
         @State private var isShowingLeaveAlert = false
 
+        @State private var didLeaveSuccess = false
+
         var body: some View {
             bodyView
                 .navigationBarStyle(
@@ -62,6 +64,9 @@ extension MyPage.Setting {
                     isPresented: $isShowingLogoutAlert
                 ) {
                     Button("로그아웃", role: .destructive) {
+                        Task {
+                            await viewModel.logout()
+                        }
                     }
                     Button("취소", role: .cancel) {
                         isShowingLogoutAlert = false
@@ -88,12 +93,24 @@ extension MyPage.Setting {
                     isPresented: $isShowingLeaveAlert,
                     actions: {
                         Button("탈퇴하기", role: .destructive) {
+                            Task {
+                                await viewModel.leave(didSuccess: $didLeaveSuccess)
+                            }
                         }
                         Button("취소", role: .cancel) {
                             isShowingLeaveAlert = false
                         }
                     },
                     message: { Text("탈퇴 시 재가입이 어려울 수 있으며,\n작성한 모든 게시글에 대한 권한이 소멸됩니다.") }
+                )
+                .alert(
+                    "정상적으로 탈퇴처리 되었습니다.",
+                    isPresented: $didLeaveSuccess,
+                    actions: {
+                        Button("확인", role: .cancel) {
+                            didLeaveSuccess = false
+                        }
+                    }
                 )
         }
 
