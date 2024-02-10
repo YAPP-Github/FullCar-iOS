@@ -29,11 +29,11 @@ final class RootViewModel {
     // 토큰이 없으면 로그인 화면으로
     func onFirstTask() async {
         do {
-            if try await fullCarAccount.hasValidToken {
-                appState = try await onboardingAPI.isOnboardingCompleted() ? .tab : .onboarding
-            } else {
+//            if try await loginAPI.hasValidToken {
+//                appState = try await onboardingAPI.isOnboardingCompleted() ? .tab : .onboarding
+//            } else {
                 appState = .login
-            }
+//            }
 
             #if DEBUG
             print("[✅][RootView.swift] -> 자동 로그인 성공!")
