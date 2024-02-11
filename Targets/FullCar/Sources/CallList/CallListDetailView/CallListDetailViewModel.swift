@@ -71,6 +71,14 @@ final class CallListDetailViewModel {
             print("error", error.localizedDescription)
         }
     }
+    
+    func changeState(_ state: CarPull.Model.FormStateType) async {
+        do {
+            try await callListAPI.changeFormState(formId: carpullData.id, state: state, contact: myCallNumber, toPassenger: sendText.isEmpty ? nil : sendText)
+        } catch {
+            print(error.localizedDescription)
+        }
+    }
 }
 
 

@@ -35,6 +35,7 @@ public extension Endpoint {
         case fetchSentForms
         case fetchReceivedForms
         case getFormDetail(formId: Int)
+        case changeFormStatus(formId: Int, formState: String, contact: String, toPassenger: String?)
     }
 }
 
@@ -210,30 +211,45 @@ extension Endpoint.Form: URLRequestConfigurable {
         case .fetchSentForms: return "api/v1/sent-forms"
         case .fetchReceivedForms: return "api/v1/received-forms"
         case .getFormDetail(let id): return "api/v1/forms/\(id)"
+        case .changeFormStatus(let id,_,_,_): return "api/v1/forms/\(id)"
         }
     }
     
     public var method: HTTPMethod {
         switch self {
         case .fetchSentForms, .fetchReceivedForms, .getFormDetail(_): return .get
+        case .changeFormStatus(_,_,_,_): return .patch
         }
     }
     
     public var parameters: Parameters? {
         switch self {
         case .fetchReceivedForms, .fetchSentForms, .getFormDetail(_): return nil
+        case .changeFormStatus(_,let formState,let contact,let toPassenger):
+            
+            var parameter: Parameters = [
+                "formState": formState,
+                "contact": contact
+            ]
+            
+            if let toPassenger {
+                parameter["toPassenger"] = toPassenger
+            }
+            
+            return parameter
         }
     }
     
     public var headers: [Header]? {
         switch self {
-        case .fetchReceivedForms, .fetchSentForms, .getFormDetail(_): return nil
+        case .fetchReceivedForms, .fetchSentForms, .getFormDetail(_), .changeFormStatus(_,_,_,_): return nil
         }
     }
     
     public var encoder: ParameterEncodable {
         switch self {
         case .fetchReceivedForms, .fetchSentForms, .getFormDetail(_): return URLEncoding()
+        case .changeFormStatus(_,_,_,_): return JSONEncoding()
         }
     }
 }

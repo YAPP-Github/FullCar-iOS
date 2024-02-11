@@ -43,8 +43,15 @@ struct CallListDetailView: View {
             .alert("요청을 거절 하시겠어요?", isPresented: $viewModel.alertOpen, actions: {
                 
                 Button(role: .destructive, action: {
-                    viewModel.carPullResultType = .denied
-                    viewModel.fullSheetOpen = true
+                    
+                    Task {
+                        await viewModel.changeState(.REJECT)
+                        await MainActor.run {
+                            viewModel.carPullResultType = .denied
+                            viewModel.fullSheetOpen = true
+                        }
+                    }
+                    
                 }, label: {
                     Text("거절하기")
                 })
@@ -222,8 +229,14 @@ struct CallListDetailView: View {
                     viewModel.typingState = .typing
                 }
             case .typing:
-                viewModel.carPullResultType = .success
-                viewModel.fullSheetOpen = true
+                
+                Task {
+                    await viewModel.changeState(.ACCEPT)
+                    await MainActor.run {
+                        viewModel.carPullResultType = .success
+                        viewModel.fullSheetOpen = true
+                    }
+                }
             }
         }
     label: { Text(viewModel.typingState == .waiting ? "요청승인" : "완료") }

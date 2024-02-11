@@ -18,11 +18,17 @@ extension CallListView {
     struct API {
         var fetchSentList: @Sendable () async throws -> CommonResponse<[CarPull.Model.Information]>
         var fetchReceivedList: @Sendable () async throws -> CommonResponse<[CarPull.Model.Information]>
+        private var fetch: @Sendable (Int) async throws -> CommonResponse<CarPull.Model.Information>
+        private var changeForm: @Sendable (Int, String, String, String?) async throws -> CommonResponse<CarPull.Model.Information>
         
-        var formDetail: @Sendable (Int) async throws -> CommonResponse<CarPull.Model.Information>
         @discardableResult
         func getFormDetail(formId: Int) async throws -> CommonResponse<CarPull.Model.Information> {
-            return try await self.getFormDetail(formId: formId)
+            return try await self.fetch(formId)
+        }
+        
+        @discardableResult
+        func changeFormState(formId: Int, state: CarPull.Model.FormStateType, contact: String, toPassenger: String?) async throws -> CommonResponse<CarPull.Model.Information> {
+            return try await self.changeForm(formId, state.rawValue, contact, toPassenger)
         }
     }
 }
@@ -34,10 +40,12 @@ extension CallListView.API: DependencyKey {
     }, fetchReceivedList: {
         return try await NetworkClient.main.request(endpoint: Endpoint.Form.fetchReceivedForms)
             .response()
-    }, formDetail: { formId in
+    }, fetch: { formId in
         return try await NetworkClient.main.request(endpoint: Endpoint.Form.getFormDetail(formId: formId))
             .response()
-        
+    }, changeForm: { formId, state, contact, toPassenger in
+        return try await NetworkClient.main.request(endpoint: Endpoint.Form.changeFormStatus(formId: formId, formState: state, contact: contact, toPassenger: toPassenger))
+            .response()
     })
     #if DEBUG
     static let previewValue: CallListView.API = .init(fetchSentList: {
@@ -206,7 +214,7 @@ extension CallListView.API: DependencyKey {
                       createdAt: Date())
             ]
         )
-    }, formDetail: { formId in
+    }, fetch: { formId in
             .init(status: 200, message: "", data: .init(id: 4,
                                                         pickupLocation: "봉천역",
                                                         periodType: .oneWeek,
@@ -221,6 +229,20 @@ extension CallListView.API: DependencyKey {
                                                         resultMessage: .init(contact: "카풀 매칭에 실패했어요. 다른 카풀을 찾아보세요!", toPassenger: nil),
                                                         createdAt: Date()))
         
+    }, changeForm: { formId, state, contact, toPassenger in
+            .init(status: 200, message: "", data: .init(id: 4,
+                                                        pickupLocation: "봉천역",
+                                                        periodType: .oneWeek,
+                                                        money: 10000,
+                                                        content: "봉천역에서 카풀해요~",
+                                                        moodType: .quiet,
+                                                        formState: .REJECT,
+                                                        carpoolState: .OPEN,
+                                                        nickname: "알뜰한 물개",
+                                                        companyName: "현대자동차",
+                                                        gender: .male,
+                                                        resultMessage: .init(contact: "카풀 매칭에 실패했어요. 다른 카풀을 찾아보세요!", toPassenger: nil),
+                                                        createdAt: Date()))
     })
     #endif
 }
