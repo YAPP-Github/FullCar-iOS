@@ -36,6 +36,7 @@ public extension Endpoint {
         case fetchReceivedForms
         case getFormDetail(formId: Int)
         case changeFormStatus(formId: Int, formState: String, contact: String, toPassenger: String?)
+        case applyCarpull(formId: Int, pickupLocation: String, periodType: String, money: Int, content: String)
     }
 }
 
@@ -212,6 +213,7 @@ extension Endpoint.Form: URLRequestConfigurable {
         case .fetchReceivedForms: return "api/v1/received-forms"
         case .getFormDetail(let id): return "api/v1/forms/\(id)"
         case .changeFormStatus(let id,_,_,_): return "api/v1/forms/\(id)"
+        case .applyCarpull(let id,_,_,_,_): return "api/v1/carpools/\(id)/forms"
         }
     }
     
@@ -219,6 +221,7 @@ extension Endpoint.Form: URLRequestConfigurable {
         switch self {
         case .fetchSentForms, .fetchReceivedForms, .getFormDetail(_): return .get
         case .changeFormStatus(_,_,_,_): return .patch
+        case .applyCarpull(_,_,_,_,_): return .post
         }
     }
     
@@ -237,19 +240,26 @@ extension Endpoint.Form: URLRequestConfigurable {
             }
             
             return parameter
+        case .applyCarpull(_, let pickupLocation, let periodType, let money,let content):
+            return [
+                  "pickupLocation": pickupLocation,
+                  "periodType": periodType,
+                  "money": money,
+                  "content": content
+            ]
         }
     }
     
     public var headers: [Header]? {
         switch self {
-        case .fetchReceivedForms, .fetchSentForms, .getFormDetail(_), .changeFormStatus(_,_,_,_): return nil
+        case .fetchReceivedForms, .fetchSentForms, .getFormDetail(_), .changeFormStatus(_,_,_,_), .applyCarpull(_,_,_,_,_): return nil
         }
     }
     
     public var encoder: ParameterEncodable {
         switch self {
         case .fetchReceivedForms, .fetchSentForms, .getFormDetail(_): return URLEncoding()
-        case .changeFormStatus(_,_,_,_): return JSONEncoding()
+        case .changeFormStatus(_,_,_,_), .applyCarpull(_,_,_,_,_): return JSONEncoding()
         }
     }
 }

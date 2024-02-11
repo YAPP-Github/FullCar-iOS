@@ -77,7 +77,7 @@ struct CarPullDetailView: View {
     }
     
     private var beginRequestButton: some View {
-        Button { viewModel.beginRequestButtonTapped() } 
+        Button { Task { await viewModel.beginRequestButtonTapped() } } 
         label: { Text("탑승요청") }
         .buttonStyle(
             .fullCar(
@@ -85,9 +85,10 @@ struct CarPullDetailView: View {
                 horizontalPadding: 137,
                 verticalPadding: 17,
                 radius: 8,
-                style: .palette(.primary_white)
+                style: .palette(viewModel.requestStatus == .applyAlready ? .gray60 : .primary_white)
             )
         )
+        .disabled(viewModel.requestStatus == .applyAlready)
     }
 }
 

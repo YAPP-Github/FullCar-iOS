@@ -20,6 +20,8 @@ extension CallListView {
         var fetchReceivedList: @Sendable () async throws -> CommonResponse<[CarPull.Model.Information]>
         private var fetch: @Sendable (Int) async throws -> CommonResponse<CarPull.Model.Information>
         private var changeForm: @Sendable (Int, String, String, String?) async throws -> CommonResponse<CarPull.Model.Information>
+        private var apply: @Sendable (Int, String, String, Int, String) async throws -> CommonResponse<CarPull.Model.Information>
+        
         
         @discardableResult
         func getFormDetail(formId: Int) async throws -> CommonResponse<CarPull.Model.Information> {
@@ -29,6 +31,11 @@ extension CallListView {
         @discardableResult
         func changeFormState(formId: Int, state: CarPull.Model.FormStateType, contact: String, toPassenger: String?) async throws -> CommonResponse<CarPull.Model.Information> {
             return try await self.changeForm(formId, state.rawValue, contact, toPassenger)
+        }
+        
+        @discardableResult
+        func applyCarpull(formId: Int, pickupLocation: String, peroidType: String, money: Int, content: String) async throws -> CommonResponse<CarPull.Model.Information> {
+            return try await self.apply(formId, pickupLocation, peroidType, money, content)
         }
     }
 }
@@ -45,6 +52,9 @@ extension CallListView.API: DependencyKey {
             .response()
     }, changeForm: { formId, state, contact, toPassenger in
         return try await NetworkClient.main.request(endpoint: Endpoint.Form.changeFormStatus(formId: formId, formState: state, contact: contact, toPassenger: toPassenger))
+            .response()
+    }, apply: { formId, pickupLocation, peroidType, money, content in
+        return try await NetworkClient.main.request(endpoint: Endpoint.Form.applyCarpull(formId: formId, pickupLocation: pickupLocation, periodType: peroidType, money: money, content: content))
             .response()
     })
     #if DEBUG
@@ -230,6 +240,20 @@ extension CallListView.API: DependencyKey {
                                                         createdAt: Date()))
         
     }, changeForm: { formId, state, contact, toPassenger in
+            .init(status: 200, message: "", data: .init(id: 4,
+                                                        pickupLocation: "봉천역",
+                                                        periodType: .oneWeek,
+                                                        money: 10000,
+                                                        content: "봉천역에서 카풀해요~",
+                                                        moodType: .quiet,
+                                                        formState: .REJECT,
+                                                        carpoolState: .OPEN,
+                                                        nickname: "알뜰한 물개",
+                                                        companyName: "현대자동차",
+                                                        gender: .male,
+                                                        resultMessage: .init(contact: "카풀 매칭에 실패했어요. 다른 카풀을 찾아보세요!", toPassenger: nil),
+                                                        createdAt: Date()))
+    }, apply: { formId, pickupLocation, periodType, money, contect in
             .init(status: 200, message: "", data: .init(id: 4,
                                                         pickupLocation: "봉천역",
                                                         periodType: .oneWeek,

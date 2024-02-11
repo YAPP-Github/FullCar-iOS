@@ -14,10 +14,12 @@ import XCTestDynamicOverlay
 @MainActor
 @Observable
 final class CarPullDetailViewModel {
+    @ObservationIgnored @Dependency(\.callListAPI) private var callListAPI
     
     enum RequestStatus {
         case beforeBegin
         case inProcess
+        case applyAlready
     }
     
     var requestStatus: RequestStatus
@@ -37,10 +39,27 @@ final class CarPullDetailViewModel {
         // TODO: API call
     }
     
-    func beginRequestButtonTapped() {
-        requestStatus = .inProcess
+    func beginRequestButtonTapped() async {
+        await MainActor.run {
+            requestStatus = .inProcess
+        }
+        await applyFullCar()
+        
+        #if DEBUG
+        await MainActor.run {
+            requestStatus = .applyAlready
+        }
+        #endif
     }
-} 
+    
+    func applyFullCar() async {
+        do {
+            try await callListAPI.applyCarpull(formId: carPull.id, pickupLocation: carPull.pickupLocation, peroidType: carPull.periodType.rawValue, money: carPull.money, content: carPull.content)
+        } catch {
+            print("error", error.localizedDescription)
+        }
+    }
+}
 
 extension CarPullDetailViewModel: Hashable {
     nonisolated static func == (lhs: CarPullDetailViewModel, rhs: CarPullDetailViewModel) -> Bool {
