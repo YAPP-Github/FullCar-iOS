@@ -167,6 +167,12 @@ extension Onboarding.ViewModel {
             print(error)
         }
     }
+
+    func onAppear() {
+        email = ""
+        nickname = ""
+        gender = .notSelect
+    }
 }
 
 extension Onboarding {
@@ -177,29 +183,36 @@ extension Onboarding {
 
         var body: some View {
             NavigationStack {
-                VStack(spacing: .zero) {
-                    bodyView
-
-                    Spacer()
-
-                    buttonView
-                        .padding(.bottom, 16)
-                        .padding(.horizontal, 20)
-                }
-                .navigationBarStyle(
-                    leadingView: {
-                        NavigationButton(icon: .back, action: { dismiss() })
-                    },
-                    centerView: {
-                        Text("회원 가입")
-                            .font(.pretendard18(.bold))
-                    },
-                    trailingView: { }
-                )
+                bodyView
+                    .onAppear {
+                        viewModel.onAppear()
+                    }
+                    .navigationBarStyle(
+                        leadingView: {
+                            NavigationButton(icon: .back, action: { dismiss() })
+                        },
+                        centerView: {
+                            Text("회원 가입")
+                                .font(.pretendard18(.bold))
+                        },
+                        trailingView: { }
+                    )
             }
         }
 
         private var bodyView: some View {
+            VStack(spacing: .zero) {
+                inputView
+
+                Spacer()
+
+                buttonView
+                    .padding(.bottom, 16)
+                    .padding(.horizontal, 20)
+            }
+        }
+
+        private var inputView: some View {
             ScrollView {
                 VStack(alignment: .leading, spacing: 40) {
                     Onboarding.Email.TextFieldView(viewModel: viewModel)
