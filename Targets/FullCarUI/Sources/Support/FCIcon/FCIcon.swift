@@ -33,6 +33,8 @@ public extension FCIcon {
         case messageText
         case resultSuccess
         case resultDenied
+        case search
+        case location
     }
 }
 
@@ -50,6 +52,7 @@ extension FCIcon.Symbol {
         case .messageText: return "message-text"
         case .resultSuccess: return "resultSuccess"
         case .resultDenied: return "resultDenied"
+        case .location: return "location"
         default: return ""
         }
     }
@@ -58,6 +61,7 @@ extension FCIcon.Symbol {
         switch self {
         case .check: return "checkmark.circle.fill"
         case .appleLogo: return "apple.logo"
+        case .search: return "magnifyingglass"
         default: return ""
         }
     }

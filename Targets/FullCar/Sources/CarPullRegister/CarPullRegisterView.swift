@@ -32,11 +32,46 @@ final class CarPullRegisterViewModel {
     var error: Error?
     var apiIsInFlight: Bool = false
     
-    var isValid: Bool {
-        !wishPlaceText.isEmpty && wishPlaceText.count <= 20 && 
-        periodType != nil && 
-        !wishCostText.isEmpty && wishCostText.count <= 10 &&
+    var isWishPlaceValid: Bool {
+        !wishPlaceText.isEmpty && wishPlaceText.count <= 20
+    } 
+    var isWishCostValid: Bool {
+        !wishCostText.isEmpty && wishCostText.count <= 10
+    } 
+    var isWishToSay: Bool {
         !wishToSayText.isEmpty && wishToSayText.count <= 150
+    }
+    var isValid: Bool {
+        isWishPlaceValid && 
+        periodType != nil && isWishCostValid &&
+        isWishToSay
+    }
+    
+    func wishPlaceTextChanged(_ wishPlaceText: String) {
+        if wishPlaceText.count <= 20 { 
+            self.wishPlaceState = .focus 
+        } else {
+            self.wishPlaceState = .error("희망 접선 장소는 20글자 까지 입력할 수 있어요.")
+        }
+        self.wishPlaceText = wishPlaceText
+    } 
+    
+    func wishCostTextChanged(_ wishCostText: String) {
+        if wishCostText.count <= 10 { 
+            self.wishCostState = .focus 
+        } else {
+            self.wishCostState = .error("희망 비용은 10글자 까지 입력할 수 있어요.")
+        }
+        self.wishCostText = wishCostText
+    }
+    
+    func wishToSayChanged(_ wishToSayText: String) {
+        if wishToSayText.count <= 150 { 
+            self.wishCostState = .focus 
+        } else {
+            self.wishCostState = .error("희망 비용은 10글자 까지 입력할 수 있어요.")
+        }
+        self.wishToSayText = wishToSayText
     }
     
     func moodButtonTapped(mood: Driver.Mood) {
@@ -83,6 +118,24 @@ struct CarPullRegisterView: View {
     
     var body: some View {
         _body
+            .alert(
+                "카풀 등록 오류",
+                isPresented: .init(
+                    get: { viewModel.error != nil },
+                    set: { _ in viewModel.error = nil }
+                ),
+                presenting: viewModel.error,
+                actions: { _ in
+                    Button {
+                        
+                    } label: {
+                        Text("확인")
+                    }
+                },
+                message: { _ in
+                    Text("카풀 등록 중 오류가 발생했어요.\n다시 시도해주세요.")
+                }
+            )
     }
     
     private var _body: some View {
@@ -102,21 +155,30 @@ struct CarPullRegisterView: View {
     private var wishPlaceTextField: some View {
         FCTextFieldView(
             textField: {
-                TextField("ex) 삼성역 5번 출구", text: $viewModel.wishPlaceText)
-                    .textFieldStyle(
-                        .fullCar(state: $viewModel.wishPlaceState, padding: 16)
+                TextField(
+                    "ex) 삼성역 5번 출구",
+                    text: .init(
+                        get: { viewModel.wishPlaceText }, 
+                        set: { viewModel.wishPlaceTextChanged($0) }
                     )
+                )
+                .textFieldStyle(
+                    .fullCar(
+                        state: $viewModel.wishPlaceState,
+                        padding: 16
+                    )
+                )
             },
             state: $viewModel.wishPlaceState,
             headerText: "희망 접선 장소",
             isHeaderRequired: true,
-            headerPadding: 12
+            headerPadding: 12,
+            footerMessage: .error("희망 접선 장소는 20글자 까지 입력할 수 있어요.")
         )
         .padding(.top, 20)
         .padding(.bottom, 36)
     }
     
-    // TODO: 드롭 다운 추가하기
     private var wishCostTextField: some View {
         SectionView { 
             FCTextFieldView(
@@ -138,10 +200,19 @@ struct CarPullRegisterView: View {
             periodSelectionButton
                 .padding(.trailing, 12)
             
-            TextField("ex) 30,000", text: $viewModel.wishCostText)
-                .textFieldStyle(
-                    .fullCar(type: .won, state: $viewModel.wishCostState)
+            TextField(
+                "ex) 30,000",
+                text: .init(
+                    get: { viewModel.wishCostText },
+                    set: { viewModel.wishCostTextChanged($0) }
                 )
+            )
+            .textFieldStyle(
+                .fullCar(
+                    type: .won,
+                    state: $viewModel.wishCostState
+                )
+            )
         }
     }
     
@@ -184,7 +255,10 @@ struct CarPullRegisterView: View {
             .frame(maxWidth: .infinity, alignment: .leading)
             
             FCTextEditor(
-                text: $viewModel.wishToSayText,
+                text: .init(
+                    get: { viewModel.wishToSayText },
+                    set: { viewModel.wishToSayChanged($0) }
+                ),
                 placeholder: "탑승자에게 하고 싶은 말이 있다면 자유롭게 작성해주세요!",
                 font: .pretendard16(.semibold),
                 padding: 16,

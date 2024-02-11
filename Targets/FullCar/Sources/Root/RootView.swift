@@ -18,9 +18,14 @@ import KakaoSDKCommon
 @MainActor
 @Observable
 final class RootViewModel {
-    @ObservationIgnored @Dependency(\.accountService) private var account
-
-    var appState: FullCar.State = FullCar.shared.appState
+    @ObservationIgnored @Dependency(\.loginAPI) private var loginAPI
+    @ObservationIgnored @Dependency(\.onbardingAPI) private var onboardingAPI
+    @ObservationIgnored
+    @Dependency(\.fullCar) private var fullCar
+    
+    var appState: FullCar.State {
+        return fullCar.appState
+    }
 
     // 자동로그인 시도
     // 로컬 스토리지에 토큰 있는지 검사해서, 유효성 검사하고
@@ -28,19 +33,24 @@ final class RootViewModel {
     // 토큰이 없으면 로그인 화면으로
     func onFirstTask() async {
         do {
-            let isValidToken = try await account.hasValidToken()
-            appState = isValidToken ? .tab : .login
+            if try await loginAPI.hasValidToken {
+                let member = try await onboardingAPI.isOnboardingCompleted()
+                if member.company.name.isEmpty {
+                    fullCar.appState = .onboarding    
+                } else {
+                    fullCar.appState = .tab(member)
+                }
+            } else {
+                fullCar.appState = .login
+            }
 
             #if DEBUG
-            
-            appState = .tab
             print("[✅][RootView.swift] -> 자동 로그인 성공!")
             #endif
         } catch {
-            appState = .login
+            fullCar.appState = .login
 
             #if DEBUG
-            appState = .tab
             print("[🆘][RootView.swift] -> 자동 로그인 실패 : \(error)")
             #endif
         }
@@ -86,7 +96,9 @@ struct RootView: View {
 //            Image("런치스크린 이미지 나오면!", bundle: .main)
                 
         case .login:
-            LoginView(viewModel: .init())
+            Login.BodyView(viewModel: .init())
+        case .onboarding:
+            Onboarding.Company.BodyView(viewModel: .init())
         case .tab:
             FullCarTabView(viewModel: .init())
         }

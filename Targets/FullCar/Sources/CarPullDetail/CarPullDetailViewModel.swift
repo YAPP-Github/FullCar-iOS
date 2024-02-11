@@ -27,6 +27,9 @@ final class CarPullDetailViewModel {
     var information: Car.Information?
     var onBackButtonTapped: () -> Void = unimplemented("onBackButtonTapped")
     
+    var actionSheetOpen: Bool = false
+    var alertOpen: Bool = false
+    
     init(
         requestStatus: RequestStatus = .beforeBegin,
         carPull: CarPull.Model.Information

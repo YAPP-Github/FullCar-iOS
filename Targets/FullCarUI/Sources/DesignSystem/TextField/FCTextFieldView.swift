@@ -98,70 +98,73 @@ public extension FCTextFieldView {
     }
 }
 
-struct FullCarTextFieldPreviews: PreviewProvider {
-    @State static var text: String = ""
-    @State static var inputState: InputState = .default
+#if DEBUG
+#Preview {
+    VStack(spacing: 30) {
+        FCTextFieldView(
+            textField: {
+                TextField("회사, 주소 검색", text: .constant(""))
+                    .textFieldStyle(.fullCar(
+                        type: .search,
+                        state: .constant(.default))
+                    )
+            },
+            state: .constant(.default),
+            headerText: "회사 입력",
+            isHeaderRequired: true,
+            headerPadding: 5
+        )
 
-    @State static var isChecked: Bool = true
-    @State static var isChecked_false: Bool = false
+        FCTextFieldView(
+            textField: {
+                TextField("회사, 주소 검색", text: .constant(""))
+                    .textFieldStyle(.fullCar(
+                        type: .check(.constant(true)),
+                        state: .constant(.default))
+                    )
+            },
+            state: .constant(.default),
+            headerText: "회사 입력",
+            isHeaderRequired: true,
+            headerPadding: 5
+        )
 
-    @State static var inputState_error: InputState = .error("일치하는 메일 정보가 없습니다.\n회사 메일이 없는 경우 명함으로 인증하기를 이용해 주세요!")
+        FCTextFieldView(
+            textField: {
+                TextField("Placeholder", text: .constant(""))
+                    .textFieldStyle(.fullCar(
+                        type: .check(.constant(false)),
+                        state: .constant(.error("일치하는 메일 정보가 없습니다.\n회사 메일이 없는 경우 명함으로 인증하기를 이용해 주세요!"))
+                    ))
+            },
+            state: .constant(.error(""))
+        )
 
-    @FocusState static var isFocused: Bool
+        FCTextFieldView(
+            textField: {
+                TextField("Placeholder", text: .constant(""))
+                    .textFieldStyle(.fullCar(
+                        type: .check(.constant(false)),
+                        state: .constant(.default)
+                    ))
+            },
+            state: .constant(.default),
+            footerMessage: .information("이건 정보성 메세지에요.")
+        )
 
-    static var previews: some View {
-        VStack(spacing: 30) {
-            FCTextFieldView(
-                textField: {
-                    TextField("회사, 주소 검색", text: $text)
-                        .textFieldStyle(.fullCar(
-                            type: .check($isChecked),
-                            state: $inputState)
-                        )
-                },
-                state: $inputState,
-                headerText: "회사 입력",
-                isHeaderRequired: true,
-                headerPadding: 5
-            )
-
-            FCTextFieldView(
-                textField: {
-                    TextField("Placeholder", text: $text)
-                        .textFieldStyle(.fullCar(
-                            type: .check($isChecked_false),
-                            state: $inputState_error
-                        ))
-                },
-                state: $inputState_error
-            )
-
-            FCTextFieldView(
-                textField: {
-                    TextField("Placeholder", text: $text)
-                        .textFieldStyle(.fullCar(
-                            type: .check($isChecked_false),
-                            state: $inputState
-                        ))
-                },
-                state: $inputState,
-                footerMessage: .information("이건 정보성 메세지에요.")
-            )
-
-            FCTextFieldView(
-                textField: {
-                    TextField("ex) 30,000", text: $text)
-                        .textFieldStyle(.fullCar(
-                            type: .won,
-                            state: $inputState
-                        ))
-                },
-                state: $inputState,
-                headerText: "회사 입력",
-                isHeaderRequired: true,
-                headerPadding: 5
-            )
-        }
-        .padding()
-    }
+        FCTextFieldView(
+            textField: {
+                TextField("ex) 30,000", text: .constant(""))
+                    .textFieldStyle(.fullCar(
+                        type: .won,
+                        state: .constant(.default)
+                    ))
+            },
+            state: .constant(.default),
+            headerText: "회사 입력",
+            isHeaderRequired: true,
+            headerPadding: 5
+        )
+    }.padding()
 }
+#endif

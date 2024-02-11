@@ -38,6 +38,14 @@ public extension Endpoint {
         case changeFormStatus(formId: Int, formState: String, contact: String, toPassenger: String?)
         case applyCarpull(formId: Int, pickupLocation: String, periodType: String, money: Int, content: String)
     }
+
+    enum Member {
+        case search(location: String, key: String)
+        case check(nickname: String)
+        case register(member: MemberInformation)
+        case send(email: String)
+        case fetch
+    }
 }
 
 extension Endpoint.Account: URLRequestConfigurable {
@@ -54,10 +62,7 @@ extension Endpoint.Account: URLRequestConfigurable {
     
     public var method: HTTPMethod {
         switch self {
-        case .login: return .post
-        case .logout: return .post
-        case .leave: return .post
-        case .refresh: return .post
+        case .login, .logout, .leave, .refresh : return .post
         }
     }
     
@@ -71,26 +76,21 @@ extension Endpoint.Account: URLRequestConfigurable {
         case .logout: return nil
         case .leave: return nil
         case .refresh(refreshToken: let refreshToken): return [
-            "refreshToken": "\(refreshToken)"
+            "refreshToken": refreshToken
         ]
         }
     }
     
     public var headers: [Header]? {
         switch self {
-        case .login: return nil
-        case .logout: return nil
-        case .leave: return nil
-        case .refresh: return nil
+        case .login, .logout, .leave, .refresh : return nil
         }
     }
     
     public var encoder: ParameterEncodable {
         switch self {
-        case .login: return JSONEncoding()
-        case .logout: return URLEncoding()
-        case .leave: return URLEncoding()
-        case .refresh: return JSONEncoding()
+        case .login, .refresh: return JSONEncoding()
+        case .logout, .leave: return URLEncoding()
         }
     }
 }
@@ -200,6 +200,72 @@ extension Endpoint.CarPull: URLRequestConfigurable {
     }
 }
 
+extension Endpoint.Member: URLRequestConfigurable {
+        public var url: URLConvertible {
+            switch self {
+            case .search: return "https://dapi.kakao.com"
+            case .check, .register, .send, .fetch: return "http://43.200.176.240:8080"
+            }
+        }
+        
+        public var path: String? {
+            switch self {
+            case .search: return "/v2/local/search/keyword.json"
+            case .check: return "/api/v1/members/onboarding/nickname"
+            case .register: return "/api/v1/members/onboarding"
+            case .send: return "/api/v1/members/onboarding/company/email"
+            case .fetch: return "/api/v1/members"
+            }
+        }
+        
+        public var method: HTTPMethod {
+            switch self {
+            case .search, .fetch: return .get
+            case .check, .register, .send: return .post
+            }
+        }
+        
+        public var parameters: Parameters? {
+            switch self {
+            case .search(let location, _): return [
+                "query": location
+            ]
+            case .check(let nickname): return [
+                "nickname": nickname
+            ]
+            case .register(let member): return [
+                "companyName": member.company.name,
+                "latitude": member.company.latitude,
+                "longitude": member.company.longitude,
+                "email": member.email,
+                "nickname": member.nickname,
+                "gender": member.gender
+            ]
+            case .send(let email): return [
+                "email": email
+            ]
+            default: return nil
+            }
+        }
+        
+        public var headers: [Header]? {
+            switch self {
+            case .search(_, let key): return [
+                //.authorization("KakaoAK \(key)")
+                .authorization("KakaoAK 1beb7fb6952155736b0d5554eb63ee38")
+            ]
+            default: return nil
+            }
+        }
+        
+        public var encoder: ParameterEncodable {
+            switch self {
+            case .search, .fetch: return URLEncoding()
+            case .check, .register, .send: return JSONEncoding()
+            }
+        }
+}
+    
 extension Endpoint.Form: URLRequestConfigurable {
     public var url: URLConvertible {
         switch self {

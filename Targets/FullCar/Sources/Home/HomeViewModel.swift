@@ -28,7 +28,8 @@ final class HomeViewModel {
     private(set) var error: Error?
     
     private var currentPage: Int = 1
-    private var homeResponse: CommonResponse<CarPull.Model.Fetch>?
+    
+    // MARK: Action
     
     func onFirstTask() async {
         await fetchCarPulls(page: currentPage)
@@ -40,32 +41,10 @@ final class HomeViewModel {
         await fetchCarPulls(page: currentPage)
     }
     
-    private func fetchCarPulls(page: Int) async {
-        do {
-            apiIsInFlight = true
-            defer { apiIsInFlight = false }
-            
-            let response = try await carpullAPI.fetch(page: currentPage)
-            self.error = .none
-            self.homeResponse = response
-            
-            if page == 1 {
-                carPullList = response.data.carPullList
-            } else {
-                carPullList.append(contentsOf: response.data.carPullList)
-            }
-            
-            currentPage += 1
-        }
-        catch {
-            self.error = error
-        }
-    }
-    
     @Sendable
     func refreshable() async {
-        clear()
-        await fetchCarPulls(page: 1)
+        self.currentPage = 1
+        await fetchCarPulls(page: self.currentPage)
     }
     
     func onCardTapped(_ carpull: CarPull.Model.Information) async {
@@ -79,11 +58,30 @@ final class HomeViewModel {
     }
     
     func retryButtonTapped() async {
-        await fetchCarPulls(page: 1)
+        await fetchCarPulls(page: self.currentPage)
     }
     
-    private func clear() {
-        self.currentPage = 1
+    // MARK: Private
+    
+    private func fetchCarPulls(page: Int) async {
+        do {
+            apiIsInFlight = true
+            defer { apiIsInFlight = false }
+            
+            let response = try await carpullAPI.fetch(page: currentPage)
+            self.error = .none
+            
+            if page == 1 {
+                carPullList = response.data.carPullList
+            } else {
+                carPullList.append(contentsOf: response.data.carPullList)
+            }
+            
+            currentPage += 1
+        }
+        catch {
+            self.error = error
+        }
     }
 }
 

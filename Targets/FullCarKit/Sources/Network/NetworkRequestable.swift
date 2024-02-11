@@ -50,6 +50,7 @@ public extension NetworkRequestable {
         }
         return urlRequest
     }
+
     func retry(
         request: URLRequest,
         response: URLResponse,
@@ -74,6 +75,7 @@ public extension NetworkRequestable {
         }
         return (urlRequest, retryResult)    
     }
+    
     func decode<Model: Decodable>(
         with decoder: JSONDecoder,
         response: NetworkResponse

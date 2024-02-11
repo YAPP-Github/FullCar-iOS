@@ -21,22 +21,6 @@ struct HomeView: View {
                         CarPullDetailView(viewModel: detailViewModel)
                     }
                 }
-                .onTapGesture {
-                    let carpull: CarPull.Model.Information = .init(id: 0,
-                                                                   pickupLocation: "봉천역",
-                                                                   periodType: .oneWeek,
-                                                                   money: 10000,
-                                                                   content: "봉천역에서 카풀해요~",
-                                                                   moodType: .quiet,
-                                                                   formState: .REQUEST,
-                                                                   carpoolState: .OPEN,
-                                                                   nickname: "알뜰한 물개",
-                                                                   companyName: "현대자동차",
-                                                                   gender: .male,
-                                                                   resultMessage: .init(contact: "탑승자에게 보내는 메시지", toPassenger: "연락은 카톡으로 드리겠습니다~\n내일 뵙겠습니다."),
-                                                                   createdAt: Date())
-                    Task { await viewModel.onCardTapped(carpull) }
-                }
         }
     }
     private var _body: some View {

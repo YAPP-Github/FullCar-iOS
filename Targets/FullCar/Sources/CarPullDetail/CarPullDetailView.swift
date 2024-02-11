@@ -11,7 +11,7 @@ import FullCarUI
 
 @MainActor
 struct CarPullDetailView: View {
-    let viewModel: CarPullDetailViewModel
+    @Bindable var viewModel: CarPullDetailViewModel
     
     var body: some View {
         _body
@@ -34,7 +34,7 @@ struct CarPullDetailView: View {
                         .font(.pretendard18(.bold))
                 }, trailingView: { 
                     Button {
-                        
+                        viewModel.actionSheetOpen = true
                     } label: {
                         Image(icon: .menu)
                             .resizable()
@@ -44,6 +44,20 @@ struct CarPullDetailView: View {
                     }
                 }
             )
+            .confirmationDialog("", isPresented: $viewModel.actionSheetOpen, titleVisibility: .hidden) {
+                Button("신고하기", role: .destructive) {
+                    viewModel.alertOpen = true
+                }
+            }
+            .alert("카풀 게시글을 신고하시겠어요?", isPresented: $viewModel.alertOpen, actions: {
+                Button(role: .destructive, action: {
+                    
+                }, label: {
+                    Text("신고하기")
+                })
+            }, message: {
+                Text("게시글 신고시 어쩌구 저쩌구 됩니다.")
+            })
             .background(Color.white)
     }
     

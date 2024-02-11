@@ -18,7 +18,7 @@ public struct FCNavigationBarModifier<Leading: View, Center: View, Trailing: Vie
     private let horizontalPadding: CGFloat = 20
 
     public func body(content: Content) -> some View {
-        VStack {
+        VStack(spacing: .zero) {
             ZStack {
                 leadingView
 

@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import Dependencies
 
 @Observable
 public final class FullCar {
@@ -14,13 +15,32 @@ public final class FullCar {
     private init() { }
     
     public var appState: FullCar.State = .root
+    public var member: MemberInformation? {
+        switch self.appState {
+        case .root, .login, .onboarding:
+            return nil
+        case .tab(let memberInformation):
+            return memberInformation
+        }
+    }
+}
+
+extension FullCar: DependencyKey {
+    public static var liveValue: FullCar = .shared
+}
+extension DependencyValues {
+    public var fullCar: FullCar {
+        get { self[FullCar.self] }
+        set { self[FullCar.self] = newValue }
+    }
 }
 
 public extension FullCar {
     enum State {
         case root
-        case login 
-        case tab
+        case login
+        case onboarding
+        case tab(MemberInformation)
     }
 } 
 
