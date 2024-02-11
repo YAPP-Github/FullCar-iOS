@@ -30,6 +30,11 @@ public extension Endpoint {
         case leave
         case refresh(refreshToken: String)
     }
+    
+    enum Form {
+        case fetchSentForms
+        case fetchReceivedForms
+    }
 }
 
 extension Endpoint.Account: URLRequestConfigurable {
@@ -188,6 +193,45 @@ extension Endpoint.CarPull: URLRequestConfigurable {
         switch self {
         case .fetch: return URLEncoding()
         case .register: return JSONEncoding()
+        }
+    }
+}
+
+extension Endpoint.Form: URLRequestConfigurable {
+    public var url: URLConvertible {
+        switch self {
+        default: return "http://43.200.176.240:8080"
+        }
+    }
+    
+    public var path: String? {
+        switch self {
+        case .fetchSentForms: return "api/v1/sent-forms"
+        case .fetchReceivedForms: return "api/v1/received-forms"
+        }
+    }
+    
+    public var method: HTTPMethod {
+        switch self {
+        case .fetchSentForms, .fetchReceivedForms: return .get
+        }
+    }
+    
+    public var parameters: Parameters? {
+        switch self {
+        case .fetchReceivedForms, .fetchSentForms: return nil
+        }
+    }
+    
+    public var headers: [Header]? {
+        switch self {
+        case .fetchReceivedForms, .fetchSentForms: return nil
+        }
+    }
+    
+    public var encoder: ParameterEncodable {
+        switch self {
+        case .fetchReceivedForms, .fetchSentForms: return URLEncoding()
         }
     }
 }

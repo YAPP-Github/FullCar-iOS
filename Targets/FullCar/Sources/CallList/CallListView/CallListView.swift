@@ -10,6 +10,7 @@ import SwiftUI
 import FullCarUI
 import FullCarKit
 import Observation
+import Dependencies
 
 struct Dummy: Hashable {
     let id : UUID = UUID()
@@ -18,7 +19,7 @@ struct Dummy: Hashable {
 
 @MainActor
 struct CallListView: View {
-    @Bindable var viewModel: CallListViewModel
+    @Bindable var viewModel: CallListViewModel    
     
     var body: some View {
         
@@ -51,19 +52,22 @@ struct CallListView: View {
             TabView(selection: $viewModel.selection,
                     content:  {
                 
-                CallRequestListView(data: $viewModel.dummyData) { item in
+                CallRequestListView(data: $viewModel.sentData) { item in
                     viewModel.onAcceptTapped(type: .SentRequestDetails, data: item)
                 }
                     .tag(FullCar.CallListTab.request)
                 
-                CallReceiveListView(data: $viewModel.dummyData) { item in
+                CallReceiveListView(data: $viewModel.receiveData) { item in
                     viewModel.onAcceptTapped(type: .ReceivedRequestDetails, data: item)
                 }
                     .tag(FullCar.CallListTab.receive)
             })
             .tabViewStyle(.page(indexDisplayMode: .never))
             .transition(.slide)
-            
+        }
+        .task {
+            await viewModel.loadAction(.receive)
+            await viewModel.loadAction(.request)
         }
     }
 }
