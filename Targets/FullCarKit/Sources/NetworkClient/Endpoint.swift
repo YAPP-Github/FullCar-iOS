@@ -34,6 +34,7 @@ public extension Endpoint {
     enum Form {
         case fetchSentForms
         case fetchReceivedForms
+        case getFormDetail(formId: Int)
     }
 }
 
@@ -208,30 +209,31 @@ extension Endpoint.Form: URLRequestConfigurable {
         switch self {
         case .fetchSentForms: return "api/v1/sent-forms"
         case .fetchReceivedForms: return "api/v1/received-forms"
+        case .getFormDetail(let id): return "api/v1/forms/\(id)"
         }
     }
     
     public var method: HTTPMethod {
         switch self {
-        case .fetchSentForms, .fetchReceivedForms: return .get
+        case .fetchSentForms, .fetchReceivedForms, .getFormDetail(_): return .get
         }
     }
     
     public var parameters: Parameters? {
         switch self {
-        case .fetchReceivedForms, .fetchSentForms: return nil
+        case .fetchReceivedForms, .fetchSentForms, .getFormDetail(_): return nil
         }
     }
     
     public var headers: [Header]? {
         switch self {
-        case .fetchReceivedForms, .fetchSentForms: return nil
+        case .fetchReceivedForms, .fetchSentForms, .getFormDetail(_): return nil
         }
     }
     
     public var encoder: ParameterEncodable {
         switch self {
-        case .fetchReceivedForms, .fetchSentForms: return URLEncoding()
+        case .fetchReceivedForms, .fetchSentForms, .getFormDetail(_): return URLEncoding()
         }
     }
 }

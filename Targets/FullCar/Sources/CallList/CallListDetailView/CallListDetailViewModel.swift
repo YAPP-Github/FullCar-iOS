@@ -31,7 +31,7 @@ extension CallListDetailView {
 @MainActor
 @Observable
 final class CallListDetailViewModel {
-    
+    @ObservationIgnored @Dependency(\.callListAPI) private var callListAPI
     var callListDetailViewType: CallListDetailView.CallListDetailViewType = .SentRequestDetails
     
     var onBackButtonTapped: () -> Void = unimplemented("onBackButtonTapped")
@@ -58,6 +58,18 @@ final class CallListDetailViewModel {
     init(callListDetailViewType: CallListDetailView.CallListDetailViewType, carPullData: CarPull.Model.Information) {
         self.callListDetailViewType = callListDetailViewType
         self.carpullData = carPullData
+    }
+    
+    func loadData() async {
+        do {
+            let receiveData = try await callListAPI.getFormDetail(formId: carpullData.id)
+            
+            await MainActor.run {
+                self.carpullData = receiveData.data
+            }
+        } catch {
+            print("error", error.localizedDescription)
+        }
     }
 }
 

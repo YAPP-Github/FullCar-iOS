@@ -52,15 +52,30 @@ struct CallListView: View {
             TabView(selection: $viewModel.selection,
                     content:  {
                 
-                CallRequestListView(data: $viewModel.sentData) { item in
-                    viewModel.onAcceptTapped(type: .SentRequestDetails, data: item)
+                if viewModel.sentData.isEmpty {
+                    errorView(imageName: "carpullListIsEmpty")
+                        .transition(.fadeInOut)
+                        .tag(FullCar.CallListTab.request)
+                } else {
+                    CallRequestListView(data: $viewModel.sentData) { item in
+                        viewModel.onAcceptTapped(type: .SentRequestDetails, data: item)
+                    }
+                        .tag(FullCar.CallListTab.request)
+                        .transition(.fadeInOut)
                 }
-                    .tag(FullCar.CallListTab.request)
                 
-                CallReceiveListView(data: $viewModel.receiveData) { item in
-                    viewModel.onAcceptTapped(type: .ReceivedRequestDetails, data: item)
+                if viewModel.receiveData.isEmpty {
+                    errorView(imageName: "receiveCarpullIsEmpty")
+                        .transition(.fadeInOut)
+                        .tag(FullCar.CallListTab.receive)
+                } else {
+                    CallReceiveListView(data: $viewModel.receiveData) { item in
+                        viewModel.onAcceptTapped(type: .ReceivedRequestDetails, data: item)
+                    }
+                        .tag(FullCar.CallListTab.receive)
                 }
-                    .tag(FullCar.CallListTab.receive)
+                
+                
             })
             .tabViewStyle(.page(indexDisplayMode: .never))
             .transition(.slide)
@@ -69,6 +84,14 @@ struct CallListView: View {
             await viewModel.loadAction(.receive)
             await viewModel.loadAction(.request)
         }
+    }
+    
+    private func errorView(imageName: String) -> some View {
+        VStack(spacing: .zero) {
+            Image(imageName)
+                .padding(.bottom, 24)
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 }
 

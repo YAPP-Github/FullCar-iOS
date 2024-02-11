@@ -49,6 +49,9 @@ struct CallListDetailView: View {
                     Text("거절하기")
                 })
             })
+            .task {
+                await viewModel.loadData()
+            }
     }
     
     private var _body: some View {
