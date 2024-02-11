@@ -19,14 +19,19 @@ extension Login {
     final class ViewModel {
         @ObservationIgnored @Dependency(\.loginAPI) var loginAPI
         @ObservationIgnored @Dependency(\.onbardingAPI) private var onboardingAPI
-
-        let fullCar = FullCar.shared
+        @ObservationIgnored
+        @Dependency(\.fullCar) private var fullCar
 
         func loginButtonTapped(for type: SocialType) async {
             do {
                 try await loginAPI.performLogin(type)
 
-                fullCar.appState = try await onboardingAPI.isOnboardingCompleted() ? .tab : .onboarding
+                let member = try await onboardingAPI.isOnboardingCompleted()
+                if member.company.name.isEmpty {
+                    fullCar.appState = .onboarding    
+                } else {
+                    fullCar.appState = .tab(member)
+                }
                 #if DEBUG
                 print("[✅][LoginViewModel.swift] -> 로그인 성공!")
                 #endif
