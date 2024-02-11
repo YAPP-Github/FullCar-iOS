@@ -35,7 +35,9 @@ extension Onboarding.Company {
                     .padding(.top, 32)
                     .padding(.bottom, 16)
                     .navigationBarStyle(
-                        leadingView: { },
+                        leadingView: { 
+                            NavigationButton(icon: .back) { viewModel.onBackButtonTapped() }
+                        },
                         centerView: {
                             Text("회원 가입")
                                 .font(.pretendard18(.bold))

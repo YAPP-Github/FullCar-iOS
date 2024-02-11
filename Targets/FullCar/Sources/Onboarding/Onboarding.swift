@@ -39,6 +39,8 @@ extension Onboarding {
         @ObservationIgnored 
         @Dependency(\.onbardingAPI) private var onboardingAPI
 
+        let fullCar = FullCar.shared
+
         // MARK: 화면 이동
         var isSearchViewAppear: Bool = false
         var isOnboardingViewAppear: Bool = false
@@ -172,6 +174,10 @@ extension Onboarding.ViewModel {
         email = ""
         nickname = ""
         gender = .notSelect
+    }
+
+    func onBackButtonTapped() {
+        fullCar.appState = .login
     }
 }
 
