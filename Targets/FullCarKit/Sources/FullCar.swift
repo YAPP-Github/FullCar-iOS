@@ -19,7 +19,8 @@ public final class FullCar {
 public extension FullCar {
     enum State {
         case root
-        case login 
+        case login
+        case onboarding
         case tab
     }
 } 

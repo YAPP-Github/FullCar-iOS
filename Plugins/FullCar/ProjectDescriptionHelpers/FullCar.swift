@@ -25,6 +25,7 @@ public let mainTarget: Target = .init(
               "kakaolink"
             ],
             "KakaoNativeAppKey": "$(KAKAO_NATIVE_APP_KEY)",
+            "KakaoRestApiKey": "$(KAKAO_REST_API_KEY)",
             "CFBundleURLTypes": [
               [
                 "CFBundleTypeRole": "Editor",

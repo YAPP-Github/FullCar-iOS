@@ -25,9 +25,10 @@ extension AccountAPI: DependencyKey {
                 ).response()
                 let authResponse = response.data
 
-                return .init(onBoardingFlag: authResponse.onBoardingFlag,
-                             accessToken: authResponse.accessToken,
-                             refreshToken: authResponse.refreshToken)
+                return .init(
+                    accessToken: authResponse.accessToken,
+                    refreshToken: authResponse.refreshToken
+                )
             },
             logout: {
                 try await NetworkClient.main.request(

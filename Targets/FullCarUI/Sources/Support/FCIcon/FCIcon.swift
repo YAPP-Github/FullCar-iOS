@@ -30,6 +30,8 @@ public extension FCIcon {
         case homeLogo
         case kakaoLogo
         case appleLogo
+        case search
+        case location
     }
 }
 
@@ -44,6 +46,7 @@ extension FCIcon.Symbol {
         case .navigationLogo: return "navigationLogo"
         case .homeLogo: return "homeLogo"
         case .kakaoLogo: return "kakaoLogo"
+        case .location: return "location"
         default: return ""
         }
     }
@@ -52,6 +55,7 @@ extension FCIcon.Symbol {
         switch self {
         case .check: return "checkmark.circle.fill"
         case .appleLogo: return "apple.logo"
+        case .search: return "magnifyingglass"
         default: return ""
         }
     }

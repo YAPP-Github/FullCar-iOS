@@ -20,14 +20,23 @@ public struct FCTextFieldStyle: TextFieldStyle {
     public typealias Configuration = TextField<Self._Label>
 
     public func _body(configuration: Configuration) -> some View {
-        HStack {
+        HStack(spacing: .zero) {
             configuration
                 .font(.pretendard16_19(.semibold))
+                .padding(.vertical, padding)
+                .padding(.leading, padding)
                 .focused($isFocused)
                 // 에러 상태일 땐, focus상태여도 error상태 그대로 유지
                 .onChange(of: isFocused) { oldValue, newValue in
                     if case .error = state { return }
                     state = newValue ? .focus : .default
+                }
+                .onChange(of: state) { oldValue, newValue in
+                    if case .focus = newValue {
+                        isFocused = true
+                    } else if case .default = newValue {
+                        isFocused = false
+                    }
                 }
 
             if case .check(let isChecked) = accessory, isChecked.wrappedValue {
@@ -42,9 +51,17 @@ public struct FCTextFieldStyle: TextFieldStyle {
                     .font(.pretendard16(.semibold))
                     .foregroundStyle(Color.gray45)
             }
+
+            if case .search = accessory {
+                Image(icon: .search)
+                    .resizable()
+                    .frame(iconSize: ._24)
+                    .foregroundStyle(Color.gray45)
+            }
         }
-        .padding(padding)
+        .padding(.trailing, padding)
         .background(backgroundColor)
+        .cornerRadius(radius: cornerRadius, corners: .allCorners)
         .overlay(
             RoundedRectangle(cornerRadius: cornerRadius)
                 .stroke(state.borderColor, lineWidth: 1)
@@ -70,6 +87,7 @@ public extension FCTextFieldStyle {
     enum AccessoryType {
         case check(Binding<Bool>)
         case won
+        case search
         case none
     }
 }
