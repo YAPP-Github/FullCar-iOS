@@ -172,6 +172,7 @@ extension Onboarding.ViewModel {
 extension Onboarding {
     @MainActor
     struct BodyView: View {
+        @Environment(\.dismiss) private var dismiss
         @Bindable var viewModel: Onboarding.ViewModel
 
         var body: some View {
@@ -187,7 +188,7 @@ extension Onboarding {
                 }
                 .navigationBarStyle(
                     leadingView: {
-                        NavigationButton(icon: .back, action: { })
+                        NavigationButton(icon: .back, action: { dismiss() })
                     },
                     centerView: {
                         Text("회원 가입")
