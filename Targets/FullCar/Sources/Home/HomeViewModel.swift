@@ -21,11 +21,14 @@ final class HomeViewModel {
     
     @ObservationIgnored
     @Dependency(\.carpullAPI) private var carpullAPI
+    @ObservationIgnored
+    @Dependency(\.fullCar) private var fullCar
     
     var paths: [Destination] = []
     private(set) var carPullList: [CarPull.Model.Information] = []
     private(set) var apiIsInFlight: Bool = false
     private(set) var error: Error?
+    var companyName: String { fullCar.member?.company.name ?? "" }
     
     private var currentPage: Int = 1
     

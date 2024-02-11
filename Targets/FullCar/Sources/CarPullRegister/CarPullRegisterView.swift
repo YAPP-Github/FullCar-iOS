@@ -16,7 +16,9 @@ import Dependencies
 final class CarPullRegisterViewModel {
     
     @ObservationIgnored
-    @Dependency(\.carpullAPI) private var carpullAPI 
+    @Dependency(\.carpullAPI) private var carpullAPI
+    @ObservationIgnored
+    @Dependency(\.fullCar) private var fullCar
     
     var wishPlaceText: String = ""
     var wishPlaceState: InputState = .default
@@ -30,6 +32,7 @@ final class CarPullRegisterViewModel {
     var periodType: CarPull.Model.PeriodType?
     
     var error: Error?
+    var carRegisterViewModel: Car.Register.ViewModel?
     var apiIsInFlight: Bool = false
     
     var isWishPlaceValid: Bool {
@@ -66,16 +69,15 @@ final class CarPullRegisterViewModel {
     }
     
     func wishToSayChanged(_ wishToSayText: String) {
-        if wishToSayText.count <= 150 { 
-            self.wishCostState = .focus 
-        } else {
-            self.wishCostState = .error("희망 비용은 10글자 까지 입력할 수 있어요.")
-        }
         self.wishToSayText = wishToSayText
     }
     
     func moodButtonTapped(mood: Driver.Mood) {
-        self.driversMood = mood
+        if self.driversMood == mood {
+            self.driversMood = .none
+        } else {
+            self.driversMood = mood
+        }
     }
     
     func periodSelectionButton(period: CarPull.Model.PeriodType) {
@@ -83,7 +85,16 @@ final class CarPullRegisterViewModel {
     }
     
     func nextButtonTapped() async {
-        // TODO: 차량 등록 여부 검증
+        guard let carId = fullCar.member?.carId else {
+            let viewModel = Car.Register.ViewModel()
+            let dismiss: () -> Void = { [weak self] in
+                self?.carRegisterViewModel = nil
+            }
+            viewModel.onBackButtonTapped = dismiss
+            viewModel.onRegisterFinished = dismiss
+            self.carRegisterViewModel = viewModel
+            return
+        }
         
         do {
             guard 
@@ -118,6 +129,10 @@ struct CarPullRegisterView: View {
     
     var body: some View {
         _body
+            .sheet(
+                item: $viewModel.carRegisterViewModel, 
+                content: { Car.Register.BodyView(viewModel: $0) }
+            )
             .alert(
                 "카풀 등록 오류",
                 isPresented: .init(

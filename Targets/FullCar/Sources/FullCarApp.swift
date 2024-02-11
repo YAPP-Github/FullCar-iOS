@@ -27,11 +27,7 @@ struct FullCarApp: App {
 
     var body: some Scene {
         WindowGroup {
-            #if DEBUG
-            Onboarding.Company.BodyView(viewModel: .init())
-            #else
             RootView(viewModel: .init())
-            #endif
         }
     }
 }

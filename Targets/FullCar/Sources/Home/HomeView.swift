@@ -35,7 +35,7 @@ struct HomeView: View {
     private var headerView: some View {
         VStack(spacing: .zero) {
             HStack(spacing: .zero) {
-                Text("야놀자")
+                Text(viewModel.companyName)
                     .font(.pretendard18(.bold))
                     .foregroundStyle(Color.black80)
                 Spacer()
@@ -65,7 +65,7 @@ struct HomeView: View {
     }
     private func errorView(imageName: String) -> some View {
         VStack(spacing: .zero) {
-            Image("error_home", bundle: .main)
+            Image(imageName, bundle: .main)
                 .padding(.bottom, 24)
             Button {
                 Task {
