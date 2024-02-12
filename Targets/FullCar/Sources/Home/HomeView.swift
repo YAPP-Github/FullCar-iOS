@@ -38,8 +38,11 @@ struct HomeView: View {
                 Text(viewModel.companyName)
                     .font(.pretendard18(.bold))
                     .foregroundStyle(Color.black80)
+                    .lineLimit(1)
+                    .offset(y: 3)
                 Spacer()
                 Image("FCHomeTopTrailingImage", bundle: .main)
+                    .offset(y: -2)
             }
             .padding(.leading, 20)
             .padding(.trailing, 15.48)

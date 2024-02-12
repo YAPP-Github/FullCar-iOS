@@ -31,7 +31,7 @@ extension FullCar: DependencyKey {
         let fc = FullCar()
         fc.appState = .tab(
             .init(
-                company: .init(name: "카카오페이"), 
+                company: .init(name: "카카오페이카카오페이카카오페이"), 
                 email: "www.fullcar.com", 
                 nickName: "테스트", 
                 gender: "MALE"
