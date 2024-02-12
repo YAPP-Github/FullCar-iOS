@@ -21,14 +21,13 @@ extension AccountAPI: DependencyKey {
         return  AccountAPI(
             login: { socialType, request in
                 let endpoint: URLRequestConfigurable
-
                 switch socialType {
                 case .kakao:
-                    guard let request = request as? KakaoAuthRequest else { throw LoginError.typecasting }
+                    guard let request = request as? KakaoAuthRequest else { throw AccountAPIError.invalidAuthRequest }
 
                     endpoint = Endpoint.Account.Login.kakao(request)
                 case .apple:
-                    guard let request = request as? AppleAuthRequest else { throw LoginError.typecasting }
+                    guard let request = request as? AppleAuthRequest else { throw AccountAPIError.invalidAuthRequest }
 
                     endpoint = Endpoint.Account.Login.apple(request)
                 }
@@ -73,8 +72,7 @@ extension DependencyValues {
 }
 
 extension AccountAPI {
-    // MARK: 네이밍 수정
-    enum LoginError: Error {
-        case typecasting
+    enum AccountAPIError: Error {
+        case invalidAuthRequest
     }
 }
