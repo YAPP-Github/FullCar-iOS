@@ -77,7 +77,7 @@ extension AccessCredentialsManager.KakaoKey {
 }
 
 extension AccessCredentialsManager.DeviceToken {
-    enum DeviceTokenError: Error {
-        case tokenNil
+    enum AccessCredentialsError: Error {
+        case deviceTokenNil
     }
 }

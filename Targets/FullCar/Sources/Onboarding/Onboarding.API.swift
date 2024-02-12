@@ -40,11 +40,11 @@ extension Onboarding {
 extension Onboarding.API: DependencyKey {
     public static var liveValue: Onboarding.API {
         @Dependency(\.memberAPI) var api
+        @Dependency(\.kakaoKey) var kakaoKey
 
         return Onboarding.API(
             search: { location in
-                guard let kakaoRestApiKey = Bundle.main.kakaoRestApiKey else { return [] }
-                let coordinate = try await api.searchLocation(location, kakaoRestApiKey)
+                let coordinate = try await api.searchLocation(location, try kakaoKey.restApiKey())
                 return coordinate
             },
             check: { nickname in

@@ -54,8 +54,13 @@ final class RootViewModel {
     }
     
     func setupKakaoSDK() async {
-        guard let kakaoNativeAppKey = Bundle.main.kakaoNativeAppKey else { return }
-        KakaoSDK.initSDK(appKey: kakaoNativeAppKey)
+        @Dependency(\.kakaoKey) var kakaoKey
+
+        do {
+            KakaoSDK.initSDK(appKey: try kakaoKey.nativeAppKey())
+        } catch {
+            print(error)
+        }
     }
 
     func handleKakaoURL(_ url: URL) {
