@@ -49,25 +49,25 @@ extension Endpoint.Account: URLRequestConfigurable {
 
     public var path: String? {
         switch self {
-        case .logout: return "/logout"
-        case .leave: return "/leave"
+        case .logout: return "/api/v1/auth/logout"
+        case .leave: return "/api/v1/auth"
         case .refresh: return "/api/v1/auth/token"
         }
     }
     
     public var method: HTTPMethod {
         switch self {
-        case .logout, .leave, .refresh : return .post
+        case .logout, .refresh : return .post
+        case .leave: return .delete
         }
     }
     
     public var parameters: Parameters? {
         switch self {
-        case .logout: return nil
-        case .leave: return nil
         case .refresh(refreshToken: let refreshToken): return [
             "refreshToken": refreshToken
         ]
+        default: return nil
         }
     }
     

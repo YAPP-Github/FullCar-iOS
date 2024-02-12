@@ -44,14 +44,12 @@ extension AccountAPI: DependencyKey {
             },
             logout: {
                 try await NetworkClient.main.request(
-                    endpoint: Endpoint.Account.logout,
-                    interceptor: NetworkClient.tokenInterceptor
+                    endpoint: Endpoint.Account.logout
                 ).response()
             },
             leave: {
                 try await NetworkClient.main.request(
-                    endpoint: Endpoint.Account.leave,
-                    interceptor: NetworkClient.tokenInterceptor
+                    endpoint: Endpoint.Account.leave
                 ).response()
             },
             refresh: { refreshToken in
