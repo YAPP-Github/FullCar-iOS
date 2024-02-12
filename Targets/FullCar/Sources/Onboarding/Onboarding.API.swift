@@ -16,6 +16,7 @@ extension Onboarding {
         private var check: (_ nickname: String) async throws -> Void
         private var register: (_ member: MemberInformation) async throws -> Void
         private var send: (_ email: String) async throws -> Void
+        private var verify: (_ code: String) async throws -> Void
         private var fetch: () async throws -> MemberInformation
 
         func search(location: String) async throws -> [LocalCoordinate] {
@@ -29,6 +30,9 @@ extension Onboarding {
         }
         func send(email: String) async throws -> Void {
             return try await self.send(email)
+        }
+        func verify(code: String) async throws -> Void {
+            return try await self.verify(code)
         }
         func isOnboardingCompleted() async throws -> Bool {
             let member = try await self.fetch()
@@ -55,6 +59,9 @@ extension Onboarding.API: DependencyKey {
             },
             send: { email in
                 try await api.send(email)
+            },
+            verify: { code in
+                try await api.verify(code)
             },
             fetch: {
                 let member = try await api.fetch()

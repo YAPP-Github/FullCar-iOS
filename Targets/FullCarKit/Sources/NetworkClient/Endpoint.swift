@@ -39,6 +39,7 @@ public extension Endpoint {
         case check(nickname: String)
         case register(member: MemberInformation)
         case send(email: String)
+        case verify(code: String)
         case fetch
     }
 }
@@ -224,7 +225,7 @@ extension Endpoint.Member: URLRequestConfigurable {
     public var url: URLConvertible {
         switch self {
         case .search: return "https://dapi.kakao.com"
-        case .check, .register, .send, .fetch: return "http://43.200.176.240:8080"
+        case .check, .register, .send, .fetch, .verify : return "http://43.200.176.240:8080"
         }
     }
     
@@ -235,13 +236,14 @@ extension Endpoint.Member: URLRequestConfigurable {
         case .register: return "/api/v1/members/onboarding"
         case .send: return "/api/v1/members/onboarding/company/email"
         case .fetch: return "/api/v1/members"
+        case .verify: return "/api/v1/members/onboarding/company/email/check"
         }
     }
     
     public var method: HTTPMethod {
         switch self {
         case .search, .fetch: return .get
-        case .check, .register, .send: return .post
+        case .check, .register, .send, .verify: return .post
         }
     }
     
@@ -264,6 +266,9 @@ extension Endpoint.Member: URLRequestConfigurable {
         case .send(let email): return [
             "email": email
         ]
+        case .verify(let code): return [
+            "code": code
+        ]
         default: return nil
         }
     }
@@ -280,7 +285,7 @@ extension Endpoint.Member: URLRequestConfigurable {
     public var encoder: ParameterEncodable {
         switch self {
         case .search, .fetch: return URLEncoding()
-        case .check, .register, .send: return JSONEncoding()
+        case .check, .register, .send, .verify: return JSONEncoding()
         }
     }
 }

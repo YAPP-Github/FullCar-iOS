@@ -56,6 +56,8 @@ extension Onboarding {
         var isEmailRequestSent: Bool = false
         // 이메일 블랙리스트 확인 완료
         var isEmailAddressValid: Bool = false
+        // 인증번호
+        var authenticationCode: String = ""
         // 회사 이메일 인증 절차 모두 완료
         var isEmailValid: Bool = false
 
@@ -111,17 +113,15 @@ extension Onboarding.ViewModel {
         }
     }
 
-    func checkAuthenticationNumber() async {
-//        do {
-//
-//        } catch {
-//            print(error)
-//        }
+    func verifyAuthenticationCode() async {
+        do {
+            try await onboardingAPI.verify(code: authenticationCode)
 
-        // case1) 이메일 인증 성공
-        self.isEmailValid = true
+            // case1) 이메일 인증 성공
+            self.isEmailValid = true
+        } catch {
+            print(error)
 
-        if false {
             // case2) 이메일 인증 실패
             self.isEmailValid = false
         }
@@ -172,7 +172,11 @@ extension Onboarding.ViewModel {
 
     func onAppear() {
         email = ""
+        emailTextFieldState = .default
+
         nickname = ""
+        nicknameTextFieldState = .default
+
         gender = .notSelect
     }
 
