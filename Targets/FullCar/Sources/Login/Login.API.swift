@@ -24,41 +24,53 @@ extension Login {
             }
         }
 
-        private var continuation: CheckedContinuation<(token: String, authCode: String?), Error>?
+        private var continuation: CheckedContinuation<LoginResponse, Error>?
 
-        @MainActor
         func performLogin(_ type: SocialType) async throws {
             if let continuation {
                 continuation.resume(throwing: LoginError.continuationAlreadySet)
                 self.continuation = nil
             }
 
-            let response: (token: String, authCode: String?) = try await withCheckedThrowingContinuation { continuation in
+            let loginResponse: LoginResponse = try await authenticate(type)
+            let request: AuthRequestable = createAuthRequest(type, loginResponse: loginResponse)
+
+            try await accountService.login(type, request)
+        }
+
+        private func authenticate(_ type: SocialType) async throws -> LoginResponse {
+            let loginResponse: (token: String, authCode: String?) = try await withCheckedThrowingContinuation { continuation in
                 switch type {
-                case .kakao: authenticateWithKakao()
+                case .kakao:
+                    Task {
+                        await authenticateWithKakao()
+                    }
                 case .apple: configureAppleLogin()
                 }
                 self.continuation = continuation
             }
 
-//            let deviceToken = UserDefaults.standard.string(forKey: UserDefaultsKeys.deviceToken)
-            // MARK: 임시 Device token 넣어주기. 추후 수정
-            let request: AuthRequestable
+            return loginResponse
+        }
 
+        private func createAuthRequest(_ type: SocialType, loginResponse: LoginResponse) -> AuthRequestable {
+            // MARK: 임시 Device token 넣어주기. 추후 수정
             switch type {
             case .kakao:
-                request = KakaoAuthRequest(token: response.token, deviceToken: "456")
+                return KakaoAuthRequest(
+                    token: loginResponse.token,
+                    deviceToken: "456"
+                )
             case .apple:
-                request = AppleAuthRequest(
-                    authCode: response.authCode ?? "",
-                    idToken: response.token,
+                return AppleAuthRequest(
+                    authCode: loginResponse.authCode ?? "",
+                    idToken: loginResponse.token,
                     deviceToken: "456"
                 )
             }
-
-            try await accountService.login(type, request)
         }
 
+        @MainActor
         private func authenticateWithKakao() {
             let completion: ((OAuthToken?, Error?) -> Void) = { token, error in
                 if let error = error {
@@ -145,4 +157,8 @@ extension DependencyValues {
         get { self[Login.API.self] }
         set { self[Login.API.self] = newValue }
     }
+}
+
+fileprivate extension Login.API {
+    typealias LoginResponse = (token: String, authCode: String?)
 }
