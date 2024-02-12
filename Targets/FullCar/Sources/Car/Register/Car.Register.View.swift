@@ -68,6 +68,17 @@ extension Car.Register {
     }
 }
 
+extension Car.Register.ViewModel: Hashable {
+    nonisolated static func == (lhs: Car.Register.ViewModel, rhs: Car.Register.ViewModel) -> Bool {
+        return lhs === rhs
+    }
+    
+    nonisolated func hash(into hasher: inout Hasher) {
+        hasher.combine(ObjectIdentifier(self))
+    }
+}
+
+
 extension Car.Register {
     @MainActor
     struct BodyView: View {
