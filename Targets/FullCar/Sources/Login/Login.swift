@@ -55,7 +55,7 @@ extension Login {
             VStack(spacing: .zero) {
                 VStack(spacing: 16) {
                     title
-                    subTitle
+                    subtitle
                 }
                 .padding(.bottom, 57)
 
@@ -82,7 +82,7 @@ extension Login {
             .font(.pretendard28(.bold))
         }
 
-        private var subTitle: some View {
+        private var subtitle: some View {
             Text("검증된 사람들과 즐겁게 카풀 해보세요!")
                 .font(.pretendard16(.regular))
         }
