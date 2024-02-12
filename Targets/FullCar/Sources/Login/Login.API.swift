@@ -28,9 +28,9 @@ extension Login {
 
         @MainActor
         func performLogin(_ type: SocialType) async throws {
-            if let currentContinuation = continuation {
-                currentContinuation.resume(throwing: LoginError.continuationAlreadySet)
-                continuation = nil
+            if let continuation {
+                continuation.resume(throwing: LoginError.continuationAlreadySet)
+                self.continuation = nil
             }
 
             let accessToken: String = try await withCheckedThrowingContinuation { continuation in
