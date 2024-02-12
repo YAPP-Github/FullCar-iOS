@@ -70,23 +70,25 @@ struct HomeView: View {
         VStack(spacing: .zero) {
             Image(imageName, bundle: .main)
                 .padding(.bottom, 24)
-            Button {
-                Task {
-                    await viewModel.retryButtonTapped()
-                }
-            } label: {
+            Button { Task { await viewModel.retryButtonTapped() } } label: {
                 if viewModel.apiIsInFlight {
                     ProgressView().id(UUID())
                         .progressViewStyle(CircularProgressViewStyle(tint: Color.white))
                         .transition(.fadeInOut)
-                        .frame(width: 116)
+                        .frame(width: 86)
                 } else {
                     Text("다시 불러오기")
+                        .font(.pretendard16(.bold))
                         .transition(.fadeInOut)
-                        .frame(width: 116)
                 }
             }
-            .buttonStyle(.fullCar(horizontalPadding: 16, style: .palette(.primary_white)))
+            .buttonStyle(
+                .fullCar(
+                    horizontalPadding: 15,
+                    verticalPadding: 11,
+                    style: .palette(.primary_white)
+                )
+            )
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
