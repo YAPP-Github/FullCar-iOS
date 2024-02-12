@@ -7,11 +7,14 @@
 //
 
 import Foundation
+
 import KakaoSDKCommon
 import KakaoSDKAuth
 import KakaoSDKUser
 import AuthenticationServices
+
 import Dependencies
+
 import FullCarKit
 
 extension Login {
@@ -33,7 +36,7 @@ extension Login {
             }
 
             let loginResponse: LoginResponse = try await authenticate(type)
-            let request: AuthRequestable = createAuthRequest(type, loginResponse: loginResponse)
+            let request: AuthRequestable = try createAuthRequest(type, loginResponse: loginResponse)
 
             try await accountService.login(type, request)
         }
@@ -53,19 +56,20 @@ extension Login {
             return loginResponse
         }
 
-        private func createAuthRequest(_ type: SocialType, loginResponse: LoginResponse) -> AuthRequestable {
-            // MARK: 임시 Device token 넣어주기. 추후 수정
+        private func createAuthRequest(_ type: SocialType, loginResponse: LoginResponse) throws -> AuthRequestable {
+            @Dependency(\.deviceToken) var deviceToken
+
             switch type {
             case .kakao:
                 return KakaoAuthRequest(
                     token: loginResponse.token,
-                    deviceToken: "456"
+                    deviceToken: try deviceToken.fetch()
                 )
             case .apple:
                 return AppleAuthRequest(
                     authCode: loginResponse.authCode ?? "",
                     idToken: loginResponse.token,
-                    deviceToken: "456"
+                    deviceToken: try deviceToken.fetch()
                 )
             }
         }

@@ -1,4 +1,5 @@
 import SwiftUI
+import Dependencies
 
 final class AppDelegate: NSObject, UIApplicationDelegate {
     static var shared: AppDelegate?
@@ -12,11 +13,10 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
     }
 
     func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
+        @Dependency(\.deviceToken) var deviceTokenManager
 
-        // 팀계정 설정되면 device token 받아오기
-        print("device token 입니다 : \(deviceToken)")
-        let token = String(data: deviceToken, encoding: .utf8)
-        UserDefaults.standard.set(token, forKey: UserDefaultsKeys.deviceToken)
+        // MARK: 추후 Device token 잘 받아오는지 확인 필요
+        deviceTokenManager.save(deviceToken)
     }
 }
 
