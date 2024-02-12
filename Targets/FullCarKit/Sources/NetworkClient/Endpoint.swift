@@ -26,8 +26,8 @@ public extension Endpoint {
 
     enum Account {
         enum Login {
-            case kakao(AuthRequest.Kakao)
-            case apple(AuthRequest.Apple)
+            case kakao(KakaoAuthRequest)
+            case apple(AppleAuthRequest)
         }
         case logout
         case leave

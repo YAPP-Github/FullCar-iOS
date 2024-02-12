@@ -24,7 +24,7 @@ extension Login {
             }
         }
 
-        private var continuation: CheckedContinuation<String, Error>?
+        private var continuation: CheckedContinuation<(token: String, authCode: String?), Error>?
 
         @MainActor
         func performLogin(_ type: SocialType) async throws {
@@ -33,7 +33,7 @@ extension Login {
                 self.continuation = nil
             }
 
-            let accessToken: String = try await withCheckedThrowingContinuation { continuation in
+            let response: (token: String, authCode: String?) = try await withCheckedThrowingContinuation { continuation in
                 switch type {
                 case .kakao: authenticateWithKakao()
                 case .apple: configureAppleLogin()
@@ -41,15 +41,22 @@ extension Login {
                 self.continuation = continuation
             }
 
-            let deviceToken = UserDefaults.standard.string(forKey: UserDefaultsKeys.deviceToken)
-            // 임시 Device token 넣어주기. 추후 수정
-            let request: AuthRequest = .init(
-                socialType: type,
-                token: accessToken,
-                deviceToken: deviceToken ?? "456"
-            )
+//            let deviceToken = UserDefaults.standard.string(forKey: UserDefaultsKeys.deviceToken)
+            // MARK: 임시 Device token 넣어주기. 추후 수정
+            let request: AuthRequestable
 
-            try await accountService.login(request)
+            switch type {
+            case .kakao:
+                request = KakaoAuthRequest(token: response.token, deviceToken: "456")
+            case .apple:
+                request = AppleAuthRequest(
+                    authCode: response.authCode ?? "",
+                    idToken: response.token,
+                    deviceToken: "456"
+                )
+            }
+
+            try await accountService.login(type, request)
         }
 
         private func authenticateWithKakao() {
@@ -63,7 +70,7 @@ extension Login {
                         self.continuation = nil
                         return
                     }
-                    self.continuation?.resume(returning: accessToken)
+                    self.continuation?.resume(returning: (accessToken, nil))
                     self.continuation = nil
                 }
             }
@@ -101,17 +108,17 @@ extension Login.API: ASAuthorizationControllerDelegate {
     func authorizationController(controller: ASAuthorizationController, didCompleteWithAuthorization authorization: ASAuthorization) {
         guard let credential = authorization.credential as? ASAuthorizationAppleIDCredential,
               let identityToken = credential.identityToken,
-              let token = String(data: identityToken, encoding: .utf8) else {
+              let authorizationCode = credential.authorizationCode,
+              let idToken = String(data: identityToken, encoding: .utf8),
+              let authCode = String(data: authorizationCode, encoding: .utf8) else {
             continuation?.resume(throwing: LoginError.appleTokenNil)
             continuation = nil
             return
         }
 
-        let auth = credential.authorizationCode
-        let authToken = String(data: auth ?? Data(), encoding: .utf8)
-        print("auth Token 입니다~ \(authToken)")
+        print("auth Token 입니다~ \(authCode)")
 
-        continuation?.resume(returning: token)
+        continuation?.resume(returning: (idToken, authCode))
         continuation = nil
     }
 
