@@ -136,6 +136,7 @@ struct CarPullRegisterView: View {
     var body: some View {
         NavigationStack(path: $viewModel.paths) { 
             _body
+                .navigationTitle("카풀 등록")
                 .navigationDestination(for: CarPullRegisterViewModel.Destination.self) { destination in
                     switch destination {
                     case let .carRegister(viewModel):
@@ -232,6 +233,7 @@ struct CarPullRegisterView: View {
                     set: { viewModel.wishCostTextChanged($0) }
                 )
             )
+            .keyboardType(.numberPad)
             .textFieldStyle(
                 .fullCar(
                     type: .won,
