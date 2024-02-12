@@ -60,8 +60,8 @@ public extension FullCar {
     enum Tab: String, Hashable {
         case home
         case register
-        case settings
-        case experiment
+        case requestList
+        case myPage
     }
     
     enum CallListTab: String, Hashable {
