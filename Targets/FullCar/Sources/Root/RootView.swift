@@ -7,10 +7,12 @@
 //
 
 import SwiftUI
+import Observation
+
 import FullCarUI
 import FullCarKit
+
 import Firebase
-import Observation
 import Dependencies
 import KakaoSDKAuth
 import KakaoSDKCommon
