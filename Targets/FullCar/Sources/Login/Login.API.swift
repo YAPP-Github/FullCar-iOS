@@ -40,11 +40,13 @@ extension Login {
                 }
                 self.continuation = continuation
             }
+
+            let deviceToken = UserDefaults.standard.string(forKey: UserDefaultsKeys.deviceToken)
             // 임시 Device token 넣어주기. 추후 수정
             let request: AuthRequest = .init(
                 socialType: type,
                 token: accessToken,
-                deviceToken: AppDelegate.shared?.deviceToken ?? "456"
+                deviceToken: deviceToken ?? "456"
             )
 
             try await accountService.login(request)
@@ -104,6 +106,10 @@ extension Login.API: ASAuthorizationControllerDelegate {
             continuation = nil
             return
         }
+
+        let auth = credential.authorizationCode
+        let authToken = String(data: auth ?? Data(), encoding: .utf8)
+        print("auth Token 입니다~ \(authToken)")
 
         continuation?.resume(returning: token)
         continuation = nil

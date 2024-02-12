@@ -3,8 +3,6 @@ import SwiftUI
 final class AppDelegate: NSObject, UIApplicationDelegate {
     static var shared: AppDelegate?
 
-    private(set) var deviceToken: String?
-
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
 
         AppDelegate.shared = self
@@ -17,7 +15,8 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
 
         // 팀계정 설정되면 device token 받아오기
         print("device token 입니다 : \(deviceToken)")
-        self.deviceToken = String(data: deviceToken, encoding: .utf8)
+        let token = String(data: deviceToken, encoding: .utf8)
+        UserDefaults.standard.set(token, forKey: UserDefaultsKeys.deviceToken)
     }
 }
 
