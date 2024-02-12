@@ -25,7 +25,10 @@ public extension Endpoint {
     }
 
     enum Account {
-        case login(request: AuthRequest)
+        enum Login {
+            case kakao(AuthRequest.Kakao)
+            case apple(AuthRequest.Apple)
+        }
         case logout
         case leave
         case refresh(refreshToken: String)
@@ -45,7 +48,6 @@ extension Endpoint.Account: URLRequestConfigurable {
 
     public var path: String? {
         switch self {
-        case .login: return "/api/v1/auth"
         case .logout: return "/logout"
         case .leave: return "/leave"
         case .refresh: return "/api/v1/auth/token"
@@ -54,17 +56,12 @@ extension Endpoint.Account: URLRequestConfigurable {
     
     public var method: HTTPMethod {
         switch self {
-        case .login, .logout, .leave, .refresh : return .post
+        case .logout, .leave, .refresh : return .post
         }
     }
     
     public var parameters: Parameters? {
         switch self {
-        case .login(let request): return [
-            "socialType": request.socialType.rawValue,
-            "token": request.token,
-            "deviceToken": request.deviceToken
-        ]
         case .logout: return nil
         case .leave: return nil
         case .refresh(refreshToken: let refreshToken): return [
@@ -75,16 +72,47 @@ extension Endpoint.Account: URLRequestConfigurable {
     
     public var headers: [Header]? {
         switch self {
-        case .login, .logout, .leave, .refresh : return nil
+        case .logout, .leave, .refresh : return nil
         }
     }
     
     public var encoder: ParameterEncodable {
         switch self {
-        case .login, .refresh: return JSONEncoding()
+        case .refresh: return JSONEncoding()
         case .logout, .leave: return URLEncoding()
         }
     }
+}
+
+extension Endpoint.Account.Login: URLRequestConfigurable {
+    var url: URLConvertible { return "http://43.200.176.240:8080" }
+
+    var path: String? {
+        switch self {
+        case .kakao: return "/api/v1/auth/login/kakao"
+        case .apple: return "/api/v1/auth/login/apple"
+        }
+    }
+    
+    var method: HTTPMethod { return .post }
+
+    var parameters: Parameters? {
+        switch self {
+        case .kakao(let request): [
+            "token": request.token,
+            "deviceToken": request.deviceToken
+        ]
+        case .apple(let request): [
+            "authCode": request.authCode,
+            "idToken": request.idToken,
+            "deviceToken": request.deviceToken
+        ]
+        }
+    }
+    
+    var headers: [Header]? { return nil }
+
+    var encoder: ParameterEncodable { return JSONEncoding() }
 }
 
 extension Endpoint.Car: URLRequestConfigurable {
