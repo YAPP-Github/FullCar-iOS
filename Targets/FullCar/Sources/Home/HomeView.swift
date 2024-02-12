@@ -96,9 +96,7 @@ struct HomeView: View {
         ScrollView(.vertical) { 
             LazyVStack(spacing: .zero) {
                 ForEach(Array(list.enumerated()), id: \.element) { index, carpull in
-                    Button {
-                        Task { await viewModel.onCardTapped(carpull) }
-                    } label: {
+                    Button { viewModel.onCardTapped(carpull) } label: {
                         CarPull.CardView(carPull: carpull)
                             .padding(.bottom, 8)
                     }

@@ -24,7 +24,12 @@ struct FullCarTabView: View {
         TabView(selection: $viewModel.tabSelection) {
             HomeView(viewModel: .init())
                 .tabItem { 
-                    Text("home")
+                    if viewModel.tabSelection == .home {
+                        Image("ic_home_selected", bundle: .main)
+                    } else {
+                        Image("ic_home", bundle: .main)
+                    }
+                    Text("홈")
                 }
                 .tag(FullCar.Tab.home)
             CarPullRegisterView(viewModel: .init())

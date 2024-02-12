@@ -50,7 +50,7 @@ final class HomeViewModel {
         await fetchCarPulls(page: self.currentPage)
     }
     
-    func onCardTapped(_ carpull: CarPull.Model.Information) async {
+    func onCardTapped(_ carpull: CarPull.Model.Information) {
         guard paths.isEmpty else { return }
         let detailViewModel = CarPullDetailViewModel(carPull: carpull)
         // TODO: 먼저 지워지는거 수정
