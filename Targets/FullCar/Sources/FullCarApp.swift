@@ -15,7 +15,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
     func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
         @Dependency(\.deviceToken) var deviceTokenManager
 
-        // MARK: 추후 Device token 잘 받아오는지 확인 필요
+        deviceTokenManager.save(deviceToken.base64EncodedString())
         deviceTokenManager.save(deviceToken)
     }
 }

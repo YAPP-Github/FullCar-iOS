@@ -20,7 +20,7 @@ extension AccessCredentialsManager {
 
 extension AccessCredentialsManager {
     struct DeviceToken {
-        var save: (Data) -> Void
+        var save: (String) -> Void
         var fetch: () throws -> String
     }
 }
@@ -46,11 +46,10 @@ extension AccessCredentialsManager.DeviceToken: DependencyKey {
 
         return .init(
             save: { token in
-                let token = String(data: token, encoding: .utf8)
                 deviceToken = token
             },
             fetch: {
-                guard let deviceToken else { throw DeviceTokenError.tokenNil }
+                guard let deviceToken else { throw AccessCredentialsError.deviceTokenNil }
                 return deviceToken
             }
         )
