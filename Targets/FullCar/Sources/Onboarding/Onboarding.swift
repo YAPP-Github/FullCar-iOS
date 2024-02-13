@@ -48,6 +48,7 @@ extension Onboarding {
         // MARK: Company
         var company: LocalCoordinate?
         var companySearchBarState: InputState = .default
+        var isCompanyValid: Bool = false
 
         // MARK: Email
         var email: String = ""

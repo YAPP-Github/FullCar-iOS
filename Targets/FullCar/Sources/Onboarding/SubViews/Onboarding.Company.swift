@@ -16,11 +16,10 @@ extension Onboarding.Company {
         @Bindable var viewModel: Onboarding.ViewModel
 
         var body: some View {
-            if !viewModel.isSearchViewAppear {
-                InputView(viewModel: viewModel)
-            } else {
-                SearchView(viewModel: viewModel)
-            }
+            InputView(viewModel: viewModel)
+                .sheet(isPresented: $viewModel.isSearchViewAppear) {
+                    SearchView(viewModel: viewModel)
+                }
         }
     }
 
@@ -56,21 +55,16 @@ extension Onboarding.Company {
 
                 Spacer()
 
-                Button(action: {}, label: {
-                    Text("다음")
-                        .frame(maxWidth: .infinity)
-                })
-                .buttonStyle(.fullCar(style: .palette(.primary_white)))
-                .disabled(true)
+                nextButton
             }
         }
 
         private var companyTextField: some View {
             FCTextFieldView(
                 textField: {
-                    TextField("회사, 주소 검색", text: .constant(""))
+                    TextField("회사, 주소 검색", text: .constant(viewModel.company?.name ?? ""))
                         .textFieldStyle(.fullCar(
-                            type: .search,
+                            type: viewModel.company == nil ? .search : .check($viewModel.isCompanyValid),
                             state: .constant(.default))
                         )
                         .disabled(true)
@@ -81,10 +75,19 @@ extension Onboarding.Company {
                 headerPadding: 20
             )
             .onTapGesture {
-                withAnimation {
-                    viewModel.isSearchViewAppear = true
-                }
+                viewModel.isSearchViewAppear = true
             }
+        }
+
+        private var nextButton: some View {
+            Button(action: {
+                viewModel.isOnboardingViewAppear = true
+            }, label: {
+                Text("다음")
+                    .frame(maxWidth: .infinity)
+            })
+            .buttonStyle(.fullCar(style: .palette(.primary_white)))
+            .disabled(!viewModel.isCompanyValid)
         }
     }
 
@@ -98,18 +101,13 @@ extension Onboarding.Company {
 
         var body: some View {
             bodyView
-                .onAppear {
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) {
-                        viewModel.companySearchBarState = .focus
-                    }
-                }
                 .navigationBarStyle(
                     leadingView: {
-                        NavigationButton(icon: .back, action: {
-                            withAnimation {
-                                viewModel.isSearchViewAppear = false
-                            }
-                        })
+//                        NavigationButton(icon: .back, action: {
+//                            withAnimation {
+//                                viewModel.isSearchViewAppear = false
+//                            }
+//                        })
                     },
                     centerView: {
                         Text("회사 검색")
@@ -124,6 +122,11 @@ extension Onboarding.Company {
                 companySearchBar
                     .padding(.horizontal, 20)
                     .padding(.top, 20)
+                    .onAppear {
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                            viewModel.companySearchBarState = .focus
+                        }
+                    }
 
                 locationList
             }
@@ -179,12 +182,10 @@ extension Onboarding.Company {
                         ForEach($locations, id: \.self) { item in
                             LocationListItem(location: item, company: keyword, onTap: {
                                 viewModel.company = item.wrappedValue
+                                viewModel.isCompanyValid = true
 
                                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                                    withAnimation {
-                                        viewModel.isSearchViewAppear = false
-                                        viewModel.isOnboardingViewAppear = true
-                                    }
+                                    viewModel.isSearchViewAppear = false
                                 }
                             })
                         }
@@ -199,6 +200,8 @@ extension Onboarding.Company {
     }
 }
 
+#if DEBUG
 #Preview {
     Onboarding.Company.BodyView(viewModel: .init())
 }
+#endif
