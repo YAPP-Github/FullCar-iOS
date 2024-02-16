@@ -8,12 +8,6 @@
 
 import Foundation
 
-struct ApiAuthTokenResponse: Decodable {
-    let status: Int
-    let message: String
-    let data: AuthTokenResponse
-}
-
 struct AuthTokenResponse: Decodable {
     let accessToken: String
     let refreshToken: String

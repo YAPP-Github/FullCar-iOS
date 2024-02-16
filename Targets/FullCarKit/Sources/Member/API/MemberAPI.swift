@@ -57,7 +57,7 @@ extension MemberAPI: DependencyKey {
                 ).response()
             },
             fetch: {
-                let response: ApiMemberResponse = try await NetworkClient.main.request(
+                let response: CommonResponse<MemberResponse> = try await NetworkClient.main.request(
                     endpoint: Endpoint.Member.fetch
                 ).response()
 

@@ -70,7 +70,7 @@ struct TokenInterceptor: NetworkInterceptor {
         @Dependency(\.tokenStorage) var tokenStorage
 
         let credential = try await tokenStorage.loadToken()
-        let authResponse: ApiAuthTokenResponse = try await NetworkClient.account.request(
+        let authResponse: CommonResponse<AuthTokenResponse> = try await NetworkClient.account.request(
             endpoint: Endpoint.Account.refresh(refreshToken: credential.refreshToken)
         ).response()
         let newCredential: AccountCredential = .init(

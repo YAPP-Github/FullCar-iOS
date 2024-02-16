@@ -32,7 +32,7 @@ extension AccountAPI: DependencyKey {
                     endpoint = Endpoint.Account.Login.apple(request)
                 }
 
-                let response: ApiAuthResponse = try await NetworkClient.account.request(
+                let response: CommonResponse<AuthResponse> = try await NetworkClient.account.request(
                     endpoint: endpoint
                 ).response()
                 let authResponse = response.data
@@ -53,7 +53,7 @@ extension AccountAPI: DependencyKey {
                 ).response()
             },
             refresh: { refreshToken in
-                let response: ApiAuthTokenResponse = try await NetworkClient.account.request(
+                let response: CommonResponse<AuthTokenResponse> = try await NetworkClient.account.request(
                     endpoint: Endpoint.Account.refresh(refreshToken: refreshToken)
                 ).response()
 
