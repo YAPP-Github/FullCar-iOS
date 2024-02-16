@@ -16,6 +16,11 @@ extension Onboarding.Nickname {
 
         var body: some View {
             bodyView
+                .onAppear {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                        viewModel.nicknameTextFieldState = .focus
+                    }
+                }
         }
 
         private var bodyView: some View {

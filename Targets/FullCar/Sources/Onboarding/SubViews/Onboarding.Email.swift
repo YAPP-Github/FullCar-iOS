@@ -16,6 +16,11 @@ extension Onboarding.Email {
 
         var body: some View {
             bodyView
+                .onAppear {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                        viewModel.emailTextFieldState = .focus
+                    }
+                }
         }
 
         private var bodyView: some View {
