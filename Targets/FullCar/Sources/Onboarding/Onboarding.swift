@@ -109,7 +109,7 @@ extension Onboarding.ViewModel {
             // 이메일 전송 실패
             print(error)
             isEmailRequestSent = false
-            emailTextFieldState = .error("일치하는 메일 정보가 없습니다.")
+            emailTextFieldState = .error("회사 이메일이 맞는지 확인해 주세요.")
 
             isEmailAddressValid = false
         }
