@@ -34,6 +34,13 @@ struct FullCarTabView: View {
                         .foregroundStyle(Color.primary)
                 }
                 .tag(FullCar.Tab.home)
+
+            CallListView(viewModel: .init())
+                .tabItem {
+                    Text("요청")
+                }
+                .tag(FullCar.Tab.request)
+
             CarPullRegisterView(viewModel: .init())
                 .tabItem { 
                     if viewModel.tabSelection == .register {

@@ -30,6 +30,7 @@ extension CarPull {
                         .font(.pretendard14(.semibold))
                         .foregroundStyle(Color.fullCar_primary)
                     Spacer()
+                    
                     // FIXME: postState
                     FCBadge(postState: .recruite)
                 }
@@ -39,13 +40,19 @@ extension CarPull {
                     .font(.pretendard17(.bold))
                     .padding(.bottom, 12)
                 
-                Text(carPull.content)
+                Text(carPull.content ?? "")
                     .font(.pretendard16(.regular))
                     .padding(.bottom, 10)
                 
+
+                
                 HStack(spacing: 6) {
-                    FCBadge(gender: carPull.gender)
-                    FCBadge(mood: carPull.moodType)
+                    if let gender = carPull.gender {
+                        FCBadge(gender: gender)
+                    }
+                    if let moodType = carPull.moodType {
+                        FCBadge(mood: moodType)
+                    }
                 }
                 
                 Divider()
