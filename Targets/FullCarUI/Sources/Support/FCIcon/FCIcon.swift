@@ -32,6 +32,7 @@ public extension FCIcon {
         case appleLogo
         case search
         case location
+        case car
     }
 }
 
@@ -47,6 +48,7 @@ extension FCIcon.Symbol {
         case .homeLogo: return "homeLogo"
         case .kakaoLogo: return "kakaoLogo"
         case .location: return "location"
+        case .car: return "car_gray"
         default: return ""
         }
     }

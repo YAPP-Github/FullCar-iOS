@@ -177,6 +177,7 @@ extension Onboarding.Company {
             ScrollView {
                 if locations.isEmpty && onSearchButtonTapped {
                     emptyLocationList
+                        .padding(.top, 104)
                 } else {
                     LazyVGrid(columns: [GridItem()], spacing: .zero, content: {
                         ForEach($locations, id: \.self) { item in
@@ -195,7 +196,21 @@ extension Onboarding.Company {
         }
 
         private var emptyLocationList: some View {
-            Text("검색 결과가 없어요~")
+            VStack(spacing: 20) {
+                Image(icon: .car)
+                    .resizable()
+                    .frame(width: 49, height: 67.7)
+
+                VStack(spacing: 6) {
+                    Text("검색 결과가 없습니다.")
+                        .font(.pretendard18(.bold))
+                        .foregroundStyle(Color.gray45)
+
+                    Text("회사명의 철자가 정확한지 확인해 주세요.")
+                        .font(.pretendard16(.regular))
+                        .foregroundStyle(Color.gray40)
+                }
+            }
         }
     }
 }
