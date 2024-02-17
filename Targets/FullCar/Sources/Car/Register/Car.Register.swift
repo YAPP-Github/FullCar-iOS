@@ -18,19 +18,11 @@ extension Car {
 
 extension Car.Register {
     struct API {
-        private var fetch: @Sendable (String, String, String, String) async throws -> Model.Response
+        private var fetch: @Sendable (String, String, String, String) async throws -> CommonResponse<Car.Information>
         
-        @discardableResult
-        func fetch(carNumber: String, carName: String, carBrand: String, carColor: String) async throws -> Model.Response {
-            return try await self.fetch(carNumber, carName, carBrand, carColor)
-        }
-    }
-    
-    struct Model {
-        struct Response: Decodable {            
-            let status: Int 
-            let message: String
-            let data: Car.Information
+        func fetch(carNumber: String, carName: String, carBrand: String, carColor: String) async throws -> Car.Information {
+            let response: CommonResponse<Car.Information> = try await self.fetch(carNumber, carName, carBrand, carColor)
+            return response.data
         }
     }
 }

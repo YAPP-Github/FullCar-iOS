@@ -34,9 +34,8 @@ extension Onboarding {
         func verify(code: String) async throws -> Void {
             return try await self.verify(code)
         }
-        func isOnboardingCompleted() async throws -> Bool {
-            let member = try await self.fetch()
-            return !member.company.name.isEmpty
+        func isOnboardingCompleted() async throws -> MemberInformation {
+            return try await self.fetch()
         }
     }
 }

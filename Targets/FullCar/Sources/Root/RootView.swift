@@ -22,8 +22,12 @@ import KakaoSDKCommon
 final class RootViewModel {
     @ObservationIgnored @Dependency(\.loginAPI) private var loginAPI
     @ObservationIgnored @Dependency(\.onbardingAPI) private var onboardingAPI
-
-    var appState: FullCar.State = FullCar.shared.appState
+    @ObservationIgnored
+    @Dependency(\.fullCar) private var fullCar
+    
+    var appState: FullCar.State {
+        return fullCar.appState
+    }
 
     // 자동로그인 시도
     // 로컬 스토리지에 토큰 있는지 검사해서, 유효성 검사하고
@@ -32,16 +36,21 @@ final class RootViewModel {
     func onFirstTask() async {
         do {
             if try await loginAPI.hasValidToken {
-                appState = try await onboardingAPI.isOnboardingCompleted() ? .tab : .onboarding
+                let member = try await onboardingAPI.isOnboardingCompleted()
+                if member.company.name.isEmpty {
+                    fullCar.appState = .onboarding    
+                } else {
+                    fullCar.appState = .tab(member)
+                }
             } else {
-                appState = .login
+                fullCar.appState = .login
             }
 
             #if DEBUG
             print("[✅][RootView.swift] -> 자동 로그인 성공!")
             #endif
         } catch {
-            appState = .login
+            fullCar.appState = .login
 
             #if DEBUG
             print("[🆘][RootView.swift] -> 자동 로그인 실패 : \(error)")

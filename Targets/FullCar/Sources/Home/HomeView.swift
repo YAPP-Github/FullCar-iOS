@@ -35,11 +35,14 @@ struct HomeView: View {
     private var headerView: some View {
         VStack(spacing: .zero) {
             HStack(spacing: .zero) {
-                Text("야놀자")
+                Text(viewModel.companyName)
                     .font(.pretendard18(.bold))
                     .foregroundStyle(Color.black80)
+                    .lineLimit(1)
+                    .offset(y: 3)
                 Spacer()
                 Image("FCHomeTopTrailingImage", bundle: .main)
+                    .offset(y: -2)
             }
             .padding(.leading, 20)
             .padding(.trailing, 15.48)
@@ -65,25 +68,27 @@ struct HomeView: View {
     }
     private func errorView(imageName: String) -> some View {
         VStack(spacing: .zero) {
-            Image("error_home", bundle: .main)
+            Image(imageName, bundle: .main)
                 .padding(.bottom, 24)
-            Button {
-                Task {
-                    await viewModel.retryButtonTapped()
-                }
-            } label: {
+            Button { Task { await viewModel.retryButtonTapped() } } label: {
                 if viewModel.apiIsInFlight {
                     ProgressView().id(UUID())
                         .progressViewStyle(CircularProgressViewStyle(tint: Color.white))
                         .transition(.fadeInOut)
-                        .frame(width: 116)
+                        .frame(width: 86)
                 } else {
                     Text("다시 불러오기")
+                        .font(.pretendard16(.bold))
                         .transition(.fadeInOut)
-                        .frame(width: 116)
                 }
             }
-            .buttonStyle(.fullCar(horizontalPadding: 16, style: .palette(.primary_white)))
+            .buttonStyle(
+                .fullCar(
+                    horizontalPadding: 15,
+                    verticalPadding: 11,
+                    style: .palette(.primary_white)
+                )
+            )
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
@@ -91,9 +96,7 @@ struct HomeView: View {
         ScrollView(.vertical) { 
             LazyVStack(spacing: .zero) {
                 ForEach(Array(list.enumerated()), id: \.element) { index, carpull in
-                    Button {
-                        Task { await viewModel.onCardTapped(carpull) }
-                    } label: {
+                    Button { viewModel.onCardTapped(carpull) } label: {
                         CarPull.CardView(carPull: carpull)
                             .padding(.bottom, 8)
                     }

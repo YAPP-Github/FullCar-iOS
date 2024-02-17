@@ -8,7 +8,7 @@
 
 import Foundation
 
-public struct MemberInformation: Decodable {
+public final class MemberInformation: Decodable {
     public var company: LocalCoordinate
     public var email: String
     public var nickname: String

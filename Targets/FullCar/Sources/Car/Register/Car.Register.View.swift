@@ -8,6 +8,7 @@
 
 import SwiftUI
 import FullCarUI
+import FullCarKit
 
 import Dependencies
 import XCTestDynamicOverlay
@@ -15,12 +16,15 @@ import XCTestDynamicOverlay
 extension Car.Register {
     @MainActor
     @Observable
-    final class ViewModel {
+    final class ViewModel: Identifiable {
         
         @ObservationIgnored
         @Dependency(\.carRegisterAPI) private var carRegisterAPI
+        @ObservationIgnored
+        @Dependency(\.fullCar) private var fullCar 
         
         var onBackButtonTapped: () -> Void = unimplemented("onBackButtonTapped")
+        var onRegisterFinished: () -> Void = unimplemented("onRegisterFinished")
         
         var carNumber: String = ""
         var carNumberState: InputState = .default
@@ -35,6 +39,7 @@ extension Car.Register {
         var carColorState: InputState = .default
         
         var apiIsInFlight: Bool = false
+        var isRegisterFinished: Bool = false
         
         var isValid: Bool {
             return !carNumber.isEmpty && !carName.isEmpty && !carBrand.isEmpty && !carColor.isEmpty &&
@@ -46,12 +51,15 @@ extension Car.Register {
                 apiIsInFlight = true
                 defer { apiIsInFlight = false }
                 
-                try await carRegisterAPI.fetch(
+                let carRegister: Car.Information = try await carRegisterAPI.fetch(
                     carNumber: carNumber,
                     carName: carName,
                     carBrand: carBrand,
                     carColor: carColor
                 )
+                fullCar.member?.carId = carRegister.id
+                
+                isRegisterFinished = true
             }
             catch {
                 print(error)
@@ -60,6 +68,17 @@ extension Car.Register {
     }
 }
 
+extension Car.Register.ViewModel: Hashable {
+    nonisolated static func == (lhs: Car.Register.ViewModel, rhs: Car.Register.ViewModel) -> Bool {
+        return lhs === rhs
+    }
+    
+    nonisolated func hash(into hasher: inout Hasher) {
+        hasher.combine(ObjectIdentifier(self))
+    }
+}
+
+
 extension Car.Register {
     @MainActor
     struct BodyView: View {
@@ -67,6 +86,17 @@ extension Car.Register {
         
         var body: some View {
             _body
+                .alert(
+                    "차량 등록이 완료되었어요.",
+                    isPresented: $viewModel.isRegisterFinished,
+                    actions: { 
+                        Button {
+                            viewModel.onRegisterFinished()
+                        } label: {
+                            Text("확인")
+                        }
+                    }
+                )
                 .navigationBarStyle(
                     leadingView: {
                         Button {

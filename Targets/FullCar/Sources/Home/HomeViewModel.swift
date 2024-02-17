@@ -21,14 +21,18 @@ final class HomeViewModel {
     
     @ObservationIgnored
     @Dependency(\.carpullAPI) private var carpullAPI
+    @ObservationIgnored
+    @Dependency(\.fullCar) private var fullCar
     
     var paths: [Destination] = []
     private(set) var carPullList: [CarPull.Model.Information] = []
     private(set) var apiIsInFlight: Bool = false
     private(set) var error: Error?
+    var companyName: String { fullCar.member?.company.name ?? "" }
     
     private var currentPage: Int = 1
-    private var homeResponse: CommonResponse<CarPull.Model.Fetch>?
+    
+    // MARK: Action
     
     func onFirstTask() async {
         await fetchCarPulls(page: currentPage)
@@ -40,6 +44,28 @@ final class HomeViewModel {
         await fetchCarPulls(page: currentPage)
     }
     
+    @Sendable
+    func refreshable() async {
+        self.currentPage = 1
+        await fetchCarPulls(page: self.currentPage)
+    }
+    
+    func onCardTapped(_ carpull: CarPull.Model.Information) {
+        guard paths.isEmpty else { return }
+        let detailViewModel = CarPullDetailViewModel(carPull: carpull)
+        // TODO: 먼저 지워지는거 수정
+        detailViewModel.onBackButtonTapped = { [weak self] in
+            self?.paths.removeAll()
+        }
+        paths.append(.detail(detailViewModel))
+    }
+    
+    func retryButtonTapped() async {
+        await fetchCarPulls(page: self.currentPage)
+    }
+    
+    // MARK: Private
+    
     private func fetchCarPulls(page: Int) async {
         do {
             apiIsInFlight = true
@@ -47,7 +73,6 @@ final class HomeViewModel {
             
             let response = try await carpullAPI.fetch(page: currentPage)
             self.error = .none
-            self.homeResponse = response
             
             if page == 1 {
                 carPullList = response.data.carPullList
@@ -60,30 +85,6 @@ final class HomeViewModel {
         catch {
             self.error = error
         }
-    }
-    
-    @Sendable
-    func refreshable() async {
-        clear()
-        await fetchCarPulls(page: 1)
-    }
-    
-    func onCardTapped(_ carpull: CarPull.Model.Information) async {
-        guard paths.isEmpty else { return }
-        let detailViewModel = CarPullDetailViewModel(carPull: carpull)
-        // TODO: 먼저 지워지는거 수정
-        detailViewModel.onBackButtonTapped = { [weak self] in
-            self?.paths.removeAll()
-        }
-        paths.append(.detail(detailViewModel))
-    }
-    
-    func retryButtonTapped() async {
-        await fetchCarPulls(page: 1)
-    }
-    
-    private func clear() {
-        self.currentPage = 1
     }
 }
 
