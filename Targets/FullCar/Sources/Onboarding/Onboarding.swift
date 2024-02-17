@@ -59,6 +59,7 @@ extension Onboarding {
         var isEmailAddressValid: Bool = false
         // 인증번호
         var authenticationCode: String = ""
+        var authCodeTextFieldState: InputState = .default
         // 회사 이메일 인증 절차 모두 완료
         var isEmailValid: Bool = false
 
@@ -244,7 +245,7 @@ extension Onboarding {
 //                                }
 //                            }
 
-                        if viewModel.isEmailAddressValid {
+                        if viewModel.isEmailAddressValid && !viewModel.isEmailValid {
                             Onboarding.Email.NumberView(viewModel: viewModel)
                                 .id(InputSection.number)
                                 .onChange(of: viewModel.isEmailValid) {

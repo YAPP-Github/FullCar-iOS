@@ -49,7 +49,24 @@ extension Onboarding.Email {
         @Bindable var viewModel: Onboarding.ViewModel
 
         var body: some View {
-            Text("인증번호 뷰 올것임.")
+            bodyView
+        }
+
+        private var bodyView: some View {
+            FCTextFieldView(
+                textField: {
+                    TextField("인증번호 입력해라~", text: $viewModel.authenticationCode)
+                        .textFieldStyle(.fullCar(
+                            type: .none,
+                            state: $viewModel.authCodeTextFieldState)
+                        )
+//                        .onChange(of: viewModel.authenticationCode) {
+//                            viewModel.isEmailRequestSent = false
+//                            viewModel.isEmailAddressValid = false
+//                        }
+                },
+                state: $viewModel.authCodeTextFieldState
+            )
         }
     }
 
