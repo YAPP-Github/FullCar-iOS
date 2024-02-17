@@ -101,7 +101,8 @@ extension Onboarding.ViewModel {
             isEmailRequestSent = true
             emailTextFieldState = .default
 
-            try await onboardingAPI.send(email: email)
+            // MARK: 현재 이메일 인증 api 관련 수정 필요
+//            try await onboardingAPI.send(email: email)
 
             isEmailAddressValid = true
         } catch {
@@ -116,7 +117,8 @@ extension Onboarding.ViewModel {
 
     func verifyAuthenticationCode() async {
         do {
-            try await onboardingAPI.verify(code: authenticationCode)
+            // MARK: 현재 이메일 인증 api 관련 수정 필요
+//            try await onboardingAPI.verify(code: authenticationCode)
 
             // case1) 이메일 인증 성공
             self.isEmailValid = true
@@ -143,6 +145,7 @@ extension Onboarding.ViewModel {
         do {
             // 닉네임 중복 확인 api 호출
             try await onboardingAPI.check(nickname: nickname)
+
             // case1) 닉네임 인증 성공
             isNicknameValid = true
             nicknameTextFieldState = .default
@@ -187,6 +190,12 @@ extension Onboarding.ViewModel {
 }
 
 extension Onboarding {
+    enum InputSection: Int {
+        case number
+        case nickname
+        case gender
+    }
+
     @MainActor
     struct BodyView: View {
         @Environment(\.dismiss) private var dismiss
@@ -218,33 +227,58 @@ extension Onboarding {
                 Spacer()
 
                 buttonView
-                    .padding(.bottom, 16)
                     .padding(.horizontal, 20)
             }
         }
 
         private var inputView: some View {
-            ScrollView {
-                VStack(alignment: .leading, spacing: 40) {
-                    Onboarding.Email.TextFieldView(viewModel: viewModel)
+            ScrollViewReader { proxy in
+                ScrollView {
+                    VStack(alignment: .leading, spacing: 40) {
+                        Onboarding.Email.TextFieldView(viewModel: viewModel)
+//                            .onChange(of: viewModel.emailTextFieldState) { _, newValue in
+//                                if newValue == .focus {
+//                                    withAnimation {
+//                                        proxy.scrollTo(InputSection.number, anchor: .top)
+//                                    }
+//                                }
+//                            }
 
-                    if viewModel.isEmailAddressValid {
-                        Onboarding.Email.NumberView(viewModel: viewModel)
-                    }
+                        if viewModel.isEmailAddressValid {
+                            Onboarding.Email.NumberView(viewModel: viewModel)
+                                .id(InputSection.number)
+                                .onChange(of: viewModel.isEmailValid) {
+                                    withAnimation {
+                                        proxy.scrollTo(InputSection.nickname, anchor: .top)
+                                    }
+                                }
+                        }
 
-                    if viewModel.isEmailValid {
-                        Onboarding.Nickname.TextFieldView(viewModel: viewModel)
-                    }
+                        if viewModel.isEmailValid {
+                            Onboarding.Nickname.TextFieldView(viewModel: viewModel)
+                                .id(InputSection.nickname)
+                                .onChange(of: viewModel.nicknameTextFieldState) { _, newValue in
+                                    if newValue == .focus {
+                                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.22) {
+                                            withAnimation {
+                                                proxy.scrollTo(InputSection.nickname, anchor: .top)
+                                            }
+                                        }
+                                    }
+                                }
+                        }
 
-                    if viewModel.isNicknameValid {
-                        Onboarding.Gender.PickerView(viewModel: viewModel)
+                        if viewModel.isNicknameValid {
+                            Onboarding.Gender.PickerView(viewModel: viewModel)
+                                .id(InputSection.gender)
+                        }
                     }
+                    .padding(.top, 32)
+                    .padding(.horizontal, 20)
                 }
-                .padding(.top, 32)
-                .padding(.horizontal, 20)
+//                .scrollBounceBehavior(.basedOnSize)
+                .scrollIndicators(.hidden)
             }
-            .scrollBounceBehavior(.basedOnSize)
-            .scrollIndicators(.hidden)
         }
 
         @ViewBuilder
