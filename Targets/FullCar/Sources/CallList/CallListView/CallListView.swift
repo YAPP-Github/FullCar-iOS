@@ -13,7 +13,7 @@ import Observation
 import Dependencies
 
 struct Dummy: Hashable {
-    let id : UUID = UUID()
+    let id: UUID = UUID()
     let status: FullCar.CallStatus
 }
 

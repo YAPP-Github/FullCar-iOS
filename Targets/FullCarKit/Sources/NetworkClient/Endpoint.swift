@@ -285,16 +285,16 @@ extension Endpoint.Form: URLRequestConfigurable {
     
     public var method: HTTPMethod {
         switch self {
-        case .fetchSentForms, .fetchReceivedForms, .getFormDetail(_): return .get
-        case .changeFormStatus(_,_,_,_): return .patch
-        case .applyCarpull(_,_,_,_,_): return .post
+        case .fetchSentForms, .fetchReceivedForms, .getFormDetail: return .get
+        case .changeFormStatus: return .patch
+        case .applyCarpull: return .post
         }
     }
     
     public var parameters: Parameters? {
         switch self {
-        case .fetchReceivedForms, .fetchSentForms, .getFormDetail(_): return nil
-        case .changeFormStatus(_,let formState,let contact,let toPassenger):
+        case .fetchReceivedForms, .fetchSentForms, .getFormDetail: return nil
+        case .changeFormStatus(_, let formState, let contact, let toPassenger):
             
             var parameter: Parameters = [
                 "formState": formState,
@@ -306,7 +306,7 @@ extension Endpoint.Form: URLRequestConfigurable {
             }
             
             return parameter
-        case .applyCarpull(_, let pickupLocation, let periodType, let money,let content):
+        case .applyCarpull(_, let pickupLocation, let periodType, let money, let content):
             return [
                   "pickupLocation": pickupLocation,
                   "periodType": periodType,
@@ -318,14 +318,14 @@ extension Endpoint.Form: URLRequestConfigurable {
     
     public var headers: [Header]? {
         switch self {
-        case .fetchReceivedForms, .fetchSentForms, .getFormDetail(_), .changeFormStatus(_,_,_,_), .applyCarpull(_,_,_,_,_): return nil
+        case .fetchReceivedForms, .fetchSentForms, .getFormDetail, .changeFormStatus, .applyCarpull: return nil
         }
     }
     
     public var encoder: ParameterEncodable {
         switch self {
-        case .fetchReceivedForms, .fetchSentForms, .getFormDetail(_): return URLEncoding()
-        case .changeFormStatus(_,_,_,_), .applyCarpull(_,_,_,_,_): return JSONEncoding()
+        case .fetchReceivedForms, .fetchSentForms, .getFormDetail: return URLEncoding()
+        case .changeFormStatus, .applyCarpull: return JSONEncoding()
         }
     }
 }

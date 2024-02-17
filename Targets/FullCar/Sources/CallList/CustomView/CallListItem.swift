@@ -46,12 +46,12 @@ extension CallListItem {
     var requestStatusView: some View {
         ZStack {
             HStack(spacing: 0) {
-                Text("\(item.companyName)")
+                Text(item.companyName)
                     .font(.system(size: 14))
                     .foregroundStyle(.blue)
                     .bold()
                 
-                Text("\(item.nickname ?? "")")
+                Text(item.nickname ?? "")
                     .font(.system(size: 14))
                     .foregroundStyle(.gray.opacity(0.5))
                     .bold()
