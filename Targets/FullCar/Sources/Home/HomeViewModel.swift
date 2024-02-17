@@ -21,11 +21,14 @@ final class HomeViewModel {
     
     @ObservationIgnored
     @Dependency(\.carpullAPI) private var carpullAPI
+    @ObservationIgnored
+    @Dependency(\.fullCar) private var fullCar
     
     var paths: [Destination] = []
     private(set) var carPullList: [CarPull.Model.Information] = []
     private(set) var apiIsInFlight: Bool = false
     private(set) var error: Error?
+    var companyName: String { fullCar.member?.company.name ?? "" }
     
     private var currentPage: Int = 1
     
@@ -47,7 +50,7 @@ final class HomeViewModel {
         await fetchCarPulls(page: self.currentPage)
     }
     
-    func onCardTapped(_ carpull: CarPull.Model.Information) async {
+    func onCardTapped(_ carpull: CarPull.Model.Information) {
         guard paths.isEmpty else { return }
         let detailViewModel = CarPullDetailViewModel(carPull: carpull)
         // TODO: 먼저 지워지는거 수정

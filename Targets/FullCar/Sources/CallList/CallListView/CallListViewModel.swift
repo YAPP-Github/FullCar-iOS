@@ -56,6 +56,20 @@ final class CallListViewModel {
                 }
             }
         } catch {
+            
+            if let error = error as? DecodingError {
+                switch error {
+                case .typeMismatch(let any, let context):
+                    print("typeMismatch", any, context.debugDescription)
+                case .valueNotFound(let any, let context):
+                    print("valueNotFound", any, context.debugDescription)
+                case .keyNotFound(let codingKey, let context):
+                    print("keyNotFound", codingKey.stringValue, context.debugDescription)
+                case .dataCorrupted(let context):
+                    print("dataCorrupted", context.debugDescription)
+                }
+            }
+            
             print("Error", error.localizedDescription)
         }
         

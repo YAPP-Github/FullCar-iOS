@@ -39,6 +39,8 @@ extension Onboarding {
         @ObservationIgnored 
         @Dependency(\.onbardingAPI) private var onboardingAPI
 
+        let fullCar = FullCar.shared
+
         // MARK: 화면 이동
         var isSearchViewAppear: Bool = false
         var isOnboardingViewAppear: Bool = false
@@ -46,6 +48,7 @@ extension Onboarding {
         // MARK: Company
         var company: LocalCoordinate?
         var companySearchBarState: InputState = .default
+        var isCompanyValid: Bool = false
 
         // MARK: Email
         var email: String = ""
@@ -54,6 +57,8 @@ extension Onboarding {
         var isEmailRequestSent: Bool = false
         // 이메일 블랙리스트 확인 완료
         var isEmailAddressValid: Bool = false
+        // 인증번호
+        var authenticationCode: String = ""
         // 회사 이메일 인증 절차 모두 완료
         var isEmailValid: Bool = false
 
@@ -96,7 +101,8 @@ extension Onboarding.ViewModel {
             isEmailRequestSent = true
             emailTextFieldState = .default
 
-            try await onboardingAPI.send(email: email)
+            // MARK: 현재 이메일 인증 api 관련 수정 필요
+//            try await onboardingAPI.send(email: email)
 
             isEmailAddressValid = true
         } catch {
@@ -109,17 +115,16 @@ extension Onboarding.ViewModel {
         }
     }
 
-    func checkAuthenticationNumber() async {
-//        do {
-//
-//        } catch {
-//            print(error)
-//        }
+    func verifyAuthenticationCode() async {
+        do {
+            // MARK: 현재 이메일 인증 api 관련 수정 필요
+//            try await onboardingAPI.verify(code: authenticationCode)
 
-        // case1) 이메일 인증 성공
-        self.isEmailValid = true
+            // case1) 이메일 인증 성공
+            self.isEmailValid = true
+        } catch {
+            print(error)
 
-        if false {
             // case2) 이메일 인증 실패
             self.isEmailValid = false
         }
@@ -140,6 +145,7 @@ extension Onboarding.ViewModel {
         do {
             // 닉네임 중복 확인 api 호출
             try await onboardingAPI.check(nickname: nickname)
+
             // case1) 닉네임 인증 성공
             isNicknameValid = true
             nicknameTextFieldState = .default
@@ -167,9 +173,29 @@ extension Onboarding.ViewModel {
             print(error)
         }
     }
+
+    func onAppear() {
+        email = ""
+        emailTextFieldState = .default
+
+        nickname = ""
+        nicknameTextFieldState = .default
+
+        gender = .notSelect
+    }
+
+    func onBackButtonTapped() {
+        fullCar.appState = .login
+    }
 }
 
 extension Onboarding {
+    enum InputSection: Int {
+        case number
+        case nickname
+        case gender
+    }
+
     @MainActor
     struct BodyView: View {
         @Environment(\.dismiss) private var dismiss
@@ -177,50 +203,82 @@ extension Onboarding {
 
         var body: some View {
             NavigationStack {
-                VStack(spacing: .zero) {
-                    bodyView
-
-                    Spacer()
-
-                    buttonView
-                        .padding(.bottom, 16)
-                        .padding(.horizontal, 20)
-                }
-                .navigationBarStyle(
-                    leadingView: {
-                        NavigationButton(icon: .back, action: { dismiss() })
-                    },
-                    centerView: {
-                        Text("회원 가입")
-                            .font(.pretendard18(.bold))
-                    },
-                    trailingView: { }
-                )
+                bodyView
+                    .onAppear {
+                        viewModel.onAppear()
+                    }
+                    .navigationBarStyle(
+                        leadingView: {
+                            NavigationButton(icon: .back, action: { dismiss() })
+                        },
+                        centerView: {
+                            Text("회원 가입")
+                                .font(.pretendard18(.bold))
+                        },
+                        trailingView: { }
+                    )
             }
         }
 
         private var bodyView: some View {
-            ScrollView {
-                VStack(alignment: .leading, spacing: 40) {
-                    Onboarding.Email.TextFieldView(viewModel: viewModel)
+            VStack(spacing: .zero) {
+                inputView
 
-                    if viewModel.isEmailAddressValid {
-                        Onboarding.Email.NumberView(viewModel: viewModel)
-                    }
+                Spacer()
 
-                    if viewModel.isEmailValid {
-                        Onboarding.Nickname.TextFieldView(viewModel: viewModel)
-                    }
-
-                    if viewModel.isNicknameValid {
-                        Onboarding.Gender.PickerView(viewModel: viewModel)
-                    }
-                }
-                .padding(.top, 32)
-                .padding(.horizontal, 20)
+                buttonView
+                    .padding(.horizontal, 20)
             }
-            .scrollBounceBehavior(.basedOnSize)
-            .scrollIndicators(.hidden)
+        }
+
+        private var inputView: some View {
+            ScrollViewReader { proxy in
+                ScrollView {
+                    VStack(alignment: .leading, spacing: 40) {
+                        Onboarding.Email.TextFieldView(viewModel: viewModel)
+//                            .onChange(of: viewModel.emailTextFieldState) { _, newValue in
+//                                if newValue == .focus {
+//                                    withAnimation {
+//                                        proxy.scrollTo(InputSection.number, anchor: .top)
+//                                    }
+//                                }
+//                            }
+
+                        if viewModel.isEmailAddressValid {
+                            Onboarding.Email.NumberView(viewModel: viewModel)
+                                .id(InputSection.number)
+                                .onChange(of: viewModel.isEmailValid) {
+                                    withAnimation {
+                                        proxy.scrollTo(InputSection.nickname, anchor: .top)
+                                    }
+                                }
+                        }
+
+                        if viewModel.isEmailValid {
+                            Onboarding.Nickname.TextFieldView(viewModel: viewModel)
+                                .id(InputSection.nickname)
+                                .onChange(of: viewModel.nicknameTextFieldState) { _, newValue in
+                                    if newValue == .focus {
+                                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.22) {
+                                            withAnimation {
+                                                proxy.scrollTo(InputSection.nickname, anchor: .top)
+                                            }
+                                        }
+                                    }
+                                }
+                        }
+
+                        if viewModel.isNicknameValid {
+                            Onboarding.Gender.PickerView(viewModel: viewModel)
+                                .id(InputSection.gender)
+                        }
+                    }
+                    .padding(.top, 32)
+                    .padding(.horizontal, 20)
+                }
+//                .scrollBounceBehavior(.basedOnSize)
+                .scrollIndicators(.hidden)
+            }
         }
 
         @ViewBuilder

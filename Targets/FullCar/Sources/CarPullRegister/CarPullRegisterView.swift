@@ -15,8 +15,16 @@ import Dependencies
 @Observable
 final class CarPullRegisterViewModel {
     
+    enum Destination: Hashable {
+        case carRegister(Car.Register.ViewModel)
+    }
+    
     @ObservationIgnored
-    @Dependency(\.carpullAPI) private var carpullAPI 
+    @Dependency(\.carpullAPI) private var carpullAPI
+    @ObservationIgnored
+    @Dependency(\.fullCar) private var fullCar
+    
+    var paths: [Destination] = []
     
     var wishPlaceText: String = ""
     var wishPlaceState: InputState = .default
@@ -66,16 +74,15 @@ final class CarPullRegisterViewModel {
     }
     
     func wishToSayChanged(_ wishToSayText: String) {
-        if wishToSayText.count <= 150 { 
-            self.wishCostState = .focus 
-        } else {
-            self.wishCostState = .error("희망 비용은 10글자 까지 입력할 수 있어요.")
-        }
         self.wishToSayText = wishToSayText
     }
     
     func moodButtonTapped(mood: Driver.Mood) {
-        self.driversMood = mood
+        if self.driversMood == mood {
+            self.driversMood = .none
+        } else {
+            self.driversMood = mood
+        }
     }
     
     func periodSelectionButton(period: CarPull.Model.PeriodType) {
@@ -83,7 +90,17 @@ final class CarPullRegisterViewModel {
     }
     
     func nextButtonTapped() async {
-        // TODO: 차량 등록 여부 검증
+        guard let carId = fullCar.member?.carId else {
+            guard paths.isEmpty else { return }
+            let viewModel = Car.Register.ViewModel()
+            let dismiss: () -> Void = { [weak self] in
+                self?.paths.removeAll()
+            }
+            viewModel.onBackButtonTapped = dismiss
+            viewModel.onRegisterFinished = dismiss
+            self.paths.append(.carRegister(viewModel))
+            return
+        }
         
         do {
             guard 
@@ -117,25 +134,34 @@ struct CarPullRegisterView: View {
     @Bindable var viewModel: CarPullRegisterViewModel
     
     var body: some View {
-        _body
-            .alert(
-                "카풀 등록 오류",
-                isPresented: .init(
-                    get: { viewModel.error != nil },
-                    set: { _ in viewModel.error = nil }
-                ),
-                presenting: viewModel.error,
-                actions: { _ in
-                    Button {
-                        
-                    } label: {
-                        Text("확인")
+        NavigationStack(path: $viewModel.paths) { 
+            _body
+                .navigationTitle("카풀 등록")
+                .navigationDestination(for: CarPullRegisterViewModel.Destination.self) { destination in
+                    switch destination {
+                    case let .carRegister(viewModel):
+                        Car.Register.BodyView(viewModel: viewModel)
                     }
-                },
-                message: { _ in
-                    Text("카풀 등록 중 오류가 발생했어요.\n다시 시도해주세요.")
                 }
-            )
+                .alert(
+                    "카풀 등록 오류",
+                    isPresented: .init(
+                        get: { viewModel.error != nil },
+                        set: { _ in viewModel.error = nil }
+                    ),
+                    presenting: viewModel.error,
+                    actions: { _ in
+                        Button {
+                            
+                        } label: {
+                            Text("확인")
+                        }
+                    },
+                    message: { _ in
+                        Text("카풀 등록 중 오류가 발생했어요.\n다시 시도해주세요.")
+                    }
+                )
+        }
     }
     
     private var _body: some View {
@@ -207,6 +233,7 @@ struct CarPullRegisterView: View {
                     set: { viewModel.wishCostTextChanged($0) }
                 )
             )
+            .keyboardType(.numberPad)
             .textFieldStyle(
                 .fullCar(
                     type: .won,

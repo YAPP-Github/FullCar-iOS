@@ -26,7 +26,19 @@ public final class FullCar {
 }
 
 extension FullCar: DependencyKey {
-    public static var liveValue: FullCar = .shared
+    public static let liveValue: FullCar = .shared
+    public static let previewValue: FullCar = {
+        let fc = FullCar()
+        fc.appState = .tab(
+            .init(
+                company: .init(name: "카카오페이카카오페이카카오페이"), 
+                email: "www.fullcar.com", 
+                nickName: "테스트", 
+                gender: "MALE"
+            )
+        )
+        return fc
+    }()
 }
 extension DependencyValues {
     public var fullCar: FullCar {
@@ -49,8 +61,8 @@ public extension FullCar {
         case home
         case request
         case register
-        case settings
-        case experiment
+        case requestList
+        case myPage
     }
     
     enum CallListTab: String, Hashable {

@@ -40,7 +40,7 @@ extension CarPull {
                     .font(.pretendard17(.bold))
                     .padding(.bottom, 12)
                 
-                Text(carPull.content)
+                Text(carPull.content ?? "")
                     .font(.pretendard16(.regular))
                     .padding(.bottom, 10)
                 

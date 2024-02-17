@@ -10,7 +10,7 @@ import Foundation
 import Dependencies
 
 struct AccountAPI {
-    var login: (_ request: AuthRequest) async throws -> AccountCredential
+    var login: (_ socialType: SocialType, _ request: AuthRequestable) async throws -> AccountCredential
     var logout: () async throws -> Void
     var leave: () async throws -> Void
     var refresh: (_ refreshToken: String) async throws -> AuthTokenResponse
@@ -19,9 +19,21 @@ struct AccountAPI {
 extension AccountAPI: DependencyKey {
     static var liveValue: AccountAPI {
         return  AccountAPI(
-            login: { request in
-                let response: ApiAuthResponse = try await NetworkClient.account.request(
-                    endpoint: Endpoint.Account.login(request: request)
+            login: { socialType, request in
+                let endpoint: URLRequestConfigurable
+                switch socialType {
+                case .kakao:
+                    guard let request = request as? KakaoAuthRequest else { throw AccountAPIError.invalidAuthRequest }
+
+                    endpoint = Endpoint.Account.Login.kakao(request)
+                case .apple:
+                    guard let request = request as? AppleAuthRequest else { throw AccountAPIError.invalidAuthRequest }
+
+                    endpoint = Endpoint.Account.Login.apple(request)
+                }
+
+                let response: CommonResponse<AuthResponse> = try await NetworkClient.account.request(
+                    endpoint: endpoint
                 ).response()
                 let authResponse = response.data
 
@@ -32,18 +44,16 @@ extension AccountAPI: DependencyKey {
             },
             logout: {
                 try await NetworkClient.main.request(
-                    endpoint: Endpoint.Account.logout,
-                    interceptor: NetworkClient.tokenInterceptor
+                    endpoint: Endpoint.Account.logout
                 ).response()
             },
             leave: {
                 try await NetworkClient.main.request(
-                    endpoint: Endpoint.Account.leave,
-                    interceptor: NetworkClient.tokenInterceptor
+                    endpoint: Endpoint.Account.leave
                 ).response()
             },
             refresh: { refreshToken in
-                let response: ApiAuthTokenResponse = try await NetworkClient.account.request(
+                let response: CommonResponse<AuthTokenResponse> = try await NetworkClient.account.request(
                     endpoint: Endpoint.Account.refresh(refreshToken: refreshToken)
                 ).response()
 
@@ -56,5 +66,11 @@ extension DependencyValues {
     var accountAPI: AccountAPI {
         get { self[AccountAPI.self] }
         set { self[AccountAPI.self] = newValue }
+    }
+}
+
+extension AccountAPI {
+    enum AccountAPIError: Error {
+        case invalidAuthRequest
     }
 }

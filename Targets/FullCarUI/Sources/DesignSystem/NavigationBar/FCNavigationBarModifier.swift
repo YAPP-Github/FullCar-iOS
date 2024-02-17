@@ -39,7 +39,7 @@ public struct FCNavigationBarModifier<Leading: View, Center: View, Trailing: Vie
     }
 
     private var leadingView: some View {
-        HStack {
+        HStack(spacing: .zero) {
             leading
 
             Spacer()
@@ -48,7 +48,7 @@ public struct FCNavigationBarModifier<Leading: View, Center: View, Trailing: Vie
     }
 
     private var centerView: some View {
-        HStack {
+        HStack(spacing: .zero) {
             Spacer()
             
             center
@@ -58,7 +58,7 @@ public struct FCNavigationBarModifier<Leading: View, Center: View, Trailing: Vie
     }
 
     private var trailingView: some View {
-        HStack {
+        HStack(spacing: .zero) {
             Spacer()
 
             trailing

@@ -16,6 +16,11 @@ extension Onboarding.Nickname {
 
         var body: some View {
             bodyView
+                .onAppear {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                        viewModel.nicknameTextFieldState = .focus
+                    }
+                }
         }
 
         private var bodyView: some View {
@@ -31,7 +36,7 @@ extension Onboarding.Nickname {
                         }
                 },
                 state: $viewModel.nicknameTextFieldState,
-                headerText: "얍주식회사에 재직중인 회원님!\n뭐라고 불러드릴까요?",
+                headerText: "\(viewModel.company?.name ?? "")에 재직중인 회원님!\n뭐라고 불러드릴까요?",
                 headerFont: .pretendard22(.bold),
                 headerPadding: 20
             )

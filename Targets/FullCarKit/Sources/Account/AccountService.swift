@@ -11,7 +11,7 @@ import Dependencies
 
 public struct AccountService {
     public var hasValidToken: () async throws -> Bool
-    public var login: (_ request: AuthRequest) async throws -> Void
+    public var login: (_ socialType: SocialType, _ request: AuthRequestable) async throws -> Void
     public var logout: () async throws -> Void
     public var leave: () async throws -> Void
 }
@@ -38,8 +38,8 @@ extension AccountService: DependencyKey {
 
                 return true
             },
-            login: { request in
-                let credential = try await api.login(request)
+            login: { socialType, request in
+                let credential = try await api.login(socialType, request)
                 await tokenStorage.save(token: credential)
             },
             logout: {
@@ -62,7 +62,7 @@ extension AccountService: TestDependencyKey {
 
         return AccountService(
             hasValidToken: { return false },
-            login: { accessToken in
+            login: { type, accessToken in
                 let credential = AccountCredential(
                     accessToken: "Test Access Token",
                     refreshToken: "Test Refresh Token"
