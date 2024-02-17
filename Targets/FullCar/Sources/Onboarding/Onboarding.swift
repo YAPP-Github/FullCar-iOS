@@ -106,6 +106,10 @@ extension Onboarding.ViewModel {
 //            try await onboardingAPI.send(email: email)
 
             isEmailAddressValid = true
+
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                self.authCodeTextFieldState = .focus
+            }
         } catch {
             // 이메일 전송 실패
             print(error)
@@ -122,12 +126,13 @@ extension Onboarding.ViewModel {
 //            try await onboardingAPI.verify(code: authenticationCode)
 
             // case1) 이메일 인증 성공
-            self.isEmailValid = true
+            isEmailValid = true
         } catch {
             print(error)
 
             // case2) 이메일 인증 실패
-            self.isEmailValid = false
+            isEmailValid = false
+            authCodeTextFieldState = .error("인증번호가 일치하지 않습니다.")
         }
     }
 }
@@ -236,23 +241,25 @@ extension Onboarding {
             ScrollViewReader { proxy in
                 ScrollView {
                     VStack(alignment: .leading, spacing: 40) {
-                        Onboarding.Email.TextFieldView(viewModel: viewModel)
-//                            .onChange(of: viewModel.emailTextFieldState) { _, newValue in
-//                                if newValue == .focus {
-//                                    withAnimation {
-//                                        proxy.scrollTo(InputSection.number, anchor: .top)
-//                                    }
-//                                }
-//                            }
+                        VStack(spacing: 16) {
+                            Onboarding.Email.TextFieldView(viewModel: viewModel)
+    //                            .onChange(of: viewModel.emailTextFieldState) { _, newValue in
+    //                                if newValue == .focus {
+    //                                    withAnimation {
+    //                                        proxy.scrollTo(InputSection.number, anchor: .top)
+    //                                    }
+    //                                }
+    //                            }
 
-                        if viewModel.isEmailAddressValid && !viewModel.isEmailValid {
-                            Onboarding.Email.NumberView(viewModel: viewModel)
-                                .id(InputSection.number)
-                                .onChange(of: viewModel.isEmailValid) {
-                                    withAnimation {
-                                        proxy.scrollTo(InputSection.nickname, anchor: .top)
+                            if viewModel.isEmailAddressValid && !viewModel.isEmailValid {
+                                Onboarding.Email.NumberView(viewModel: viewModel)
+                                    .id(InputSection.number)
+                                    .onChange(of: viewModel.isEmailValid) {
+                                        withAnimation {
+                                            proxy.scrollTo(InputSection.nickname, anchor: .top)
+                                        }
                                     }
-                                }
+                            }
                         }
 
                         if viewModel.isEmailValid {

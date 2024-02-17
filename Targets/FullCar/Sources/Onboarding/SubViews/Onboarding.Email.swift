@@ -35,6 +35,7 @@ extension Onboarding.Email {
                             viewModel.isEmailRequestSent = false
                             viewModel.isEmailAddressValid = false
                         }
+                        .disabled(viewModel.isEmailValid)
                 },
                 state: $viewModel.emailTextFieldState,
                 headerText: "회사 메일을 입력해 주세요.",
@@ -55,10 +56,10 @@ extension Onboarding.Email {
         private var bodyView: some View {
             FCTextFieldView(
                 textField: {
-                    TextField("인증번호 입력해라~", text: $viewModel.authenticationCode)
+                    TextField("인증번호 6자리를 입력해 주세요.", text: $viewModel.authenticationCode)
                         .textFieldStyle(.fullCar(
-                            type: .none,
-                            state: $viewModel.authCodeTextFieldState)
+                            state: $viewModel.authCodeTextFieldState,
+                            padding: 16)
                         )
 //                        .onChange(of: viewModel.authenticationCode) {
 //                            viewModel.isEmailRequestSent = false
