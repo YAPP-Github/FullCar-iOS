@@ -7,10 +7,12 @@
 //
 
 import SwiftUI
+import Observation
+
 import FullCarUI
 import FullCarKit
+
 import Firebase
-import Observation
 import Dependencies
 import KakaoSDKAuth
 import KakaoSDKCommon
@@ -61,8 +63,13 @@ final class RootViewModel {
     }
     
     func setupKakaoSDK() async {
-        guard let kakaoNativeAppKey = Bundle.main.kakaoNativeAppKey else { return }
-        KakaoSDK.initSDK(appKey: kakaoNativeAppKey)
+        @Dependency(\.kakaoKey) var kakaoKey
+
+        do {
+            KakaoSDK.initSDK(appKey: try kakaoKey.nativeAppKey())
+        } catch {
+            print(error)
+        }
     }
 
     func handleKakaoURL(_ url: URL) {

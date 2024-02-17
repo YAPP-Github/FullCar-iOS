@@ -14,6 +14,7 @@ public struct MemberAPI {
     public var checkNickname: (_ nickname: String) async throws -> Void
     public var register: (_ member: MemberInformation) async throws -> Void
     public var send: (_ email: String) async throws -> Void
+    public var verify: (_ code: String) async throws -> Void
     public var fetch: () async throws -> MemberInformation
 }
 
@@ -50,8 +51,13 @@ extension MemberAPI: DependencyKey {
                     endpoint: Endpoint.Member.send(email: email)
                 ).response()
             },
+            verify: { code in
+                try await NetworkClient.main.request(
+                    endpoint: Endpoint.Member.verify(code: code)
+                ).response()
+            },
             fetch: {
-                let response: ApiMemberResponse = try await NetworkClient.main.request(
+                let response: CommonResponse<MemberResponse> = try await NetworkClient.main.request(
                     endpoint: Endpoint.Member.fetch
                 ).response()
 

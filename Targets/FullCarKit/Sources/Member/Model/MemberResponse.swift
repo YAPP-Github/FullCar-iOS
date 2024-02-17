@@ -8,15 +8,9 @@
 
 import Foundation
 
-struct ApiMemberResponse: Decodable {
-    let status: Int
-    let message: String
-    let data: MemberResponse
-}
-
 struct MemberResponse: Decodable {
-    let nickname: String?
     let companyName: String?
+    let nickname: String?
     let email: String?
     let gender: String?
     let carId: Int?

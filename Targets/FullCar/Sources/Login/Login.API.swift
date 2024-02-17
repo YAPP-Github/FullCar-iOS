@@ -7,11 +7,14 @@
 //
 
 import Foundation
+
 import KakaoSDKCommon
 import KakaoSDKAuth
 import KakaoSDKUser
 import AuthenticationServices
+
 import Dependencies
+
 import FullCarKit
 
 extension Login {
@@ -24,32 +27,54 @@ extension Login {
             }
         }
 
-        private var continuation: CheckedContinuation<String, Error>?
+        private var continuation: CheckedContinuation<LoginResponse, Error>?
 
-        @MainActor
         func performLogin(_ type: SocialType) async throws {
-            if let currentContinuation = continuation {
-                currentContinuation.resume(throwing: LoginError.continuationAlreadySet)
-                continuation = nil
+            if let continuation {
+                continuation.resume(throwing: LoginError.continuationAlreadySet)
+                self.continuation = nil
             }
 
-            let accessToken: String = try await withCheckedThrowingContinuation { continuation in
+            let loginResponse: LoginResponse = try await authenticate(type)
+            let request: AuthRequestable = try createAuthRequest(type, loginResponse: loginResponse)
+
+            try await accountService.login(type, request)
+        }
+
+        private func authenticate(_ type: SocialType) async throws -> LoginResponse {
+            let loginResponse: (token: String, authCode: String?) = try await withCheckedThrowingContinuation { continuation in
                 switch type {
-                case .kakao: authenticateWithKakao()
+                case .kakao:
+                    Task {
+                        await authenticateWithKakao()
+                    }
                 case .apple: configureAppleLogin()
                 }
                 self.continuation = continuation
             }
-            // 임시 Device token 넣어주기. 추후 수정
-            let request: AuthRequest = .init(
-                socialType: type,
-                token: accessToken,
-                deviceToken: AppDelegate.shared?.deviceToken ?? "456"
-            )
 
-            try await accountService.login(request)
+            return loginResponse
         }
 
+        private func createAuthRequest(_ type: SocialType, loginResponse: LoginResponse) throws -> AuthRequestable {
+            @Dependency(\.deviceToken) var deviceToken
+
+            switch type {
+            case .kakao:
+                return KakaoAuthRequest(
+                    token: loginResponse.token,
+                    deviceToken: try deviceToken.fetch()
+                )
+            case .apple:
+                return AppleAuthRequest(
+                    authCode: loginResponse.authCode ?? "",
+                    idToken: loginResponse.token,
+                    deviceToken: try deviceToken.fetch()
+                )
+            }
+        }
+
+        @MainActor
         private func authenticateWithKakao() {
             let completion: ((OAuthToken?, Error?) -> Void) = { token, error in
                 if let error = error {
@@ -61,7 +86,7 @@ extension Login {
                         self.continuation = nil
                         return
                     }
-                    self.continuation?.resume(returning: accessToken)
+                    self.continuation?.resume(returning: (accessToken, nil))
                     self.continuation = nil
                 }
             }
@@ -99,13 +124,17 @@ extension Login.API: ASAuthorizationControllerDelegate {
     func authorizationController(controller: ASAuthorizationController, didCompleteWithAuthorization authorization: ASAuthorization) {
         guard let credential = authorization.credential as? ASAuthorizationAppleIDCredential,
               let identityToken = credential.identityToken,
-              let token = String(data: identityToken, encoding: .utf8) else {
+              let authorizationCode = credential.authorizationCode,
+              let idToken = String(data: identityToken, encoding: .utf8),
+              let authCode = String(data: authorizationCode, encoding: .utf8) else {
             continuation?.resume(throwing: LoginError.appleTokenNil)
             continuation = nil
             return
         }
 
-        continuation?.resume(returning: token)
+        print("auth Token 입니다~ \(authCode)")
+
+        continuation?.resume(returning: (idToken, authCode))
         continuation = nil
     }
 
@@ -132,4 +161,8 @@ extension DependencyValues {
         get { self[Login.API.self] }
         set { self[Login.API.self] = newValue }
     }
+}
+
+fileprivate extension Login.API {
+    typealias LoginResponse = (token: String, authCode: String?)
 }

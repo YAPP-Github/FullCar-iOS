@@ -1,9 +1,8 @@
 import SwiftUI
+import Dependencies
 
 final class AppDelegate: NSObject, UIApplicationDelegate {
     static var shared: AppDelegate?
-
-    private(set) var deviceToken: String?
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
 
@@ -14,10 +13,10 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
     }
 
     func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
+        @Dependency(\.deviceToken) var deviceTokenManager
 
-        // 팀계정 설정되면 device token 받아오기
-        print("device token 입니다 : \(deviceToken)")
-        self.deviceToken = String(data: deviceToken, encoding: .utf8)
+        deviceTokenManager.save(deviceToken.base64EncodedString())
+        deviceTokenManager.save(deviceToken)
     }
 }
 

@@ -51,33 +51,7 @@ struct TokenInterceptor: NetworkInterceptor {
         with error: Error, 
         options: NetworkRequestOptions
     ) async -> (URLRequest, RetryResult) {
-        // access token 만료인 401 에러일 때만 실행
-        guard let httpResponse = response as? HTTPURLResponse,
-              httpResponse.isUnAuthorizedStatus() else {
-            return (urlRequest, .doNotRetry(with: error))
-        }
-
-        do {
-            // access token 재발급
-            try await refresh()
-            return (urlRequest, .retry)
-        } catch {
-            return (urlRequest, .doNotRetry(with: error))
-        }
-    }
-
-    private func refresh() async throws {
-        @Dependency(\.tokenStorage) var tokenStorage
-
-        let credential = try await tokenStorage.loadToken()
-        let authResponse: ApiAuthTokenResponse = try await NetworkClient.account.request(
-            endpoint: Endpoint.Account.refresh(refreshToken: credential.refreshToken)
-        ).response()
-        let newCredential: AccountCredential = .init(
-            accessToken: authResponse.data.accessToken,
-            refreshToken: authResponse.data.refreshToken
-        )
-        await tokenStorage.save(token: newCredential)
+        return (urlRequest, .doNotRetry(with: error))
     }
 }
 
@@ -86,10 +60,30 @@ extension TokenInterceptor {
         @Dependency(\.tokenStorage) var tokenStorage
 
         var urlRequest = urlRequest
-        let credential = try await tokenStorage.loadToken()
+        var credential = try await tokenStorage.loadToken()
+
+        if credential.accessTokenExpiration < Date() {
+            let newCredential = try await refresh(credential: credential)
+            await tokenStorage.save(token: newCredential)
+            
+            credential = newCredential
+        }
 
         urlRequest.setHeaders([.authorization("Bearer \(credential.accessToken)")])
+
         return urlRequest
+    }
+
+    private func refresh(credential: AccountCredential) async throws -> AccountCredential {
+        let authResponse: CommonResponse<AuthTokenResponse> = try await NetworkClient.account.request(
+            endpoint: Endpoint.Account.refresh(refreshToken: credential.refreshToken)
+        ).response()
+        let newCredential: AccountCredential = .init(
+            accessToken: authResponse.data.accessToken,
+            refreshToken: authResponse.data.refreshToken
+        )
+
+        return newCredential
     }
 }
 
