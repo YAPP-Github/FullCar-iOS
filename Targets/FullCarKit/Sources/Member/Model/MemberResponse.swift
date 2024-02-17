@@ -9,8 +9,8 @@
 import Foundation
 
 struct MemberResponse: Decodable {
-    let nickname: String?
     let companyName: String?
+    let nickname: String?
     let email: String?
     let gender: String?
     let carId: Int?

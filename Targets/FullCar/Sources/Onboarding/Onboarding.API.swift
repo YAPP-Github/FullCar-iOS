@@ -43,28 +43,28 @@ extension Onboarding {
 
 extension Onboarding.API: DependencyKey {
     public static var liveValue: Onboarding.API {
-        @Dependency(\.memberAPI) var api
+        @Dependency(\.memberAPI) var memberAPI
         @Dependency(\.kakaoKey) var kakaoKey
 
         return Onboarding.API(
             search: { location in
-                let coordinate = try await api.searchLocation(location, try kakaoKey.restApiKey())
+                let coordinate = try await memberAPI.searchLocation(location, try kakaoKey.restApiKey())
                 return coordinate
             },
             check: { nickname in
-                try await api.checkNickname(nickname)
+                try await memberAPI.checkNickname(nickname)
             },
             register: { member in
-                try await api.register(member)
+                try await memberAPI.register(member)
             },
             send: { email in
-                try await api.send(email)
+                try await memberAPI.send(email)
             },
             verify: { code in
-                try await api.verify(code)
+                try await memberAPI.verify(code)
             },
             fetch: {
-                let member = try await api.fetch()
+                let member = try await memberAPI.fetch()
 
                 // 유저 정보 저장
                 return member
