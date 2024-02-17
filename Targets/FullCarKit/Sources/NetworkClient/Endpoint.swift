@@ -33,6 +33,14 @@ public extension Endpoint {
         case leave
         case refresh(refreshToken: String)
     }
+    
+    enum Form {
+        case fetchSentForms
+        case fetchReceivedForms
+        case getFormDetail(formId: Double)
+        case changeFormStatus(formId: Double, formState: String, contact: String, toPassenger: String?)
+        case applyCarpull(formId: Double, pickupLocation: String, periodType: String, money: Int, content: String)
+    }
 
     enum Member {
         case search(location: String, key: String)
@@ -286,6 +294,70 @@ extension Endpoint.Member: URLRequestConfigurable {
         switch self {
         case .search, .fetch: return URLEncoding()
         case .check, .register, .send, .verify: return JSONEncoding()
+        }
+    }
+}
+    
+extension Endpoint.Form: URLRequestConfigurable {
+    public var url: URLConvertible {
+        switch self {
+        default: return "http://43.200.176.240:8080"
+        }
+    }
+    
+    public var path: String? {
+        switch self {
+        case .fetchSentForms: return "api/v1/sent-forms"
+        case .fetchReceivedForms: return "api/v1/received-forms"
+        case .getFormDetail(let id): return "api/v1/forms/\(id)"
+        case .changeFormStatus(let id,_,_,_): return "api/v1/forms/\(id)"
+        case .applyCarpull(let id,_,_,_,_): return "api/v1/carpools/\(id)/forms"
+        }
+    }
+    
+    public var method: HTTPMethod {
+        switch self {
+        case .fetchSentForms, .fetchReceivedForms, .getFormDetail: return .get
+        case .changeFormStatus: return .patch
+        case .applyCarpull: return .post
+        }
+    }
+    
+    public var parameters: Parameters? {
+        switch self {
+        case .fetchReceivedForms, .fetchSentForms, .getFormDetail: return nil
+        case .changeFormStatus(_, let formState, let contact, let toPassenger):
+            
+            var parameter: Parameters = [
+                "formState": formState,
+                "contact": contact
+            ]
+            
+            if let toPassenger {
+                parameter["toPassenger"] = toPassenger
+            }
+            
+            return parameter
+        case .applyCarpull(_, let pickupLocation, let periodType, let money, let content):
+            return [
+                  "pickupLocation": pickupLocation,
+                  "periodType": periodType,
+                  "money": money,
+                  "content": content
+            ]
+        }
+    }
+    
+    public var headers: [Header]? {
+        switch self {
+        case .fetchReceivedForms, .fetchSentForms, .getFormDetail, .changeFormStatus, .applyCarpull: return nil
+        }
+    }
+    
+    public var encoder: ParameterEncodable {
+        switch self {
+        case .fetchReceivedForms, .fetchSentForms, .getFormDetail: return URLEncoding()
+        case .changeFormStatus, .applyCarpull: return JSONEncoding()
         }
     }
 }

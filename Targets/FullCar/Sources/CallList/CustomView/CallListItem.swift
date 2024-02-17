@@ -13,7 +13,10 @@ import Observation
 
 struct CallListItem: View {
     
-    private(set) var status: FullCar.CallStatus = .failure
+    private(set) var isOpen: CarPull.Model.CarPoolStateType = .OPEN
+    private(set) var status: CarPull.Model.FormStateType = .REJECT
+    private(set) var item: CarPull.Model.Information
+    
     var isLast: Bool = false
     
     var body: some View {
@@ -43,12 +46,12 @@ extension CallListItem {
     var requestStatusView: some View {
         ZStack {
             HStack(spacing: 0) {
-                Text("삼성전자")
+                Text(item.companyName)
                     .font(.system(size: 14))
                     .foregroundStyle(.blue)
                     .bold()
                 
-                Text("알뜰한 물개")
+                Text(item.nickname ?? "")
                     .font(.system(size: 14))
                     .foregroundStyle(.gray.opacity(0.5))
                     .bold()
@@ -70,7 +73,7 @@ extension CallListItem {
         ZStack {
             RoundedRectangle(cornerRadius: 3)
                 .foregroundStyle(getColor(back: true))
-            Text(status.rawValue)
+            Text(status.description)
                 .foregroundStyle(getColor())
                 .font(.system(size: 12))
                 .bold()
@@ -83,7 +86,7 @@ extension CallListItem {
     var mainTitleView: some View {
         HStack {
             
-            Text("봉천역 2번출구")
+            Text(item.pickupLocation)
                 .bold()
                 .font(.system(size: 17))
             
@@ -100,7 +103,7 @@ extension CallListItem {
                     .foregroundStyle(.gray.opacity(0.5))
                     .bold()
                 
-                Text("48,000원 • 1주간")
+                Text("\(item.money)원 • \(item.periodType.description)")
                     .font(.system(size: 14))
                     .foregroundStyle(.black)
                     .bold()
@@ -111,7 +114,7 @@ extension CallListItem {
             HStack {
                 Spacer()
                 
-                Text("12월 28일")
+                Text("\(item.createdAt.toDate())")
                     .font(.system(size: 14))
                     .foregroundStyle(.gray.opacity(0.5))
                     .bold()
@@ -124,16 +127,12 @@ extension CallListItem {
 extension CallListItem {
     func getColor(back: Bool = false) -> Color {
         switch status {
-        case .waiting:
-            return back ? .blue.opacity(0.2) : .blue
-        case .success:
-            return back ? .green.opacity(0.2) : .green
-        case .failure:
-            return back ? .red.opacity(0.2) : .red
+        case .REQUEST:
+            return back ? .fullCar_secondary : .fullCar_primary
+        case .ACCEPT:
+            return back ? .green50 : .green100
+        case .REJECT:
+            return back ? .red50 : .red100
         }
     }
-}
-
-#Preview {
-    CallListItem()
 }

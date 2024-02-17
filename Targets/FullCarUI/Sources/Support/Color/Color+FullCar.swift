@@ -25,6 +25,7 @@ public extension Color {
 public extension Color {
     static let fullCar_primary: Color = .init(uiColor: .init(hex: "6C7AF1"))
     static let fullCar_secondary: Color = .init(uiColor: .init(hex: "E1E4FE"))
+    static let fullCar_primary_background50: Color = .init(uiColor: .init(hex: "F4F5FF"))
 }
 
 // MARK: System Color
