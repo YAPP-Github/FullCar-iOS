@@ -37,9 +37,9 @@ public extension Endpoint {
     enum Form {
         case fetchSentForms
         case fetchReceivedForms
-        case getFormDetail(formId: Int)
-        case changeFormStatus(formId: Int, formState: String, contact: String, toPassenger: String?)
-        case applyCarpull(formId: Int, pickupLocation: String, periodType: String, money: Int, content: String)
+        case getFormDetail(formId: Double)
+        case changeFormStatus(formId: Double, formState: String, contact: String, toPassenger: String?)
+        case applyCarpull(formId: Double, pickupLocation: String, periodType: String, money: Int, content: String)
     }
 
     enum Member {

@@ -114,7 +114,7 @@ extension CallListItem {
             HStack {
                 Spacer()
                 
-                Text("\(item.createdAt.toLocalTime())")
+                Text("\(item.createdAt.toDate())")
                     .font(.system(size: 14))
                     .foregroundStyle(.gray.opacity(0.5))
                     .bold()

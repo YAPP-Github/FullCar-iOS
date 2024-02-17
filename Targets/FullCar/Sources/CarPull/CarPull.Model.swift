@@ -21,11 +21,11 @@ extension CarPull {
         }
         
         struct Information: Decodable, Identifiable, Hashable {
-            let id: Int
+            let id: Double
             let pickupLocation: String
             let periodType: PeriodType
             let money: Int
-            let content: String
+            let content: String?
             let moodType: Driver.Mood?
             let formState: FormStateType?
             let carpoolState: CarPoolStateType?
@@ -33,13 +33,59 @@ extension CarPull {
             let companyName: String
             let gender: Driver.Gender?
             let resultMessage: ResultMessage?
-            let createdAt: Date
+            let createdAt: String
+            
+            enum CodingKeys: String, CodingKey {
+                case id
+                case pickupLocation
+                case periodType
+                case money
+                case content
+                case moodType
+                case formState
+                case carpoolState
+                case nickname
+                case companyName
+                case gender
+                case resultMessage
+                case createdAt
+            }
+            
+            init(id: Double, pickupLocation: String, periodType: PeriodType, money: Int, content: String, moodType: Driver.Mood?, formState: FormStateType?, carpoolState: CarPoolStateType?, nickname: String?, companyName: String, gender: Driver.Gender?, resultMessage: ResultMessage?, createdAt: Date) {
+                self.id = id
+                self.pickupLocation = pickupLocation
+                self.periodType = periodType
+                self.money = money
+                self.content = content
+                self.moodType = moodType
+                self.formState = formState
+                self.carpoolState = carpoolState
+                self.nickname = nickname
+                self.companyName = companyName
+                self.gender = gender
+                self.resultMessage = resultMessage
+                self.createdAt = createdAt.toString()
+            }
+            
+            
+            
+            init(from decoder: Decoder) throws {
+                let container = try decoder.container(keyedBy: CodingKeys.self)
+                self.id = try container.decode(Double.self, forKey: .id)
+                self.pickupLocation = try container.decode(String.self, forKey: .pickupLocation)
+                self.periodType = try container.decode(PeriodType.self, forKey: .periodType)
+                self.money = try container.decode(Int.self, forKey: .money)
+                self.content = try? container.decode(String?.self, forKey: .content) ?? nil
+                self.moodType = try? container.decode(Driver.Mood?.self, forKey: .moodType) ?? .none
+                self.formState = try? container.decode(FormStateType?.self, forKey: .formState) ?? .none
+                self.carpoolState = try? container.decode(CarPoolStateType?.self, forKey: .carpoolState) ?? .none
+                self.nickname = try? container.decode(String?.self, forKey: .nickname) ?? nil
+                self.companyName = try container.decode(String.self, forKey: .companyName)
+                self.gender = try? container.decode(Driver.Gender?.self, forKey: .gender) ?? .none
+                self.resultMessage = try? container.decode(ResultMessage?.self, forKey: .resultMessage) ?? .none
+                self.createdAt = try container.decode(String.self, forKey: .createdAt)
+            }
         }
-//        
-//        "resultMessage": {
-//              "contact": "string",
-//              "toPassenger": "string"
-//            }
         
         struct ResultMessage: Decodable, Hashable {
             let contact: String
@@ -96,7 +142,7 @@ extension CarPull {
 
 #if DEBUG
 extension CarPull.Model.Information {
-    static func mock(with id: Int = Int.random(in: 0...100000)) -> Self {
+    static func mock(with id: Double = Double.random(in: 0...100000)) -> Self {
         return .init(
             id: id,
             pickupLocation: "서울대입구",

@@ -18,23 +18,23 @@ extension CallListView {
     struct API {
         var fetchSentList: @Sendable () async throws -> CommonResponse<[CarPull.Model.Information]>
         var fetchReceivedList: @Sendable () async throws -> CommonResponse<[CarPull.Model.Information]>
-        private var fetch: @Sendable (Int) async throws -> CommonResponse<CarPull.Model.Information>
-        private var changeForm: @Sendable (Int, String, String, String?) async throws -> CommonResponse<CarPull.Model.Information>
-        private var apply: @Sendable (Int, String, String, Int, String) async throws -> CommonResponse<CarPull.Model.Information>
+        private var fetch: @Sendable (Double) async throws -> CommonResponse<CarPull.Model.Information>
+        private var changeForm: @Sendable (Double, String, String, String?) async throws -> CommonResponse<CarPull.Model.Information>
+        private var apply: @Sendable (Double, String, String, Int, String) async throws -> CommonResponse<CarPull.Model.Information>
         
         
         @discardableResult
-        func getFormDetail(formId: Int) async throws -> CommonResponse<CarPull.Model.Information> {
+        func getFormDetail(formId: Double) async throws -> CommonResponse<CarPull.Model.Information> {
             return try await self.fetch(formId)
         }
         
         @discardableResult
-        func changeFormState(formId: Int, state: CarPull.Model.FormStateType, contact: String, toPassenger: String?) async throws -> CommonResponse<CarPull.Model.Information> {
+        func changeFormState(formId: Double, state: CarPull.Model.FormStateType, contact: String, toPassenger: String?) async throws -> CommonResponse<CarPull.Model.Information> {
             return try await self.changeForm(formId, state.rawValue, contact, toPassenger)
         }
         
         @discardableResult
-        func applyCarpull(formId: Int, pickupLocation: String, peroidType: String, money: Int, content: String) async throws -> CommonResponse<CarPull.Model.Information> {
+        func applyCarpull(formId: Double, pickupLocation: String, peroidType: String, money: Int, content: String) async throws -> CommonResponse<CarPull.Model.Information> {
             return try await self.apply(formId, pickupLocation, peroidType, money, content)
         }
     }
