@@ -16,7 +16,6 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
         @Dependency(\.deviceToken) var deviceTokenManager
 
         deviceTokenManager.save(deviceToken.base64EncodedString())
-        deviceTokenManager.save(deviceToken)
     }
 }
 
