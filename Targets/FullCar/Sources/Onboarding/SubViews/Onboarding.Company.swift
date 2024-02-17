@@ -102,13 +102,7 @@ extension Onboarding.Company {
         var body: some View {
             bodyView
                 .navigationBarStyle(
-                    leadingView: {
-//                        NavigationButton(icon: .back, action: {
-//                            withAnimation {
-//                                viewModel.isSearchViewAppear = false
-//                            }
-//                        })
-                    },
+                    leadingView: { },
                     centerView: {
                         Text("회사 검색")
                             .font(.pretendard18(.bold))
@@ -180,15 +174,20 @@ extension Onboarding.Company {
                         .padding(.top, 104)
                 } else {
                     LazyVGrid(columns: [GridItem()], spacing: .zero, content: {
-                        ForEach($locations, id: \.self) { item in
-                            LocationListItem(location: item, company: keyword, onTap: {
-                                viewModel.company = item.wrappedValue
-                                viewModel.isCompanyValid = true
+                        ForEach($locations.indices, id: \.self) { index in
+                            LocationListItem(
+                                location: $locations[index],
+                                isFirst: index == 0,
+                                company: keyword,
+                                onTap: {
+                                    viewModel.company = locations[index]
+                                    viewModel.isCompanyValid = true
 
-                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                                    viewModel.isSearchViewAppear = false
+                                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                                        viewModel.isSearchViewAppear = false
+                                    }
                                 }
-                            })
+                            )
                         }
                     })
                 }

@@ -12,6 +12,7 @@ import FullCarKit
 struct LocationListItem: View {
     @Binding var location: LocalCoordinate
     @State private var isSelected: Bool = false
+    @State var isFirst: Bool
 
     var company: String
     var onTap: (() -> Void)?
@@ -20,7 +21,8 @@ struct LocationListItem: View {
         bodyView
             .frame(maxWidth: .infinity)
             .padding(.horizontal, 20)
-            .padding(.vertical, 16)
+            .padding(.top, isFirst ? 20 : 16)
+            .padding(.bottom, 16)
             .border(width: 1, edges: [.bottom], color: .gray30)
             .background(isSelected ? Color.gray10 : Color.white)
             .onTapGesture {
@@ -53,7 +55,7 @@ struct LocationListItem: View {
                 .font(.pretendard16_19(.medium))
                 .foregroundStyle(Color.black80)
 
-            Text(location.address ?? "")
+            Text(location.address)
                 .font(.pretendard14(.semibold))
                 .foregroundStyle(Color.gray45)
         }
@@ -85,7 +87,8 @@ struct LocationListItem: View {
             address: "경기 성남시 분당구 정자일로 95",
             latitude: 127.10520633434606,
             longitude: 37.3588600621634)
-        ),
+        ), 
+        isFirst: true,
         company: "네이버"
     )
 }
