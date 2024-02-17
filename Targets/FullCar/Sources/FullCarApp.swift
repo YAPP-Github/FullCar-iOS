@@ -25,9 +25,7 @@ struct FullCarApp: App {
 
     var body: some Scene {
         WindowGroup {
-            FullCarTabView(viewModel: .init())
-            //HomeView(viewModel: .init())
-            //RootView(viewModel: .init())
+            RootView(viewModel: .init())
         }
     }
 }
