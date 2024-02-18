@@ -36,6 +36,7 @@ extension Onboarding.Email {
                             viewModel.isEmailAddressValid = false
                         }
                         .disabled(viewModel.isEmailValid)
+                        .keyboardType(.emailAddress)
                 },
                 state: $viewModel.emailTextFieldState,
                 headerText: "회사 메일을 입력해 주세요.",
@@ -110,7 +111,6 @@ extension Onboarding.Email {
             Button(action: {
                 Task {
                     await viewModel.verifyAuthenticationCode()
-                    // MARK: 닉네임 textField로 포커스 변경하고 싶은데,,
                 }
             }, label: {
                 Text("다음")

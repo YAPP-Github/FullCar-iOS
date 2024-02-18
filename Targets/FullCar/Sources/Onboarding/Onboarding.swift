@@ -14,7 +14,9 @@ import Dependencies
 struct Onboarding {
     enum Company { }
     enum Email { }
-    enum Nickname { }
+    enum Nickname { 
+        static let id = "nickName"
+    }
     enum Gender: String, CaseIterable {
         case female = "FEMALE"
         case male = "MALE"
@@ -102,8 +104,7 @@ extension Onboarding.ViewModel {
             isEmailRequestSent = true
             emailTextFieldState = .default
 
-            // MARK: 현재 이메일 인증 api 관련 수정 필요
-//            try await onboardingAPI.send(email: email)
+            try await onboardingAPI.send(email: email)
 
             isEmailAddressValid = true
 
@@ -111,7 +112,6 @@ extension Onboarding.ViewModel {
                 self.authCodeTextFieldState = .focus
             }
         } catch {
-            // 이메일 전송 실패
             print(error)
             isEmailRequestSent = false
             emailTextFieldState = .error("회사 이메일이 맞는지 확인해 주세요.")
@@ -122,15 +122,12 @@ extension Onboarding.ViewModel {
 
     func verifyAuthenticationCode() async {
         do {
-            // MARK: 현재 이메일 인증 api 관련 수정 필요
-//            try await onboardingAPI.verify(code: authenticationCode)
+            try await onboardingAPI.verify(code: authenticationCode)
 
-            // case1) 이메일 인증 성공
             isEmailValid = true
         } catch {
             print(error)
 
-            // case2) 이메일 인증 실패
             isEmailValid = false
             authCodeTextFieldState = .error("인증번호가 일치하지 않습니다.")
         }
@@ -196,11 +193,6 @@ extension Onboarding.ViewModel {
 }
 
 extension Onboarding {
-    enum RegistrationStep: Int {
-        case enterNickname
-        case selectGender
-    }
-
     @MainActor
     struct BodyView: View {
         @Environment(\.dismiss) private var dismiss
@@ -250,12 +242,12 @@ extension Onboarding {
 
                         if viewModel.isEmailValid {
                             Onboarding.Nickname.TextFieldView(viewModel: viewModel)
-                                .id(RegistrationStep.enterNickname)
+                                .id(Onboarding.Nickname.id)
                                 .onChange(of: viewModel.nicknameTextFieldState) { _, newValue in
                                     if newValue == .focus {
                                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.22) {
                                             withAnimation {
-                                                proxy.scrollTo(RegistrationStep.enterNickname, anchor: .top)
+                                                proxy.scrollTo(Onboarding.Nickname.id, anchor: .top)
                                             }
                                         }
                                     }
@@ -264,16 +256,6 @@ extension Onboarding {
 
                         if viewModel.isNicknameValid {
                             Onboarding.Gender.PickerView(viewModel: viewModel)
-                                .id(RegistrationStep.selectGender)
-                                .onChange(of: viewModel.isNicknameValid) { _, newValue in
-                                    if newValue {
-                                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.22) {
-                                            withAnimation {
-                                                proxy.scrollTo(RegistrationStep.selectGender, anchor: .top)
-                                            }
-                                        }
-                                    }
-                                }
                         }
 
                         Spacer()
