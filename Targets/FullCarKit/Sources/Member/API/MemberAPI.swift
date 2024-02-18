@@ -12,7 +12,7 @@ import Dependencies
 public struct MemberAPI {
     public var searchLocation: (_ location: String, _ key: String) async throws -> [LocalCoordinate]
     public var checkNickname: (_ nickname: String) async throws -> Void
-    public var register: (_ member: MemberInformation) async throws -> Void
+    public var register: (_ member: MemberInformation) async throws -> MemberInformation
     public var send: (_ email: String) async throws -> Void
     public var verify: (_ code: String) async throws -> Void
     public var fetch: () async throws -> MemberInformation
@@ -42,9 +42,11 @@ extension MemberAPI: DependencyKey {
                 ).response()
             },
             register: { member in
-                try await NetworkClient.main.request(
+                let response: CommonResponse<MemberResponse> = try await NetworkClient.main.request(
                     endpoint: Endpoint.Member.register(member: member)
                 ).response()
+
+                return response.data.toDomain()
             },
             send: { email in
                 try await NetworkClient.main.request(

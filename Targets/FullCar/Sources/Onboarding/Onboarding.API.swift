@@ -14,7 +14,7 @@ extension Onboarding {
     struct API {
         private var search: (_ location: String) async throws -> [LocalCoordinate]
         private var check: (_ nickname: String) async throws -> Void
-        private var register: (_ member: MemberInformation) async throws -> Void
+        private var register: (_ member: MemberInformation) async throws -> MemberInformation
         private var send: (_ email: String) async throws -> Void
         private var verify: (_ code: String) async throws -> Void
         private var fetch: () async throws -> MemberInformation
@@ -25,7 +25,7 @@ extension Onboarding {
         func check(nickname: String) async throws -> Void {
             return try await self.check(nickname)
         }
-        func register(member: MemberInformation) async throws -> Void {
+        func register(member: MemberInformation) async throws -> MemberInformation {
             return try await self.register(member)
         }
         func send(email: String) async throws -> Void {
@@ -53,8 +53,9 @@ extension Onboarding.API: DependencyKey {
             check: { nickname in
                 try await memberAPI.checkNickname(nickname)
             },
-            register: { member in
-                try await memberAPI.register(member)
+            register: { newMember in
+                let member = try await memberAPI.register(newMember)
+                return member
             },
             send: { email in
                 try await memberAPI.send(email)

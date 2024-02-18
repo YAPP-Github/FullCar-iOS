@@ -165,13 +165,15 @@ extension Onboarding.ViewModel {
     func register() async {
         do {
             guard let company = company else { return }
-            let member: MemberInformation = .init(
-                company: company, 
+            let newMember: MemberInformation = .init(
+                company: company,
                 email: email,
                 nickName: nickname,
                 gender: gender.rawValue
             )
-            try await onboardingAPI.register(member: member)
+            let member = try await onboardingAPI.register(member: newMember)
+
+            completeOnboarding(member)
         } catch {
             print(error)
         }
@@ -189,6 +191,10 @@ extension Onboarding.ViewModel {
 
     func onBackButtonTapped() {
         fullCar.appState = .login
+    }
+
+    func completeOnboarding(_ member: MemberInformation) {
+        fullCar.appState = .tab(member)
     }
 }
 
