@@ -29,13 +29,13 @@ extension MyPage {
         @ObservationIgnored
         @Dependency(\.myPageAPI) private var myPageAPI
 
-        var appState: FullCar.State = FullCar.shared.appState
+        let fullCar = FullCar.shared
 
         func logout() async {
             do {
                 try await myPageAPI.logout()
 
-                appState = .login
+                fullCar.appState = .login
             } catch {
                 print(error)
 
@@ -47,7 +47,7 @@ extension MyPage {
             do {
                 try await myPageAPI.leave()
 
-                appState = .login
+                fullCar.appState = .login
                 didSuccess.wrappedValue = true
             } catch {
                 print(error)
