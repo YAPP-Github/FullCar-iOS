@@ -34,7 +34,7 @@ extension Onboarding {
         func verify(code: String) async throws -> Void {
             return try await self.verify(code)
         }
-        func isOnboardingCompleted() async throws -> MemberInformation {
+        func fetch() async throws -> MemberInformation {
             return try await self.fetch()
         }
     }
