@@ -23,6 +23,7 @@ extension CarPull {
             return try await self.fetch(page, size)
         }
         
+        @discardableResult
         func register(
             pickupLocation: String,
             periodType: CarPull.Model.PeriodType,

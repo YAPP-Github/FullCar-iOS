@@ -14,7 +14,19 @@ import Observation
 @MainActor
 @Observable
 final class TabViewModel {
-    var tabSelection: FullCar.Tab = .home
+    var tabSelection: FullCar.Tab
+    let homeViewModel: HomeViewModel = .init()
+    let callListViewModel: CallListViewModel = .init()
+    let carPullRegisterViewModel: CarPullRegisterViewModel = .init()
+    let settingsViewModel: SettingsViewModel = .init()
+    
+    init(tabSelection: FullCar.Tab = .home) {
+        self.tabSelection = tabSelection
+        
+        carPullRegisterViewModel.changeTabToHome = { [weak self] in
+            self?.tabSelection = .home
+        }
+    }
 } 
 
 struct FullCarTabView: View {
@@ -22,7 +34,7 @@ struct FullCarTabView: View {
     
     var body: some View {
         TabView(selection: $viewModel.tabSelection) {
-            HomeView(viewModel: .init())
+            HomeView(viewModel: viewModel.homeViewModel)
                 .tabItem {
                     if viewModel.tabSelection == .home {
                         Image("ic_home_selected", bundle: .main)
@@ -34,14 +46,8 @@ struct FullCarTabView: View {
                         .foregroundStyle(Color.primary)
                 }
                 .tag(FullCar.Tab.home)
-
-            CallListView(viewModel: .init())
-                .tabItem {
-                    Text("요청")
-                }
-                .tag(FullCar.Tab.request)
-
-            CarPullRegisterView(viewModel: .init())
+            
+            CarPullRegisterView(viewModel: viewModel.carPullRegisterViewModel)
                 .tabItem { 
                     if viewModel.tabSelection == .register {
                         Image("ic_carpull_register_selected", bundle: .main)
@@ -53,8 +59,8 @@ struct FullCarTabView: View {
                         .foregroundStyle(Color.primary)
                 }
                 .tag(FullCar.Tab.register)
-            
-            CarPullRegisterView(viewModel: .init())
+
+            CallListView(viewModel: viewModel.callListViewModel)
                 .tabItem { 
                     if viewModel.tabSelection == .requestList {
                         Image("ic_request_list_selected", bundle: .main)
@@ -67,7 +73,7 @@ struct FullCarTabView: View {
                 }
                 .tag(FullCar.Tab.requestList)
             
-            SettingsView(viewModel: .init())
+            SettingsView(viewModel: viewModel.settingsViewModel)
                 .tabItem { 
                     if viewModel.tabSelection == .myPage {
                         Image("ic_mypage_selected", bundle: .main)
@@ -84,5 +90,5 @@ struct FullCarTabView: View {
 }
 
 #Preview {
-    FullCarTabView(viewModel: .init())
+    FullCarTabView(viewModel: .init(tabSelection: .home))
 }

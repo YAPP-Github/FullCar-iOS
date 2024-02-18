@@ -107,7 +107,7 @@ struct RootView: View {
         case .onboarding:
             Onboarding.Company.BodyView(viewModel: .init())
         case .tab:
-            FullCarTabView(viewModel: .init())
+            FullCarTabView(viewModel: .init(tabSelection: .home))
         }
     }
 }

@@ -59,7 +59,6 @@ public extension FullCar {
 public extension FullCar {
     enum Tab: String, Hashable {
         case home
-        case request
         case register
         case requestList
         case myPage
