@@ -46,7 +46,7 @@ extension Onboarding.Email {
     }
 
     @MainActor
-    struct NumberView: View {
+    struct AuthCodeView: View {
         @Bindable var viewModel: Onboarding.ViewModel
 
         var body: some View {
@@ -61,10 +61,7 @@ extension Onboarding.Email {
                             state: $viewModel.authCodeTextFieldState,
                             padding: 16)
                         )
-//                        .onChange(of: viewModel.authenticationCode) {
-//                            viewModel.isEmailRequestSent = false
-//                            viewModel.isEmailAddressValid = false
-//                        }
+                        .keyboardType(.numberPad)
                 },
                 state: $viewModel.authCodeTextFieldState
             )
@@ -129,7 +126,7 @@ extension Onboarding.Email {
     VStack(spacing: 30) {
         Onboarding.Email.TextFieldView(viewModel: .init())
 
-        Onboarding.Email.NumberView(viewModel: .init())
+        Onboarding.Email.AuthCodeView(viewModel: .init())
 
         Onboarding.Email.SendButtonView(viewModel: .init())
     }

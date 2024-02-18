@@ -196,10 +196,9 @@ extension Onboarding.ViewModel {
 }
 
 extension Onboarding {
-    enum InputSection: Int {
-        case number
-        case nickname
-        case gender
+    enum RegistrationStep: Int {
+        case enterNickname
+        case selectGender
     }
 
     @MainActor
@@ -243,33 +242,20 @@ extension Onboarding {
                     VStack(alignment: .leading, spacing: 40) {
                         VStack(spacing: 16) {
                             Onboarding.Email.TextFieldView(viewModel: viewModel)
-    //                            .onChange(of: viewModel.emailTextFieldState) { _, newValue in
-    //                                if newValue == .focus {
-    //                                    withAnimation {
-    //                                        proxy.scrollTo(InputSection.number, anchor: .top)
-    //                                    }
-    //                                }
-    //                            }
 
                             if viewModel.isEmailAddressValid && !viewModel.isEmailValid {
-                                Onboarding.Email.NumberView(viewModel: viewModel)
-                                    .id(InputSection.number)
-                                    .onChange(of: viewModel.isEmailValid) {
-                                        withAnimation {
-                                            proxy.scrollTo(InputSection.nickname, anchor: .top)
-                                        }
-                                    }
+                                Onboarding.Email.AuthCodeView(viewModel: viewModel)
                             }
                         }
 
                         if viewModel.isEmailValid {
                             Onboarding.Nickname.TextFieldView(viewModel: viewModel)
-                                .id(InputSection.nickname)
+                                .id(RegistrationStep.enterNickname)
                                 .onChange(of: viewModel.nicknameTextFieldState) { _, newValue in
                                     if newValue == .focus {
                                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.22) {
                                             withAnimation {
-                                                proxy.scrollTo(InputSection.nickname, anchor: .top)
+                                                proxy.scrollTo(RegistrationStep.enterNickname, anchor: .top)
                                             }
                                         }
                                     }
@@ -278,13 +264,25 @@ extension Onboarding {
 
                         if viewModel.isNicknameValid {
                             Onboarding.Gender.PickerView(viewModel: viewModel)
-                                .id(InputSection.gender)
+                                .id(RegistrationStep.selectGender)
+                                .onChange(of: viewModel.isNicknameValid) { _, newValue in
+                                    if newValue {
+                                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.22) {
+                                            withAnimation {
+                                                proxy.scrollTo(RegistrationStep.selectGender, anchor: .top)
+                                            }
+                                        }
+                                    }
+                                }
                         }
+
+                        Spacer()
+                            .frame(height: 80)
                     }
                     .padding(.top, 32)
                     .padding(.horizontal, 20)
                 }
-//                .scrollBounceBehavior(.basedOnSize)
+                .scrollBounceBehavior(.basedOnSize)
                 .scrollIndicators(.hidden)
             }
         }
