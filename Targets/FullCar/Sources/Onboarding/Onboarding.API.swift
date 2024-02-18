@@ -34,7 +34,7 @@ extension Onboarding {
         func verify(code: String) async throws -> Void {
             return try await self.verify(code)
         }
-        func isOnboardingCompleted() async throws -> MemberInformation {
+        func fetch() async throws -> MemberInformation {
             return try await self.fetch()
         }
     }
@@ -64,8 +64,6 @@ extension Onboarding.API: DependencyKey {
             },
             fetch: {
                 let member = try await memberAPI.fetch()
-
-                // 유저 정보 저장
                 return member
             }
         )

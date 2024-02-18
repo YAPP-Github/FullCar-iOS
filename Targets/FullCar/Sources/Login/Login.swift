@@ -26,7 +26,7 @@ extension Login {
             do {
                 try await loginAPI.performLogin(type)
 
-                let member = try await onboardingAPI.isOnboardingCompleted()
+                let member = try await onboardingAPI.fetch()
                 if member.company.name.isEmpty {
                     fullCar.appState = .onboarding    
                 } else {
