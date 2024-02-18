@@ -21,8 +21,6 @@ extension MyPage.Setting {
         @State private var isShowingLogoutAlert = false
         @State private var isShowingLeaveAlert = false
 
-        @State private var didLeaveSuccess = false
-
         var body: some View {
             bodyView
                 .navigationBarStyle(
@@ -94,7 +92,7 @@ extension MyPage.Setting {
                     actions: {
                         Button("탈퇴하기", role: .destructive) {
                             Task {
-                                await viewModel.leave(didSuccess: $didLeaveSuccess)
+                                await viewModel.leave()
                             }
                         }
                         Button("취소", role: .cancel) {
@@ -105,10 +103,10 @@ extension MyPage.Setting {
                 )
                 .alert(
                     "정상적으로 탈퇴처리 되었습니다.",
-                    isPresented: $didLeaveSuccess,
+                    isPresented: $viewModel.isShowingLeaveCompletionAlert,
                     actions: {
                         Button("확인", role: .cancel) {
-                            didLeaveSuccess = false
+                            viewModel.completeLeave()
                         }
                     }
                 )

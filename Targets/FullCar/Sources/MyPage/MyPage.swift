@@ -30,6 +30,7 @@ extension MyPage {
         @Dependency(\.myPageAPI) private var myPageAPI
 
         let fullCar = FullCar.shared
+        var isShowingLeaveCompletionAlert = false
 
         func logout() async {
             do {
@@ -43,17 +44,20 @@ extension MyPage {
             }
         }
 
-        func leave(didSuccess: Binding<Bool>) async {
+        func leave() async {
             do {
                 try await myPageAPI.leave()
 
-                fullCar.appState = .login
-                didSuccess.wrappedValue = true
+                isShowingLeaveCompletionAlert = true
             } catch {
                 print(error)
 
                 // 탈퇴 실패했을시?
             }
+        }
+
+        func completeLeave() {
+            fullCar.appState = .login
         }
     }
 }
