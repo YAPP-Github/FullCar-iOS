@@ -102,10 +102,10 @@ extension MyPage {
         private var profile: some View {
             VStack(alignment: .leading, spacing: .zero) {
                 HStack(spacing: 4) {
-                    Text("피곤한 물개")
+                    Text(viewModel.fullCar.member?.nickname ?? "")
                         .font(.pretendard16(.bold))
 
-                    Text("· 현대자동차")
+                    Text("· \(viewModel.fullCar.member?.company.name ?? "")")
                         .font(.pretendard14(.medium))
                         .foregroundStyle(Color.gray60)
                 }
