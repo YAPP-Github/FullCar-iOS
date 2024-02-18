@@ -37,6 +37,7 @@ public let mainTarget: Target = .init(
             "NSAppTransportSecurity": [
                 "NSAllowsArbitraryLoads": true
             ],
+            "UIBackgroundModes": ["remote-notification"],
         ]
     ),
     sources: ["Sources/**"],
