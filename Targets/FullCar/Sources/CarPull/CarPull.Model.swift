@@ -113,9 +113,9 @@ extension CarPull {
             var description: String {
                 switch self {
                 case .OPEN:
-                    return "OPEN"
+                    return "모집중"
                 case .CLOSE:
-                    return "CLOSE"
+                    return "마감"
                 }
             }
         }
@@ -148,10 +148,10 @@ extension CarPull.Model.Information {
             pickupLocation: "서울대입구",
             periodType: CarPull.Model.PeriodType(rawValue: "ONCE") ?? .once,
             money: 10000,
-            content: "월수금만 카풀하실 분 구합니다. 봉천역 2번출구에서 픽업할 예정이고 시간약속 잘지키시면 좋을것 같아···",
+            content: "월수금만 카풀하실 분 구합니다. 봉천역 2번출구에서 픽업할 예정이고 시간약속 잘지키시면 좋을것 같아 어쩌구 저쩌구 .....···",
             moodType: .quiet,
             formState: .ACCEPT,
-            carpoolState: .OPEN,
+            carpoolState: .CLOSE,
             nickname: "",
             companyName: "카카오페이",
             gender: .female,

@@ -38,6 +38,7 @@ extension Car.Register {
         var carColor: String = ""
         var carColorState: InputState = .default
         
+        var error: Error?
         var apiIsInFlight: Bool = false
         var isRegisterFinished: Bool = false
         
@@ -62,7 +63,7 @@ extension Car.Register {
                 isRegisterFinished = true
             }
             catch {
-                print(error)
+                self.error = error
             }
         }
     }
@@ -95,6 +96,24 @@ extension Car.Register {
                         } label: {
                             Text("확인")
                         }
+                    }
+                )
+                .alert(
+                    "차량 등록 오류",
+                    isPresented: .init(
+                        get: { viewModel.error != nil },
+                        set: { _ in viewModel.error = nil }
+                    ),
+                    presenting: viewModel.error,
+                    actions: { _ in
+                        Button {
+                            
+                        } label: {
+                            Text("확인")
+                        }
+                    },
+                    message: { _ in
+                        Text("차량 등록 중 오류가 발생했어요.\n다시 시도해주세요.")
                     }
                 )
                 .navigationBarStyle(

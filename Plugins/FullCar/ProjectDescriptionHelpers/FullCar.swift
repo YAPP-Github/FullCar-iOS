@@ -18,6 +18,7 @@ public let mainTarget: Target = .init(
         with: [
             "CFBundleShortVersionString": "1.0",
             "CFBundleVersion": "1",
+            "Appearance": "Light",
             "UIMainStoryboardFile": "",
             "UILaunchStoryboardName": "LaunchScreen",
             "LSApplicationQueriesSchemes": [
@@ -36,6 +37,7 @@ public let mainTarget: Target = .init(
             "NSAppTransportSecurity": [
                 "NSAllowsArbitraryLoads": true
             ],
+            "UIBackgroundModes": ["remote-notification"],
         ]
     ),
     sources: ["Sources/**"],

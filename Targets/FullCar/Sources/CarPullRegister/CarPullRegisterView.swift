@@ -10,6 +10,7 @@ import SwiftUI
 import FullCarUI
 
 import Dependencies
+import XCTestDynamicOverlay
 
 @MainActor
 @Observable
@@ -23,6 +24,8 @@ final class CarPullRegisterViewModel {
     @Dependency(\.carpullAPI) private var carpullAPI
     @ObservationIgnored
     @Dependency(\.fullCar) private var fullCar
+    
+    var changeTabToHome: () -> Void = unimplemented("changeTabToHome") 
     
     var paths: [Destination] = []
     
@@ -39,6 +42,7 @@ final class CarPullRegisterViewModel {
     
     var error: Error?
     var apiIsInFlight: Bool = false
+    var isRegisterFinished: Bool = false
     
     var isWishPlaceValid: Bool {
         !wishPlaceText.isEmpty && wishPlaceText.count <= 20
@@ -111,7 +115,7 @@ final class CarPullRegisterViewModel {
             self.apiIsInFlight = true
             defer { self.apiIsInFlight = false }
             
-            let response = try await carpullAPI.register(
+            try await carpullAPI.register(
                 pickupLocation: wishPlaceText,
                 periodType: periodType,
                 money: moneyAmount,
@@ -119,12 +123,23 @@ final class CarPullRegisterViewModel {
                 moodType: driversMood
             )
             
-            // TODO: 카풀 등록 완료 얼럿
-            // TODO: 비워버리고 탭을 홈으로
+            self.isRegisterFinished = true
         }
         catch {
             self.error = error
         }
+    }
+    
+    func onRegisterFinished() {
+        wishPlaceText.removeAll()
+        wishCostText.removeAll()
+        wishToSayText.removeAll()
+        driversMood = .none
+        periodType = .none
+        error = .none
+        apiIsInFlight = false
+        isRegisterFinished = false
+        changeTabToHome()
     }
 }
 
@@ -159,6 +174,19 @@ struct CarPullRegisterView: View {
                     },
                     message: { _ in
                         Text("카풀 등록 중 오류가 발생했어요.\n다시 시도해주세요.")
+                    }
+                )
+                .alert(
+                    "카풀 등록이 완료되었어요.",
+                    isPresented: $viewModel.isRegisterFinished,
+                    actions: { 
+                        Button {
+                            withAnimation { 
+                                viewModel.onRegisterFinished()
+                            }
+                        } label: {
+                            Text("확인")
+                        }
                     }
                 )
         }

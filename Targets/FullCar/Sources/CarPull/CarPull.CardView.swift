@@ -28,23 +28,29 @@ extension CarPull {
                 HStack(spacing: .zero) {
                     Text(carPull.companyName)
                         .font(.pretendard14(.semibold))
+                        .lineLimit(1)
                         .foregroundStyle(Color.fullCar_primary)
                     Spacer()
-                    
-                    // FIXME: postState
-                    FCBadge(postState: .recruite)
+                    FCBadge.init(
+                        title: carPull.carpoolState?.description ?? "모집중",
+                        badgeConfigurable: .init(
+                            font: .pretendard12(.bold),
+                            style: carPull.carpoolState == .OPEN ? .palette(.primary_secondary) : .palette(.gray60)
+                        ),
+                        iconConfigurable: .init(location: .none)
+                    )
                 }
                 .padding(.bottom, 14)
                 
                 Text(carPull.pickupLocation)
                     .font(.pretendard17(.bold))
+                    .lineLimit(1)
                     .padding(.bottom, 12)
                 
                 Text(carPull.content ?? "")
                     .font(.pretendard16(.regular))
+                    .lineLimit(2)
                     .padding(.bottom, 10)
-                
-
                 
                 HStack(spacing: 6) {
                     if let gender = carPull.gender {
@@ -63,19 +69,17 @@ extension CarPull {
                         .font(.pretendard14(.semibold))
                         .foregroundStyle(Color.gray50)
                         .padding(.trailing, 8)
-                    
-                    Text("48,000원")
+                    Text("\(carPull.money)원·\(carPull.periodType.description)")
                         .font(.pretendard14(.semibold))
                         .foregroundStyle(Color.black80)
                     Spacer()
-                    Text("12월 28일")
+                    Text(carPull.createdAt.toDate())
                         .font(.pretendard14(.semibold))
                         .foregroundStyle(Color.gray40)
                 }
             }
         }
     }
-    
 }
 
 #if DEBUG
