@@ -39,8 +39,6 @@ public extension FCIcon {
         case car
         case chevron_right
         case userCard
-        case help
-        case note
         case chat
         case shield_check
         case setting
@@ -65,10 +63,8 @@ extension FCIcon.Symbol {
         case .car_gray: return "car_gray"
         case .car: return "car"
         case .userCard: return "userCard"
-        case .help: return "help"
-        case .note: return "note"
         case .chat: return "chat"
-        case .shield_check: return "shield_check"
+        case .shield_check: return "shield_Check"
         case .setting: return "setting"
         default: return ""
         }

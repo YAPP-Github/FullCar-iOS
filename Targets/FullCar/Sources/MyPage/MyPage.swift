@@ -88,9 +88,7 @@ extension MyPage {
                     .overlay(Color.gray30)
                     .padding(.horizontal, 20)
                     .padding(.vertical, 10)
-
-                navigationItemLink(Text("자주 뭍는 질문"), icon: .help, text: "자주 뭍는 질문")
-                navigationItemLink(Text("공지사항"), icon: .note, text: "공지사항")
+                
                 navigationItemLink(Text("1:1 문의"), icon: .chat, text: "1:1 문의")
                 navigationItemLink(Text("약관 및 정책"), icon: .shield_check, text: "약관 및 정책")
                 navigationItemLink(MyPage.Setting.BodyView(viewModel: viewModel), icon: .setting, text: "설정")
