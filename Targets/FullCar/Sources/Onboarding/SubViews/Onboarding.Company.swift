@@ -196,7 +196,7 @@ extension Onboarding.Company {
 
         private var emptyLocationList: some View {
             VStack(spacing: 20) {
-                Image(icon: .car)
+                Image(icon: .car_gray)
                     .resizable()
                     .frame(width: 49, height: 67.7)
 

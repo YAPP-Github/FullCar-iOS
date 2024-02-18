@@ -35,7 +35,15 @@ public extension FCIcon {
         case resultDenied
         case search
         case location
+        case car_gray
         case car
+        case chevron_right
+        case userCard
+        case help
+        case note
+        case chat
+        case shield_check
+        case setting
     }
 }
 
@@ -54,7 +62,14 @@ extension FCIcon.Symbol {
         case .resultSuccess: return "resultSuccess"
         case .resultDenied: return "resultDenied"
         case .location: return "location"
-        case .car: return "car_gray"
+        case .car_gray: return "car_gray"
+        case .car: return "car"
+        case .userCard: return "userCard"
+        case .help: return "help"
+        case .note: return "note"
+        case .chat: return "chat"
+        case .shield_check: return "shield_check"
+        case .setting: return "setting"
         default: return ""
         }
     }
@@ -64,6 +79,7 @@ extension FCIcon.Symbol {
         case .check: return "checkmark.circle.fill"
         case .appleLogo: return "apple.logo"
         case .search: return "magnifyingglass"
+        case .chevron_right: return "chevron.right"
         default: return ""
         }
     }

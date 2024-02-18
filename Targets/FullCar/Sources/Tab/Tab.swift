@@ -67,7 +67,7 @@ struct FullCarTabView: View {
                 }
                 .tag(FullCar.Tab.requestList)
             
-            SettingsView(viewModel: .init())
+            MyPage.BodyView(viewModel: .init())
                 .tabItem { 
                     if viewModel.tabSelection == .myPage {
                         Image("ic_mypage_selected", bundle: .main)
