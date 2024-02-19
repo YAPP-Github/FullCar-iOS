@@ -35,6 +35,8 @@ extension Onboarding.Email {
                             viewModel.isEmailRequestSent = false
                             viewModel.isEmailAddressValid = false
                         }
+                        .disabled(viewModel.isEmailValid)
+                        .keyboardType(.emailAddress)
                 },
                 state: $viewModel.emailTextFieldState,
                 headerText: "회사 메일을 입력해 주세요.",
@@ -45,11 +47,25 @@ extension Onboarding.Email {
     }
 
     @MainActor
-    struct NumberView: View {
+    struct AuthCodeView: View {
         @Bindable var viewModel: Onboarding.ViewModel
 
         var body: some View {
-            Text("인증번호 뷰 올것임.")
+            bodyView
+        }
+
+        private var bodyView: some View {
+            FCTextFieldView(
+                textField: {
+                    TextField("인증번호 6자리를 입력해 주세요.", text: $viewModel.authenticationCode)
+                        .textFieldStyle(.fullCar(
+                            state: $viewModel.authCodeTextFieldState,
+                            padding: 16)
+                        )
+                        .keyboardType(.numberPad)
+                },
+                state: $viewModel.authCodeTextFieldState
+            )
         }
     }
 
@@ -95,7 +111,6 @@ extension Onboarding.Email {
             Button(action: {
                 Task {
                     await viewModel.verifyAuthenticationCode()
-                    // MARK: 닉네임 textField로 포커스 변경하고 싶은데,,
                 }
             }, label: {
                 Text("다음")
@@ -111,7 +126,7 @@ extension Onboarding.Email {
     VStack(spacing: 30) {
         Onboarding.Email.TextFieldView(viewModel: .init())
 
-        Onboarding.Email.NumberView(viewModel: .init())
+        Onboarding.Email.AuthCodeView(viewModel: .init())
 
         Onboarding.Email.SendButtonView(viewModel: .init())
     }

@@ -17,16 +17,27 @@ extension Login {
     @MainActor
     @Observable
     final class ViewModel {
-        @ObservationIgnored @Dependency(\.loginAPI) var loginAPI
-        @ObservationIgnored @Dependency(\.onbardingAPI) private var onboardingAPI
         @ObservationIgnored
         @Dependency(\.fullCar) private var fullCar
 
+        @ObservationIgnored
+        @Dependency(\.loginAPI) var loginAPI
+        @ObservationIgnored
+        @Dependency(\.onbardingAPI) private var onboardingAPI
+
+        private let throttler = Throttler(duration: 2)
+
         func loginButtonTapped(for type: SocialType) async {
+            await throttler.call { [weak self] in
+                await self?.login(for: type)
+            }
+        }
+
+        private func login(for type: SocialType) async {
             do {
                 try await loginAPI.performLogin(type)
 
-                let member = try await onboardingAPI.isOnboardingCompleted()
+                let member = try await onboardingAPI.fetch()
                 if member.company.name.isEmpty {
                     fullCar.appState = .onboarding    
                 } else {

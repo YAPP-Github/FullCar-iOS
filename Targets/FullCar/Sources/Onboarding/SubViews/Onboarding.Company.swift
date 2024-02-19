@@ -102,13 +102,7 @@ extension Onboarding.Company {
         var body: some View {
             bodyView
                 .navigationBarStyle(
-                    leadingView: {
-//                        NavigationButton(icon: .back, action: {
-//                            withAnimation {
-//                                viewModel.isSearchViewAppear = false
-//                            }
-//                        })
-                    },
+                    leadingView: { },
                     centerView: {
                         Text("회사 검색")
                             .font(.pretendard18(.bold))
@@ -177,17 +171,23 @@ extension Onboarding.Company {
             ScrollView {
                 if locations.isEmpty && onSearchButtonTapped {
                     emptyLocationList
+                        .padding(.top, 104)
                 } else {
                     LazyVGrid(columns: [GridItem()], spacing: .zero, content: {
-                        ForEach($locations, id: \.self) { item in
-                            LocationListItem(location: item, company: keyword, onTap: {
-                                viewModel.company = item.wrappedValue
-                                viewModel.isCompanyValid = true
+                        ForEach($locations.indices, id: \.self) { index in
+                            LocationListItem(
+                                location: $locations[index],
+                                isFirst: index == 0,
+                                company: keyword,
+                                onTap: {
+                                    viewModel.company = locations[index]
+                                    viewModel.isCompanyValid = true
 
-                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                                    viewModel.isSearchViewAppear = false
+                                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                                        viewModel.isSearchViewAppear = false
+                                    }
                                 }
-                            })
+                            )
                         }
                     })
                 }
@@ -195,7 +195,21 @@ extension Onboarding.Company {
         }
 
         private var emptyLocationList: some View {
-            Text("검색 결과가 없어요~")
+            VStack(spacing: 20) {
+                Image(icon: .car_gray)
+                    .resizable()
+                    .frame(width: 49, height: 67.7)
+
+                VStack(spacing: 6) {
+                    Text("검색 결과가 없습니다.")
+                        .font(.pretendard18(.bold))
+                        .foregroundStyle(Color.gray45)
+
+                    Text("회사명의 철자가 정확한지 확인해 주세요.")
+                        .font(.pretendard16(.regular))
+                        .foregroundStyle(Color.gray40)
+                }
+            }
         }
     }
 }

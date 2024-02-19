@@ -14,7 +14,9 @@ import Dependencies
 struct Onboarding {
     enum Company { }
     enum Email { }
-    enum Nickname { }
+    enum Nickname { 
+        static let id = "nickName"
+    }
     enum Gender: String, CaseIterable {
         case female = "FEMALE"
         case male = "MALE"
@@ -59,6 +61,7 @@ extension Onboarding {
         var isEmailAddressValid: Bool = false
         // 인증번호
         var authenticationCode: String = ""
+        var authCodeTextFieldState: InputState = .default
         // 회사 이메일 인증 절차 모두 완료
         var isEmailValid: Bool = false
 
@@ -101,15 +104,17 @@ extension Onboarding.ViewModel {
             isEmailRequestSent = true
             emailTextFieldState = .default
 
-            // MARK: 현재 이메일 인증 api 관련 수정 필요
-//            try await onboardingAPI.send(email: email)
+            try await onboardingAPI.send(email: email)
 
             isEmailAddressValid = true
+
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                self.authCodeTextFieldState = .focus
+            }
         } catch {
-            // 이메일 전송 실패
             print(error)
             isEmailRequestSent = false
-            emailTextFieldState = .error("일치하는 메일 정보가 없습니다.")
+            emailTextFieldState = .error("회사 이메일이 맞는지 확인해 주세요.")
 
             isEmailAddressValid = false
         }
@@ -117,16 +122,14 @@ extension Onboarding.ViewModel {
 
     func verifyAuthenticationCode() async {
         do {
-            // MARK: 현재 이메일 인증 api 관련 수정 필요
-//            try await onboardingAPI.verify(code: authenticationCode)
+            try await onboardingAPI.verify(code: authenticationCode)
 
-            // case1) 이메일 인증 성공
-            self.isEmailValid = true
+            isEmailValid = true
         } catch {
             print(error)
 
-            // case2) 이메일 인증 실패
-            self.isEmailValid = false
+            isEmailValid = false
+            authCodeTextFieldState = .error("인증번호가 일치하지 않습니다.")
         }
     }
 }
@@ -162,13 +165,15 @@ extension Onboarding.ViewModel {
     func register() async {
         do {
             guard let company = company else { return }
-            let member: MemberInformation = .init(
-                company: company, 
+            let newMember: MemberInformation = .init(
+                company: company,
                 email: email,
                 nickName: nickname,
                 gender: gender.rawValue
             )
-            try await onboardingAPI.register(member: member)
+            let member = try await onboardingAPI.register(member: newMember)
+
+            completeOnboarding(member)
         } catch {
             print(error)
         }
@@ -187,15 +192,13 @@ extension Onboarding.ViewModel {
     func onBackButtonTapped() {
         fullCar.appState = .login
     }
+
+    func completeOnboarding(_ member: MemberInformation) {
+        fullCar.appState = .tab(member)
+    }
 }
 
 extension Onboarding {
-    enum InputSection: Int {
-        case number
-        case nickname
-        case gender
-    }
-
     @MainActor
     struct BodyView: View {
         @Environment(\.dismiss) private var dismiss
@@ -235,33 +238,22 @@ extension Onboarding {
             ScrollViewReader { proxy in
                 ScrollView {
                     VStack(alignment: .leading, spacing: 40) {
-                        Onboarding.Email.TextFieldView(viewModel: viewModel)
-//                            .onChange(of: viewModel.emailTextFieldState) { _, newValue in
-//                                if newValue == .focus {
-//                                    withAnimation {
-//                                        proxy.scrollTo(InputSection.number, anchor: .top)
-//                                    }
-//                                }
-//                            }
+                        VStack(spacing: 16) {
+                            Onboarding.Email.TextFieldView(viewModel: viewModel)
 
-                        if viewModel.isEmailAddressValid {
-                            Onboarding.Email.NumberView(viewModel: viewModel)
-                                .id(InputSection.number)
-                                .onChange(of: viewModel.isEmailValid) {
-                                    withAnimation {
-                                        proxy.scrollTo(InputSection.nickname, anchor: .top)
-                                    }
-                                }
+                            if viewModel.isEmailAddressValid && !viewModel.isEmailValid {
+                                Onboarding.Email.AuthCodeView(viewModel: viewModel)
+                            }
                         }
 
                         if viewModel.isEmailValid {
                             Onboarding.Nickname.TextFieldView(viewModel: viewModel)
-                                .id(InputSection.nickname)
+                                .id(Onboarding.Nickname.id)
                                 .onChange(of: viewModel.nicknameTextFieldState) { _, newValue in
                                     if newValue == .focus {
                                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.22) {
                                             withAnimation {
-                                                proxy.scrollTo(InputSection.nickname, anchor: .top)
+                                                proxy.scrollTo(Onboarding.Nickname.id, anchor: .top)
                                             }
                                         }
                                     }
@@ -270,13 +262,15 @@ extension Onboarding {
 
                         if viewModel.isNicknameValid {
                             Onboarding.Gender.PickerView(viewModel: viewModel)
-                                .id(InputSection.gender)
                         }
+
+                        Spacer()
+                            .frame(height: 80)
                     }
                     .padding(.top, 32)
                     .padding(.horizontal, 20)
                 }
-//                .scrollBounceBehavior(.basedOnSize)
+                .scrollBounceBehavior(.basedOnSize)
                 .scrollIndicators(.hidden)
             }
         }

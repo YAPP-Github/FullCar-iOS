@@ -36,7 +36,7 @@ final class RootViewModel {
     func onFirstTask() async {
         do {
             if try await loginAPI.hasValidToken {
-                let member = try await onboardingAPI.isOnboardingCompleted()
+                let member = try await onboardingAPI.fetch()
                 if member.company.name.isEmpty {
                     fullCar.appState = .onboarding    
                 } else {

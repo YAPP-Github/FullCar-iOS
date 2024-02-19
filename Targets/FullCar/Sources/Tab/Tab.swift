@@ -18,8 +18,8 @@ final class TabViewModel {
     let homeViewModel: HomeViewModel = .init()
     let callListViewModel: CallListViewModel = .init()
     let carPullRegisterViewModel: CarPullRegisterViewModel = .init()
-    let settingsViewModel: SettingsViewModel = .init()
-    
+    let myPageViewModel: MyPage.ViewModel = .init()
+
     init(tabSelection: FullCar.Tab = .home) {
         self.tabSelection = tabSelection
         
@@ -73,7 +73,7 @@ struct FullCarTabView: View {
                 }
                 .tag(FullCar.Tab.requestList)
             
-            SettingsView(viewModel: viewModel.settingsViewModel)
+            MyPage.BodyView(viewModel: viewModel.myPageViewModel)
                 .tabItem { 
                     if viewModel.tabSelection == .myPage {
                         Image("ic_mypage_selected", bundle: .main)
