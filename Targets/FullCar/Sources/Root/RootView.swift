@@ -99,8 +99,11 @@ struct RootView: View {
     private var bodyView: some View {
         switch viewModel.appState {
         case .root:
-            Color.red
-//            Image("런치스크린 이미지 나오면!", bundle: .main)
+            VStack(spacing: .zero) {
+                Image("ic_launch_image", bundle: .main)
+                    .padding(.bottom, 7.5)
+                Image("ic_launch_text", bundle: .main)
+            }
                 
         case .login:
             Login.BodyView(viewModel: .init())
