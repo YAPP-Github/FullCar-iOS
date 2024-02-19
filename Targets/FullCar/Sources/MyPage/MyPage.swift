@@ -16,8 +16,6 @@ struct MyPage {
     enum MyCarpool { }
     enum MyCar { }
     enum Question { }
-    enum Announcement { }
-    enum Inquiry { }
     enum TermsAndPolicies { }
     enum Setting { }
 }
