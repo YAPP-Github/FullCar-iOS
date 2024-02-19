@@ -10,25 +10,24 @@ import Foundation
 
 public actor Throttler {
     private let duration: UInt64
-    private var isWaiting: Bool = false
+    private var task: Task<Void, Never>?
+    private var isCancelled: Bool = false
 
     public init(duration: TimeInterval) {
         self.duration = UInt64(duration * 1_000_000_000)
     }
 
-    public func call(_ task: @escaping () async -> Void) {
+    public func execute(_ task: @escaping () async -> Void) {
+        guard self.task?.isCancelled ?? true else { return }
+
         Task {
-            await execute(task: task)
+            await task()
         }
-    }
 
-    private func execute(task: @escaping () async -> Void) async {
-        guard !isWaiting else { return }
-        isWaiting = true
-
-        await task()
-
-        try? await Task.sleep(nanoseconds: duration)
-        isWaiting = false
+        self.task = Task {
+            try? await Task.sleep(nanoseconds: duration)
+            self.task?.cancel()
+            self.task = nil
+        }
     }
 }

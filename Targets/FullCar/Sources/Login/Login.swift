@@ -28,7 +28,7 @@ extension Login {
         private let throttler = Throttler(duration: 2)
 
         func loginButtonTapped(for type: SocialType) async {
-            await throttler.call { [weak self] in
+            await throttler.execute { [weak self] in
                 await self?.login(for: type)
             }
         }
@@ -105,7 +105,10 @@ extension Login {
 
         private func loginButton(for type: SocialType) -> some View {
             Button {
-                Task { await viewModel.loginButtonTapped(for: type) }
+                Task {
+                    print("test/ Login.View 로그인 버튼 눌림")
+                    await viewModel.loginButtonTapped(for: type)
+                }
             } label: {
                 ZStack(alignment: .leading) {
                     socialIcon(type)
