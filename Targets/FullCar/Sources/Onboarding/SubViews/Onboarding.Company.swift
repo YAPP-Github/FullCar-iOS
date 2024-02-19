@@ -99,6 +99,8 @@ extension Onboarding.Company {
         @State var onSearchButtonTapped: Bool = false
         @State var isLoading: Bool = false
 
+        @FocusState private var isSearchTextFieldFocused: Bool
+
         var body: some View {
             bodyView
                 .navigationBarStyle(
@@ -109,6 +111,11 @@ extension Onboarding.Company {
                     },
                     trailingView: { }
                 )
+                .onAppear {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                        isSearchTextFieldFocused = true
+                    }
+                }
         }
 
         private var bodyView: some View {
@@ -117,11 +124,6 @@ extension Onboarding.Company {
                     companySearchBar
                         .padding(.horizontal, 20)
                         .padding(.top, 20)
-                        .onAppear {
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                                viewModel.companySearchBarState = .focus
-                            }
-                        }
 
                     locationList
                 }
@@ -137,6 +139,7 @@ extension Onboarding.Company {
                 textField: {
                     HStack {
                         TextField("회사, 주소 검색", text: $keyword)
+                            .focused($isSearchTextFieldFocused)
                             .textFieldStyle(
                                 .fullCar(
                                     type: .none,
