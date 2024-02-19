@@ -96,6 +96,7 @@ extension Onboarding.Company {
         @Bindable var viewModel: Onboarding.ViewModel
 
         @State var keyword: String = ""
+        @State var locations: [LocalCoordinate] = []
         @State var onSearchButtonTapped: Bool = false
         @State var isLoading: Bool = false
 
@@ -159,8 +160,10 @@ extension Onboarding.Company {
         private var searchButton: some View {
             Button(action: {
                 Task {
+                    isSearchTextFieldFocused = false
                     isLoading = true
-                    await viewModel.fetchCompanyCoordinate(keyword)
+                    let coordinates = await viewModel.fetchCompanyCoordinate(keyword)
+                    locations = coordinates
 
                     onSearchButtonTapped = true
                     isLoading = false
@@ -178,17 +181,17 @@ extension Onboarding.Company {
 
         private var locationList: some View {
             ScrollView {
-                if viewModel.locations.isEmpty && onSearchButtonTapped {
+                if locations.isEmpty && onSearchButtonTapped {
                     emptyLocationList
                         .padding(.top, 104)
                 } else {
                     LazyVGrid(columns: [GridItem()], spacing: .zero, content: {
-                        ForEach($viewModel.locations.indices, id: \.self) { index in
+                        ForEach(locations.indices, id: \.self) { index in
                             LocationListItem(
-                                location: $viewModel.locations[index],
+                                location: $locations[index],
                                 isFirst: index == 0,
                                 company: keyword,
-                                onTap: { viewModel.onTappedLocation(index) }
+                                onTap: { viewModel.onTappedLocation(locations[index]) }
                             )
                         }
                     })
