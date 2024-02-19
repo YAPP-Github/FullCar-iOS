@@ -13,7 +13,11 @@ struct MemberResponse: Decodable {
     let nickname: String?
     let email: String?
     let gender: String?
-    let carId: Int?
+    let carId: CarId?
+    
+    public struct CarId: Decodable {
+        public let id: Int?
+    }
 }
 
 extension MemberResponse {
@@ -23,7 +27,7 @@ extension MemberResponse {
             email: self.email ?? "",
             nickName: self.nickname ?? "",
             gender: self.gender ?? "",
-            carId: self.carId
+            carId: self.carId?.id
         )
     }
 }
