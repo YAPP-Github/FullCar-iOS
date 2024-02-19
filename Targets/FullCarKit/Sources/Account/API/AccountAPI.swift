@@ -14,6 +14,7 @@ struct AccountAPI {
     var logout: () async throws -> Void
     var leave: () async throws -> Void
     var refresh: (_ refreshToken: String) async throws -> AuthTokenResponse
+    var register: (_ deviceToken: String) async throws -> Void
 }
 
 extension AccountAPI: DependencyKey {
@@ -58,7 +59,13 @@ extension AccountAPI: DependencyKey {
                 ).response()
 
                 return response.data
-            })
+            },
+            register: { deviceToken in
+                try await NetworkClient.main.request(
+                    endpoint: Endpoint.Account.register(deviceToken: deviceToken)
+                ).response()
+            }
+        )
     }
 }
 

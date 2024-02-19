@@ -45,6 +45,9 @@ extension Login {
                 } else {
                     fullCar.appState = .tab(member)
                 }
+
+                // 로그인 성공시, device token 등록
+                await loginAPI.registerDeviceToken()
                 #if DEBUG
                 print("[✅][LoginViewModel.swift] -> 로그인 성공!")
                 #endif
