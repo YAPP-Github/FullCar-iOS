@@ -25,11 +25,7 @@ struct FullCarApp: App {
 
     var body: some Scene {
         WindowGroup {
-            #if DEBUG
-            MyPage.BodyView(viewModel: .init())
-            #else
             RootView(viewModel: .init())
-            #endif
         }
     }
 }
