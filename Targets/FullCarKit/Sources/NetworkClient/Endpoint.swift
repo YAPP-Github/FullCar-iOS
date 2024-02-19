@@ -32,6 +32,7 @@ public extension Endpoint {
         case logout
         case leave
         case refresh(refreshToken: String)
+        case register(deviceToken: String)
     }
     
     enum Form {
@@ -60,12 +61,13 @@ extension Endpoint.Account: URLRequestConfigurable {
         case .logout: return "/api/v1/auth/logout"
         case .leave: return "/api/v1/auth"
         case .refresh: return "/api/v1/auth/token"
+        case .register: return "/api/v1/members/device-token"
         }
     }
     
     public var method: HTTPMethod {
         switch self {
-        case .logout, .refresh : return .post
+        case .logout, .refresh, .register : return .post
         case .leave: return .delete
         }
     }
@@ -75,19 +77,22 @@ extension Endpoint.Account: URLRequestConfigurable {
         case .refresh(refreshToken: let refreshToken): return [
             "refreshToken": refreshToken
         ]
+        case .register(deviceToken: let deviceToken): return [
+            "deviceToken": deviceToken
+        ]
         default: return nil
         }
     }
     
     public var headers: [Header]? {
         switch self {
-        case .logout, .leave, .refresh : return nil
+        default : return nil
         }
     }
     
     public var encoder: ParameterEncodable {
         switch self {
-        case .refresh: return JSONEncoding()
+        case .refresh, .register: return JSONEncoding()
         case .logout, .leave: return URLEncoding()
         }
     }
@@ -108,13 +113,11 @@ extension Endpoint.Account.Login: URLRequestConfigurable {
     var parameters: Parameters? {
         switch self {
         case .kakao(let request): [
-            "token": request.token,
-            "deviceToken": request.deviceToken
+            "token": request.token
         ]
         case .apple(let request): [
             "authCode": request.authCode,
-            "idToken": request.idToken,
-            "deviceToken": request.deviceToken
+            "idToken": request.idToken
         ]
         }
     }

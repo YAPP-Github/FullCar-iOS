@@ -81,10 +81,22 @@ extension Onboarding.ViewModel {
     func fetchCompanyCoordinate(_ company: String) async -> [LocalCoordinate] {
         do {
             let coordinates = try await onboardingAPI.search(location: company)
+            companySearchBarState = .default
+
             return coordinates
         } catch {
             print(error)
+
             return []
+        }
+    }
+
+    func onTappedLocation(_ location: LocalCoordinate) {
+        company = location
+        isCompanyValid = true
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) { [weak self] in
+            self?.isSearchViewAppear = false
         }
     }
 }
@@ -107,10 +119,6 @@ extension Onboarding.ViewModel {
             try await onboardingAPI.send(email: email)
 
             isEmailAddressValid = true
-
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                self.authCodeTextFieldState = .focus
-            }
         } catch {
             print(error)
             isEmailRequestSent = false

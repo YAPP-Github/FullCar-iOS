@@ -29,9 +29,14 @@ extension Login {
 
         private var continuation: CheckedContinuation<LoginResponse, Error>?
 
+        func registerDeviceToken() async {
+            @Dependency(\.deviceToken) var deviceToken
+            
+            try? await accountService.register(deviceToken.fetch())
+        }
+
         func performLogin(_ type: SocialType) async throws {
-            if let continuation {
-                continuation.resume(throwing: LoginError.continuationAlreadySet)
+            if continuation != nil {
                 self.continuation = nil
             }
 
@@ -57,19 +62,15 @@ extension Login {
         }
 
         private func createAuthRequest(_ type: SocialType, loginResponse: LoginResponse) throws -> AuthRequestable {
-            @Dependency(\.deviceToken) var deviceToken
-
             switch type {
             case .kakao:
                 return KakaoAuthRequest(
-                    token: loginResponse.token,
-                    deviceToken: try deviceToken.fetch()
+                    token: loginResponse.token
                 )
             case .apple:
                 return AppleAuthRequest(
                     authCode: loginResponse.authCode ?? "",
-                    idToken: loginResponse.token,
-                    deviceToken: try deviceToken.fetch()
+                    idToken: loginResponse.token
                 )
             }
         }
@@ -131,8 +132,6 @@ extension Login.API: ASAuthorizationControllerDelegate {
             continuation = nil
             return
         }
-
-        print("auth Token 입니다~ \(authCode)")
 
         continuation?.resume(returning: (idToken, authCode))
         continuation = nil

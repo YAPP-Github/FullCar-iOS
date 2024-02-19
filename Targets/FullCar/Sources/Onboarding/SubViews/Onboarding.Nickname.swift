@@ -14,11 +14,13 @@ extension Onboarding.Nickname {
     struct TextFieldView: View {
         @Bindable var viewModel: Onboarding.ViewModel
 
+        @FocusState private var isNicknameTextFieldFocused: Bool
+
         var body: some View {
             bodyView
                 .onAppear {
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                        viewModel.nicknameTextFieldState = .focus
+                        isNicknameTextFieldFocused = true
                     }
                 }
         }

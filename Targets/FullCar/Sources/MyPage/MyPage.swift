@@ -16,8 +16,6 @@ struct MyPage {
     enum MyCarpool { }
     enum MyCar { }
     enum Question { }
-    enum Announcement { }
-    enum Inquiry { }
     enum TermsAndPolicies { }
     enum Setting { }
 }
@@ -30,7 +28,10 @@ extension MyPage {
         @Dependency(\.myPageAPI) private var myPageAPI
 
         let fullCar = FullCar.shared
-        var isShowingLeaveCompletionAlert = false
+
+        var isShowLeaveCompletionAlert = false
+        var isShowLeaveErrorAlert = false
+        var isShowLogoutErrorAlert = false
 
         func logout() async {
             do {
@@ -40,7 +41,7 @@ extension MyPage {
             } catch {
                 print(error)
 
-                // 로그아웃 실패했을시?
+                isShowLogoutErrorAlert = true
             }
         }
 
@@ -48,11 +49,11 @@ extension MyPage {
             do {
                 try await myPageAPI.leave()
 
-                isShowingLeaveCompletionAlert = true
+                isShowLeaveCompletionAlert = true
             } catch {
                 print(error)
 
-                // 탈퇴 실패했을시?
+                isShowLeaveErrorAlert = true
             }
         }
 
@@ -78,6 +79,20 @@ extension MyPage {
                         },
                         trailingView: { }
                     )
+                    .alert(
+                        "로그아웃할 수 없음",
+                        isPresented: $viewModel.isShowLogoutErrorAlert,
+                        actions: {
+                            Button(action: { }, label: { Text("확인") })
+                        },
+                        message: { Text("에러가 발생했어요. 다시 시도해주세요.") })
+                    .alert(
+                        "탈퇴할 수 없음",
+                        isPresented: $viewModel.isShowLeaveErrorAlert,
+                        actions: {
+                            Button(action: { }, label: { Text("확인") })
+                        },
+                        message: { Text("에러가 발생했어요. 다시 시도해주세요.") })
             }
         }
 

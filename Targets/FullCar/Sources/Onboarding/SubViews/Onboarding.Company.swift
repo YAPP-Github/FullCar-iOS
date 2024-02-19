@@ -98,6 +98,9 @@ extension Onboarding.Company {
         @State var keyword: String = ""
         @State var locations: [LocalCoordinate] = []
         @State var onSearchButtonTapped: Bool = false
+        @State var isLoading: Bool = false
+
+        @FocusState private var isSearchTextFieldFocused: Bool
 
         var body: some View {
             bodyView
@@ -109,20 +112,26 @@ extension Onboarding.Company {
                     },
                     trailingView: { }
                 )
+                .onAppear {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                        isSearchTextFieldFocused = true
+                    }
+                }
         }
 
         private var bodyView: some View {
-            VStack(spacing: 1) {
-                companySearchBar
-                    .padding(.horizontal, 20)
-                    .padding(.top, 20)
-                    .onAppear {
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                            viewModel.companySearchBarState = .focus
-                        }
-                    }
+            ZStack {
+                VStack(spacing: 1) {
+                    companySearchBar
+                        .padding(.horizontal, 20)
+                        .padding(.top, 20)
 
-                locationList
+                    locationList
+                }
+
+                if isLoading {
+                    DimView(color: Color.fullCar_primary, scale: 1.3)
+                }
             }
         }
 
@@ -131,6 +140,7 @@ extension Onboarding.Company {
                 textField: {
                     HStack {
                         TextField("회사, 주소 검색", text: $keyword)
+                            .focused($isSearchTextFieldFocused)
                             .textFieldStyle(
                                 .fullCar(
                                     type: .none,
@@ -150,11 +160,13 @@ extension Onboarding.Company {
         private var searchButton: some View {
             Button(action: {
                 Task {
+                    isSearchTextFieldFocused = false
+                    isLoading = true
                     let coordinates = await viewModel.fetchCompanyCoordinate(keyword)
-                    self.locations = coordinates
+                    locations = coordinates
 
-                    viewModel.companySearchBarState = .default
                     onSearchButtonTapped = true
+                    isLoading = false
                 }
             }, label: {
                 Text("검색")
@@ -174,19 +186,12 @@ extension Onboarding.Company {
                         .padding(.top, 104)
                 } else {
                     LazyVGrid(columns: [GridItem()], spacing: .zero, content: {
-                        ForEach($locations.indices, id: \.self) { index in
+                        ForEach(locations.indices, id: \.self) { index in
                             LocationListItem(
                                 location: $locations[index],
                                 isFirst: index == 0,
                                 company: keyword,
-                                onTap: {
-                                    viewModel.company = locations[index]
-                                    viewModel.isCompanyValid = true
-
-                                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                                        viewModel.isSearchViewAppear = false
-                                    }
-                                }
+                                onTap: { viewModel.onTappedLocation(locations[index]) }
                             )
                         }
                     })

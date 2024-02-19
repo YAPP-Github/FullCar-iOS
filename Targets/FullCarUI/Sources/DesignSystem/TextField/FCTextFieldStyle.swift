@@ -31,13 +31,6 @@ public struct FCTextFieldStyle: TextFieldStyle {
                     if case .error = state { return }
                     state = newValue ? .focus : .default
                 }
-                .onChange(of: state) { oldValue, newValue in
-                    if case .focus = newValue {
-                        isFocused = true
-                    } else if case .default = newValue {
-                        isFocused = false
-                    }
-                }
 
             if case .check(let isChecked) = accessory, isChecked.wrappedValue {
                 Image(icon: .check)
