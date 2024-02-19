@@ -31,7 +31,6 @@ extension Login {
 
         func performLogin(_ type: SocialType) async throws {
             if let continuation {
-                continuation.resume(throwing: LoginError.continuationAlreadySet)
                 self.continuation = nil
             }
 
