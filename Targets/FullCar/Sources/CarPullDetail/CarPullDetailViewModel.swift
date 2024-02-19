@@ -29,6 +29,7 @@ final class CarPullDetailViewModel {
     
     var actionSheetOpen: Bool = false
     var alertOpen: Bool = false
+    var deleteDoneOpen: Bool = false
     
     init(
         requestStatus: RequestStatus = .beforeBegin,

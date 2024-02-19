@@ -45,20 +45,23 @@ struct CarPullDetailView: View {
                 }
             )
             .confirmationDialog("", isPresented: $viewModel.actionSheetOpen, titleVisibility: .hidden) {
-                Button("신고하기", role: .destructive) {
+                Button("삭제", role: .destructive) {
                     viewModel.alertOpen = true
                 }
             }
-            .alert("카풀 게시글을 신고하시겠어요?", isPresented: $viewModel.alertOpen, actions: {
+            .alert("카풀을 삭제 하시겠어요?", isPresented: $viewModel.alertOpen, actions: {
                 Button(role: .destructive, action: {
-                    
+                    viewModel.deleteDoneOpen = true
                 }, label: {
-                    Text("신고하기")
+                    Text("삭제하기")
                 })
             }, message: {
-                Text("게시글 신고시 어쩌구 저쩌구 됩니다.")
+                Text("카풀 삭제 시 복구가 불가능하며\n모든 요청이 거절 처리됩니다.")
             })
+            .alert("카풀 게시글이 삭제되었습니다.",
+                   isPresented: $viewModel.deleteDoneOpen , actions: {})
             .background(Color.white)
+            
     }
     
     private var _body: some View {
@@ -82,17 +85,16 @@ struct CarPullDetailView: View {
                     Car.InformationCardView(information: information)
                 }
                 
-                if viewModel.requestStatus == .inProcess {
-                    Text("희망 접선 장소 해야함")
-                }
             }
         }
         .scrollIndicators(.hidden)
     }
     
     private var beginRequestButton: some View {
-        Button { Task { await viewModel.beginRequestButtonTapped() } } 
-        label: { Text("탑승요청") }
+        Button {
+            
+        }
+        label: { Text("마감하기") }
         .buttonStyle(
             .fullCar(
                 font: .pretendard17(.bold),

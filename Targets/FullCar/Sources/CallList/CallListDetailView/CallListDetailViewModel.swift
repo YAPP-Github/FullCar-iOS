@@ -48,6 +48,7 @@ final class CallListDetailViewModel {
     
     var carPullResultType: CallResultView.CallResultType = .success
     var alertOpen: Bool = false
+    var deleteDoneAlertOpen: Bool = false
     
     // 요청승인시 사용하는 데이터들
     var myCallNumber: String = ""
