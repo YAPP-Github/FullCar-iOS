@@ -344,7 +344,7 @@ struct CarPullRegisterView: View {
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(.bottom, 40)
+        .padding(.bottom, 24)
     }
     
     private var nextButton: some View {
@@ -363,6 +363,7 @@ struct CarPullRegisterView: View {
             )
         )
         .disabled(!viewModel.isValid)
+        .padding(.bottom, 24)
     }
 }
 
