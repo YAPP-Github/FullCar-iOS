@@ -49,6 +49,7 @@ extension Onboarding {
 
         // MARK: Company
         var company: LocalCoordinate?
+        var locations: [LocalCoordinate] = []
         var companySearchBarState: InputState = .default
         var isCompanyValid: Bool = false
 
@@ -78,13 +79,23 @@ extension Onboarding {
 // MARK: Company 관련 함수
 extension Onboarding.ViewModel {
     /// 특정 검색어로 장소 리스트 검색
-    func fetchCompanyCoordinate(_ company: String) async -> [LocalCoordinate] {
+    func fetchCompanyCoordinate(_ company: String) async {
         do {
             let coordinates = try await onboardingAPI.search(location: company)
-            return coordinates
+            locations = coordinates
+
+            companySearchBarState = .default
         } catch {
             print(error)
-            return []
+        }
+    }
+
+    func onTappedLocation(_ index: Range<Int>.Element) {
+        company = locations[index]
+        isCompanyValid = true
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) { [weak self] in
+            self?.isSearchViewAppear = false
         }
     }
 }

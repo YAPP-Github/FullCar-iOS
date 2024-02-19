@@ -96,8 +96,8 @@ extension Onboarding.Company {
         @Bindable var viewModel: Onboarding.ViewModel
 
         @State var keyword: String = ""
-        @State var locations: [LocalCoordinate] = []
         @State var onSearchButtonTapped: Bool = false
+        @State var isLoading: Bool = false
 
         var body: some View {
             bodyView
@@ -112,17 +112,23 @@ extension Onboarding.Company {
         }
 
         private var bodyView: some View {
-            VStack(spacing: 1) {
-                companySearchBar
-                    .padding(.horizontal, 20)
-                    .padding(.top, 20)
-                    .onAppear {
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                            viewModel.companySearchBarState = .focus
+            ZStack {
+                VStack(spacing: 1) {
+                    companySearchBar
+                        .padding(.horizontal, 20)
+                        .padding(.top, 20)
+                        .onAppear {
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                                viewModel.companySearchBarState = .focus
+                            }
                         }
-                    }
 
-                locationList
+                    locationList
+                }
+
+                if isLoading {
+                    DimView(color: Color.fullCar_primary, scale: 1.3)
+                }
             }
         }
 
@@ -150,11 +156,11 @@ extension Onboarding.Company {
         private var searchButton: some View {
             Button(action: {
                 Task {
-                    let coordinates = await viewModel.fetchCompanyCoordinate(keyword)
-                    self.locations = coordinates
+                    isLoading = true
+                    await viewModel.fetchCompanyCoordinate(keyword)
 
-                    viewModel.companySearchBarState = .default
                     onSearchButtonTapped = true
+                    isLoading = false
                 }
             }, label: {
                 Text("검색")
@@ -169,24 +175,17 @@ extension Onboarding.Company {
 
         private var locationList: some View {
             ScrollView {
-                if locations.isEmpty && onSearchButtonTapped {
+                if viewModel.locations.isEmpty && onSearchButtonTapped {
                     emptyLocationList
                         .padding(.top, 104)
                 } else {
                     LazyVGrid(columns: [GridItem()], spacing: .zero, content: {
-                        ForEach($locations.indices, id: \.self) { index in
+                        ForEach($viewModel.locations.indices, id: \.self) { index in
                             LocationListItem(
-                                location: $locations[index],
+                                location: $viewModel.locations[index],
                                 isFirst: index == 0,
                                 company: keyword,
-                                onTap: {
-                                    viewModel.company = locations[index]
-                                    viewModel.isCompanyValid = true
-
-                                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                                        viewModel.isSearchViewAppear = false
-                                    }
-                                }
+                                onTap: { viewModel.onTappedLocation(index) }
                             )
                         }
                     })
