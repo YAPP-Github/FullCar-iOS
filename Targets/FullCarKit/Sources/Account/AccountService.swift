@@ -14,6 +14,7 @@ public struct AccountService {
     public var login: (_ socialType: SocialType, _ request: AuthRequestable) async throws -> Void
     public var logout: () async throws -> Void
     public var leave: () async throws -> Void
+    public var register: (_ deviceToken: String) async throws -> Void
 }
 
 extension AccountService: DependencyKey {
@@ -49,6 +50,9 @@ extension AccountService: DependencyKey {
             leave: {
                 try await api.leave()
                 await tokenStorage.deleteToken()
+            },
+            register: { deviceToken in
+                try await api.register(deviceToken)
             }
         )
     }
@@ -70,7 +74,8 @@ extension AccountService: TestDependencyKey {
                 await tokenStorage.save(token: credential)
             },
             logout: { },
-            leave: { }
+            leave: { },
+            register: { _ in }
         )
     }
 }

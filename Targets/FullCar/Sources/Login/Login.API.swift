@@ -29,8 +29,14 @@ extension Login {
 
         private var continuation: CheckedContinuation<LoginResponse, Error>?
 
+        func registerDeviceToken() async {
+            @Dependency(\.deviceToken) var deviceToken
+            
+            try? await accountService.register(deviceToken.fetch())
+        }
+
         func performLogin(_ type: SocialType) async throws {
-            if let continuation {
+            if continuation != nil {
                 self.continuation = nil
             }
 
