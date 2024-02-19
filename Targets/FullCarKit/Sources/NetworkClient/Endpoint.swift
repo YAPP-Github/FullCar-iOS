@@ -108,13 +108,11 @@ extension Endpoint.Account.Login: URLRequestConfigurable {
     var parameters: Parameters? {
         switch self {
         case .kakao(let request): [
-            "token": request.token,
-            "deviceToken": request.deviceToken
+            "token": request.token
         ]
         case .apple(let request): [
             "authCode": request.authCode,
-            "idToken": request.idToken,
-            "deviceToken": request.deviceToken
+            "idToken": request.idToken
         ]
         }
     }

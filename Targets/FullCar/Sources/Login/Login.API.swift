@@ -57,19 +57,15 @@ extension Login {
         }
 
         private func createAuthRequest(_ type: SocialType, loginResponse: LoginResponse) throws -> AuthRequestable {
-            @Dependency(\.deviceToken) var deviceToken
-
             switch type {
             case .kakao:
                 return KakaoAuthRequest(
-                    token: loginResponse.token,
-                    deviceToken: try deviceToken.fetch()
+                    token: loginResponse.token
                 )
             case .apple:
                 return AppleAuthRequest(
                     authCode: loginResponse.authCode ?? "",
-                    idToken: loginResponse.token,
-                    deviceToken: try deviceToken.fetch()
+                    idToken: loginResponse.token
                 )
             }
         }
