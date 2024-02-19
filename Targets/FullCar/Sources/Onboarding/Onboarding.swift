@@ -119,10 +119,6 @@ extension Onboarding.ViewModel {
             try await onboardingAPI.send(email: email)
 
             isEmailAddressValid = true
-
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                self.authCodeTextFieldState = .focus
-            }
         } catch {
             print(error)
             isEmailRequestSent = false

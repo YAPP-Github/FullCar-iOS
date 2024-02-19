@@ -14,11 +14,13 @@ extension Onboarding.Email {
     struct TextFieldView: View {
         @Bindable var viewModel: Onboarding.ViewModel
 
+        @FocusState private var isEmailTextFieldFocused: Bool
+
         var body: some View {
             bodyView
                 .onAppear {
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                        viewModel.emailTextFieldState = .focus
+                        isEmailTextFieldFocused = true
                     }
                 }
         }
@@ -27,6 +29,7 @@ extension Onboarding.Email {
             FCTextFieldView(
                 textField: {
                     TextField("\("gildong@fullcar.com")", text: $viewModel.email)
+                        .focused($isEmailTextFieldFocused)
                         .textFieldStyle(.fullCar(
                             type: .check($viewModel.isEmailValid),
                             state: $viewModel.emailTextFieldState)
@@ -50,14 +53,22 @@ extension Onboarding.Email {
     struct AuthCodeView: View {
         @Bindable var viewModel: Onboarding.ViewModel
 
+        @FocusState private var isAuthCodeTextFieldFocused: Bool
+        
         var body: some View {
             bodyView
+                .onAppear {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                        self.isAuthCodeTextFieldFocused = true
+                    }
+                }
         }
 
         private var bodyView: some View {
             FCTextFieldView(
                 textField: {
-                    TextField("인증번호 6자리를 입력해 주세요.", text: $viewModel.authenticationCode)
+                    TextField("인증번호 6자리를 입력해 주세요.", 
+                              text: $viewModel.authenticationCode)
                         .textFieldStyle(.fullCar(
                             state: $viewModel.authCodeTextFieldState,
                             padding: 16)
