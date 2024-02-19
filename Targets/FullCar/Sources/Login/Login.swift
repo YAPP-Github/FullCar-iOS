@@ -25,6 +25,8 @@ extension Login {
         @ObservationIgnored
         @Dependency(\.onbardingAPI) private var onboardingAPI
 
+        var isShowLoginErrorAlert: Bool = false
+
         private let throttler = Throttler(duration: 2)
 
         func loginButtonTapped(for type: SocialType) async {
@@ -47,7 +49,7 @@ extension Login {
                 print("[✅][LoginViewModel.swift] -> 로그인 성공!")
                 #endif
             } catch {
-                fullCar.appState = .login
+                isShowLoginErrorAlert = true
 
                 #if DEBUG
                 print("[🆘][LoginViewModel.swift] -> 로그인 실패 : \(error)")
@@ -65,6 +67,13 @@ extension Login {
         var body: some View {
             bodyView
                 .padding(.horizontal, 20)
+                .alert(
+                    "로그인할 수 없음",
+                    isPresented: $viewModel.isShowLoginErrorAlert,
+                    actions: {
+                        Button(action: { }, label: { Text("확인") })
+                    },
+                    message: { Text("에러가 발생했어요. 다시 시도해주세요.") })
         }
 
         private var bodyView: some View {
@@ -106,7 +115,6 @@ extension Login {
         private func loginButton(for type: SocialType) -> some View {
             Button {
                 Task {
-                    print("test/ Login.View 로그인 버튼 눌림")
                     await viewModel.loginButtonTapped(for: type)
                 }
             } label: {

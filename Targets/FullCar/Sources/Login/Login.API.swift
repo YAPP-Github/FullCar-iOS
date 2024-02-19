@@ -132,8 +132,6 @@ extension Login.API: ASAuthorizationControllerDelegate {
             return
         }
 
-        print("auth Token 입니다~ \(authCode)")
-
         continuation?.resume(returning: (idToken, authCode))
         continuation = nil
     }
