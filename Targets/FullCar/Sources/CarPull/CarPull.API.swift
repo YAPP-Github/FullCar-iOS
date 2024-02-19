@@ -17,7 +17,7 @@ import XCTestDynamicOverlay
 extension CarPull {
     struct API {
         private var fetch: @Sendable (Int, Int) async throws -> CommonResponse<Model.Fetch>
-        private var register: @Sendable (String, String, Int, String, String?) async throws  -> Model.Information
+        private var register: @Sendable (String, String, Int, String, String?) async throws  -> CommonResponse<Model.Information>
         
         func fetch(page: Int, size: Int = 20) async throws -> CommonResponse<Model.Fetch> {
             return try await self.fetch(page, size)
@@ -31,7 +31,7 @@ extension CarPull {
             content: String,
             moodType: Driver.Mood?
         ) async throws -> Model.Information {
-            return try await self.register(pickupLocation, periodType.rawValue, money, content, moodType?.rawValue)
+            return try await self.register(pickupLocation, periodType.rawValue, money, content, moodType?.rawValue).data
         }
     }
 }
@@ -101,7 +101,7 @@ extension CarPull.API: DependencyKey {
             _,
             _,
             _ in
-            return .init(
+            return .init(status: 200, message: "", data: .init(
                 id: 200,
                 pickupLocation: "장지역 2번 출구",
                 periodType: .once,
@@ -115,7 +115,7 @@ extension CarPull.API: DependencyKey {
                 gender: .male,
                 resultMessage: nil,
                 createdAt: .now
-            )
+            ))
         }
     )
     #endif
