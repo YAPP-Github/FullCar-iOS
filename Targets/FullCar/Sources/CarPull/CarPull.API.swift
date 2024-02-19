@@ -31,7 +31,7 @@ extension CarPull {
             content: String,
             moodType: Driver.Mood?
         ) async throws -> Model.Information {
-            return try await self.register(pickupLocation, periodType.rawValue, money, content, moodType?.description)
+            return try await self.register(pickupLocation, periodType.rawValue, money, content, moodType?.rawValue)
         }
     }
 }
