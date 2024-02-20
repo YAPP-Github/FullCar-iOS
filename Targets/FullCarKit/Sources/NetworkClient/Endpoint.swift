@@ -24,6 +24,7 @@ public extension Endpoint {
         )
         case fetchMyCarPulls
         case deleteCarpull(id: Int64)
+        case patchCarpull(id: Int64)
     }
 
     enum Account {
@@ -175,14 +176,14 @@ extension Endpoint.Car: URLRequestConfigurable {
 extension Endpoint.CarPull: URLRequestConfigurable {
     public var url: URLConvertible {
         switch self {
-        case .fetch, .register, .fetchMyCarPulls, .deleteCarpull: return "http://43.200.176.240:8080"
+        case .fetch, .register, .fetchMyCarPulls, .deleteCarpull, .patchCarpull: return "http://43.200.176.240:8080"
         }
     }
     
     public var path: String? {
         switch self {
         case .fetch, .register: return "/api/v1/carpools"
-        case .deleteCarpull(let id): return "/api/v1/carpools/\(id)"
+        case .deleteCarpull(let id), .patchCarpull(let id): return "/api/v1/carpools/\(id)"
         case .fetchMyCarPulls: return "api/v1/my-carpools"
         }
     }
@@ -192,6 +193,7 @@ extension Endpoint.CarPull: URLRequestConfigurable {
         case .fetch, .fetchMyCarPulls : return .get
         case .register: return .post
         case .deleteCarpull: return .delete
+        case .patchCarpull: return .patch
         }
     }
     
@@ -222,20 +224,22 @@ extension Endpoint.CarPull: URLRequestConfigurable {
             }
         case .fetchMyCarPulls:
             return nil
-        case .deleteCarpull(let id):
+        case .deleteCarpull:
+            return nil
+        case .patchCarpull:
             return nil
         }
     }
     
     public var headers: [Header]? {
         switch self {
-        case .fetch, .register, .fetchMyCarPulls, .deleteCarpull: return nil
+        case .fetch, .register, .fetchMyCarPulls, .deleteCarpull, .patchCarpull: return nil
         }
     }
     
     public var encoder: ParameterEncodable {
         switch self {
-        case .fetch, .fetchMyCarPulls, .deleteCarpull: return URLEncoding()
+        case .fetch, .fetchMyCarPulls, .deleteCarpull, .patchCarpull: return URLEncoding()
         case .register: return JSONEncoding()
         }
     }

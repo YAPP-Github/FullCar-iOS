@@ -38,6 +38,7 @@ final class CarPullDetailViewModel {
     var actionSheetOpen: Bool = false
     var alertOpen: Bool = false
     var deleteDoneAlertOpen: Bool = false
+    var isFinishedAlertOpen: Bool = false
     
     init(
         openType: CarPullDetailOpenType = .Home,
@@ -73,6 +74,18 @@ final class CarPullDetailViewModel {
                                                peroidType: carPull.periodType.rawValue,
                                                money: carPull.money,
                                                content: carPull.content ?? "")
+        } catch {
+            print("error", error.localizedDescription)
+        }
+    }
+    
+    func patchAction(id: Int64) async {
+        do {
+            let _ = try await callListAPI.patchCarpull(formId: id)
+            
+            await MainActor.run {
+                isFinishedAlertOpen = true
+            }
         } catch {
             print("error", error.localizedDescription)
         }

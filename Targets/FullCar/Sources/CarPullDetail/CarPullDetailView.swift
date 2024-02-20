@@ -56,6 +56,13 @@ struct CarPullDetailView: View {
                            viewModel.onBackButtonTapped()
                        }))
                    }
+            .alert("카풀을 마강하시겠어요?", isPresented: $viewModel.isFinishedAlertOpen, actions: {
+                Button(role: .destructive, action: {
+                    Task { await viewModel.patchAction(id: viewModel.carPull.id) }
+                }, label: {
+                    Text("마감하기")
+                })
+            })
             .alert(viewModel.openType == .Home ? "카풀 게시글을 신고하시겠어요?" : "카풀을 삭제 하시겠어요?", isPresented: $viewModel.alertOpen, actions: {
                 Button(role: .destructive, action: {
                     switch viewModel.openType {
@@ -104,8 +111,15 @@ struct CarPullDetailView: View {
     }
     
     private var beginRequestButton: some View {
-        Button { Task { await viewModel.beginRequestButtonTapped() } } 
-        label: { Text("탑승요청") }
+        Button {
+            switch viewModel.openType {
+            case .MyPage:
+                viewModel.isFinishedAlertOpen = true
+            case .Home:
+                Task { await viewModel.beginRequestButtonTapped() }
+            }
+        }
+    label: { Text(viewModel.openType == .Home ? "탑승요청" : "마감하기") }
         .buttonStyle(
             .fullCar(
                 font: .pretendard17(.bold),
