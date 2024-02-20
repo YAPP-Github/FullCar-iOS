@@ -23,7 +23,9 @@ struct MyCarPullItemView: View {
                     .font(.pretendard17(.bold))
                     .foregroundStyle(Color.black80)
                 
-                FCBadge(postState: .recruite)
+                Spacer()
+                
+                FCBadge(postState: item.carpoolState?.postStateValue ?? .close)
             }
             
             HStack(spacing: 8) {
@@ -57,5 +59,30 @@ struct MyCarPullItemView: View {
         .padding(.top, 20)
         .padding(.horizontal, 20)
         
+    }
+    
+    var statusBadgeView: some View {
+        ZStack {
+            RoundedRectangle(cornerRadius: 3)
+                .foregroundStyle(getColor(back: true))
+            Text(item.formState?.description ?? "")
+                .foregroundStyle(getColor())
+                .font(.system(size: 12))
+                .bold()
+                .padding(.vertical, 5)
+                .padding(.horizontal, 8)
+        }
+        .fixedSize()
+    }
+    
+    func getColor(back: Bool = false) -> Color {
+        switch item.formState ?? .REQUEST {
+        case .REQUEST:
+            return back ? .fullCar_secondary : .fullCar_primary
+        case .ACCEPT:
+            return back ? .green50 : .green100
+        case .REJECT:
+            return back ? .red50 : .red100
+        }
     }
 }

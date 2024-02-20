@@ -26,7 +26,7 @@ extension CarPull {
         private var bodyView: some View {
             VStack(alignment: .leading, spacing: .zero) { 
                 HStack(spacing: .zero) {
-                    Text(carPull.companyName)
+                    Text(carPull.companyName ?? "")
                         .font(.pretendard14(.semibold))
                         .lineLimit(1)
                         .foregroundStyle(Color.fullCar_primary)

@@ -30,7 +30,7 @@ extension CarPull {
             let formState: FormStateType?
             let carpoolState: CarPoolStateType?
             let nickname: String?
-            let companyName: String
+            let companyName: String?
             let gender: Driver.Gender?
             let resultMessage: ResultMessage?
             let createdAt: String
@@ -92,7 +92,7 @@ extension CarPull {
                 self.formState = try? container.decode(FormStateType?.self, forKey: .formState) ?? .none
                 self.carpoolState = try? container.decode(CarPoolStateType?.self, forKey: .carpoolState) ?? .none
                 self.nickname = try? container.decode(String?.self, forKey: .nickname) ?? nil
-                self.companyName = try container.decode(String.self, forKey: .companyName)
+                self.companyName = try? container.decode(String?.self, forKey: .companyName) ?? .none
                 self.gender = try? container.decode(Driver.Gender?.self, forKey: .gender) ?? .none
                 self.resultMessage = try? container.decode(ResultMessage?.self, forKey: .resultMessage) ?? .none
                 self.createdAt = try container.decode(String.self, forKey: .createdAt)
@@ -132,6 +132,15 @@ extension CarPull {
                     return "모집중"
                 case .CLOSE:
                     return "마감"
+                }
+            }
+            
+            var postStateValue: PostState {
+                switch self {
+                case .CLOSE:
+                    return .close
+                case .OPEN:
+                    return .recruite
                 }
             }
         }

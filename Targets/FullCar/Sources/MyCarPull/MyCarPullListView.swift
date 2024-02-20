@@ -17,8 +17,10 @@ struct MyCarPullListView: View {
     @Environment(\.dismiss) private var dismiss
     
     @Bindable var viewModel: MyCarPullListViewModel
+    @Binding var paths: [MyPage.ViewModel.Destination]
     
     var body: some View {
+        
         _body
         .navigationBarStyle(
             leadingView: {
@@ -35,6 +37,7 @@ struct MyCarPullListView: View {
                 Text("내카풀")
                     .font(.pretendard18(.bold))
             }, trailingView: {
+                
             }
         )
         .task {
@@ -46,10 +49,24 @@ struct MyCarPullListView: View {
         ScrollView {
             LazyVGrid(columns: [GridItem()], content: {
                 ForEach(viewModel.myCarPullList, id:\.id) { item in
-                    MyCarPullItemView(item: item,
-                                      isLast: item.id == viewModel.myCarPullList.last?.id)
+                    Button(action: {
+                        moveCarpullDetail(item)
+                    }, label: {
+                        MyCarPullItemView(item: item,
+                                          isLast: item.id == viewModel.myCarPullList.last?.id)
+                    })
+                    
                 }
             })
         }
+    }
+    
+    func moveCarpullDetail(_ item: CarPull.Model.Information) {
+        let detailViewModel = CarPullDetailViewModel(carPull: item)
+        // TODO: 먼저 지워지는거 수정
+        detailViewModel.onBackButtonTapped = {
+            self.paths.removeLast()
+        }
+        paths.append(.detail(detailViewModel))
     }
 }

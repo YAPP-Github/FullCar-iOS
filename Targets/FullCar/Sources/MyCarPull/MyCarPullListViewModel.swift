@@ -23,6 +23,7 @@ final class MyCarPullListViewModel {
     
     var myCarPullList: [CarPull.Model.Information] = []
     
+    init() {}
     
     func fetch() async {
         do {
@@ -33,8 +34,6 @@ final class MyCarPullListViewModel {
             }
         } catch {
             print("error", error.localizedDescription)
-            
-            
         }
     }
 }

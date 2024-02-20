@@ -12,8 +12,11 @@ import FullCarKit
 import Observation
 
 struct CallListTabView: View {
-    
     @Binding var selection: FullCar.CallListTab
+    
+    @Binding var requests: [CarPull.Model.Information]
+    @Binding var receives: [CarPull.Model.Information]
+    
     @Namespace private var animation
     
     var body: some View {
@@ -36,12 +39,12 @@ struct CallListTabView: View {
                 VStack {
                     switch type {
                     case .request:
-                        Text("요청한 내역 \(0)")
+                        Text("요청한 내역 \(requests.count)")
                             .bold()
                             .foregroundStyle(selection == type ? .black : .gray.opacity(0.45))
                         
                     case .receive:
-                        Text("요청받은 내역 \(0)")
+                        Text("요청받은 내역 \(receives.count)")
                             .bold()
                             .foregroundStyle(selection == type ? .black : .gray.opacity(0.45))
                     }

@@ -46,7 +46,7 @@ struct CallListView: View {
     
     private var _body: some View {
         VStack(spacing: 0) {
-            CallListTabView(selection: $viewModel.selection)
+            CallListTabView(selection: $viewModel.selection, requests: $viewModel.sentData, receives: $viewModel.receiveData)
                 .padding(.top, 20)
             
             TabView(selection: $viewModel.selection,

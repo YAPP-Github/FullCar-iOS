@@ -57,7 +57,11 @@ final class CarPullDetailViewModel {
     
     func applyFullCar() async {
         do {
-            try await callListAPI.applyCarpull(formId: carPull.id, pickupLocation: carPull.pickupLocation, peroidType: carPull.periodType.rawValue, money: carPull.money, content: carPull.content ?? "")
+            try await callListAPI.applyCarpull(formId: carPull.id,
+                                               pickupLocation: carPull.pickupLocation,
+                                               peroidType: carPull.periodType.rawValue,
+                                               money: carPull.money,
+                                               content: carPull.content ?? "")
         } catch {
             print("error", error.localizedDescription)
         }
