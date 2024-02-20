@@ -11,10 +11,17 @@ import Observation
 import Dependencies
 import XCTestDynamicOverlay
 
+
+
 @MainActor
 @Observable
 final class CarPullDetailViewModel {
     @ObservationIgnored @Dependency(\.callListAPI) private var callListAPI
+    
+    enum CarPullDetailOpenType {
+        case MyPage
+        case Home
+    }
     
     enum RequestStatus {
         case beforeBegin
@@ -22,6 +29,7 @@ final class CarPullDetailViewModel {
         case applyAlready
     }
     
+    var openType: CarPullDetailOpenType
     var requestStatus: RequestStatus
     let carPull: CarPull.Model.Information
     var information: Car.Information?
@@ -29,11 +37,14 @@ final class CarPullDetailViewModel {
     
     var actionSheetOpen: Bool = false
     var alertOpen: Bool = false
+    var deleteDoneAlertOpen: Bool = false
     
     init(
+        openType: CarPullDetailOpenType = .Home,
         requestStatus: RequestStatus = .beforeBegin,
         carPull: CarPull.Model.Information
     ) {
+        self.openType = openType
         self.requestStatus = requestStatus
         self.carPull = carPull
     }
@@ -64,6 +75,18 @@ final class CarPullDetailViewModel {
                                                content: carPull.content ?? "")
         } catch {
             print("error", error.localizedDescription)
+        }
+    }
+    
+    func deleteAction(id: Int64) async {
+        do {
+            let _ = try await callListAPI.deleteCarpull(formId: id)
+            
+            await MainActor.run {
+                deleteDoneAlertOpen = true
+            }
+        } catch {
+            print("에러", error.localizedDescription)
         }
     }
 }

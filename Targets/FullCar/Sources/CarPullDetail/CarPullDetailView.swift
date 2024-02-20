@@ -45,18 +45,31 @@ struct CarPullDetailView: View {
                 }
             )
             .confirmationDialog("", isPresented: $viewModel.actionSheetOpen, titleVisibility: .hidden) {
-                Button("신고하기", role: .destructive) {
+                Button(viewModel.openType == .Home ? "신고하기" : "삭제하기", role: .destructive) {
                     viewModel.alertOpen = true
                 }
             }
-            .alert("카풀 게시글을 신고하시겠어요?", isPresented: $viewModel.alertOpen, actions: {
+            .alert(isPresented: $viewModel.deleteDoneAlertOpen) {
+                       Alert(title: Text("카풀 게시글이 삭제되었습니다."),
+                             message: nil,
+                             dismissButton: .default(Text("닫기"), action: {
+                           viewModel.onBackButtonTapped()
+                       }))
+                   }
+            .alert(viewModel.openType == .Home ? "카풀 게시글을 신고하시겠어요?" : "카풀을 삭제 하시겠어요?", isPresented: $viewModel.alertOpen, actions: {
                 Button(role: .destructive, action: {
-                    
+                    switch viewModel.openType {
+                    case .MyPage:
+                        Task { await viewModel.deleteAction(id: viewModel.carPull.id) }
+                    case .Home:
+                        //Task { await }
+                        break
+                    }
                 }, label: {
-                    Text("신고하기")
+                    Text(viewModel.openType == .Home ? "신고하기" : "삭제하기")
                 })
             }, message: {
-                Text("게시글 신고시 어쩌구 저쩌구 됩니다.")
+                Text(viewModel.openType == .Home ? "게시글 신고시 어쩌구 저쩌구 됩니다." : "카풀 삭제 시 복구가 불가능하며\n모든 요청이 거절 처리됩니다.")
             })
             .background(Color.white)
     }

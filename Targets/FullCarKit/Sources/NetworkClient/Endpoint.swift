@@ -23,6 +23,7 @@ public extension Endpoint {
             moodType: String?
         )
         case fetchMyCarPulls
+        case deleteCarpull(id: Int64)
     }
 
     enum Account {
@@ -174,13 +175,14 @@ extension Endpoint.Car: URLRequestConfigurable {
 extension Endpoint.CarPull: URLRequestConfigurable {
     public var url: URLConvertible {
         switch self {
-        case .fetch, .register, .fetchMyCarPulls: return "http://43.200.176.240:8080"
+        case .fetch, .register, .fetchMyCarPulls, .deleteCarpull: return "http://43.200.176.240:8080"
         }
     }
     
     public var path: String? {
         switch self {
         case .fetch, .register: return "/api/v1/carpools"
+        case .deleteCarpull(let id): return "/api/v1/carpools/\(id)"
         case .fetchMyCarPulls: return "api/v1/my-carpools"
         }
     }
@@ -189,6 +191,7 @@ extension Endpoint.CarPull: URLRequestConfigurable {
         switch self {
         case .fetch, .fetchMyCarPulls : return .get
         case .register: return .post
+        case .deleteCarpull: return .delete
         }
     }
     
@@ -219,18 +222,20 @@ extension Endpoint.CarPull: URLRequestConfigurable {
             }
         case .fetchMyCarPulls:
             return nil
+        case .deleteCarpull(let id):
+            return nil
         }
     }
     
     public var headers: [Header]? {
         switch self {
-        case .fetch, .register, .fetchMyCarPulls: return nil
+        case .fetch, .register, .fetchMyCarPulls, .deleteCarpull: return nil
         }
     }
     
     public var encoder: ParameterEncodable {
         switch self {
-        case .fetch, .fetchMyCarPulls: return URLEncoding()
+        case .fetch, .fetchMyCarPulls, .deleteCarpull: return URLEncoding()
         case .register: return JSONEncoding()
         }
     }

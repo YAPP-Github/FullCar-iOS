@@ -62,7 +62,7 @@ struct MyCarPullListView: View {
     }
     
     func moveCarpullDetail(_ item: CarPull.Model.Information) {
-        let detailViewModel = CarPullDetailViewModel(carPull: item)
+        let detailViewModel = CarPullDetailViewModel(openType: .MyPage, carPull: item)
         // TODO: 먼저 지워지는거 수정
         detailViewModel.onBackButtonTapped = {
             self.paths.removeLast()

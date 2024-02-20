@@ -52,7 +52,7 @@ final class HomeViewModel {
     
     func onCardTapped(_ carpull: CarPull.Model.Information) {
         guard paths.isEmpty else { return }
-        let detailViewModel = CarPullDetailViewModel(carPull: carpull)
+        let detailViewModel = CarPullDetailViewModel(openType: .Home, carPull: carpull)
         // TODO: 먼저 지워지는거 수정
         detailViewModel.onBackButtonTapped = { [weak self] in
             self?.paths.removeAll()
