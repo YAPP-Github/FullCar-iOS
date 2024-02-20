@@ -130,21 +130,20 @@ struct CallListDetailView: View {
             
             if viewModel.toggleOpen {
                 
-                CarPull.CardView(carPull: .init(id: 0,
-                                                pickupLocation: "봉천역",
-                                                periodType: .oneWeek,
-                                                money: 1000, content: "타이틀",
-                                                moodType: .quiet,
-                                                formState: .ACCEPT,
-                                                carpoolState: .OPEN,
-                                                nickname: "알뜰한 물개",
-                                                companyName: "회사이름", gender: .female, resultMessage: nil, createdAt: Date()))
+                CarPull.CardView(carPull: viewModel.carpullData)
                 
                 Rectangle()
                     .foregroundStyle(Color.gray10)
                     .frame(height: 8, alignment: .center)
                 
-                Car.InformationCardView(information: .init(id: 1, carNumber: "23루 4343", carName: "SUV", carBrand: "볼보", carColor: "화이트"))
+                if let _ = viewModel.carpullData.carNo {
+                    let carpullData = viewModel.carpullData
+                    Car.InformationCardView(information: .init(id: Int(carpullData.id),
+                                                               carNumber: carpullData.carNo ?? "",
+                                                               carName: carpullData.carName ?? "",
+                                                               carBrand: carpullData.carBrand ?? "",
+                                                               carColor: carpullData.carColor ?? ""))
+                }
             }
             
             Rectangle()
@@ -267,4 +266,5 @@ struct CallListDetailView: View {
             )
         )
     }
+    
 }

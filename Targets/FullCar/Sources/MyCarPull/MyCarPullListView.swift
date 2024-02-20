@@ -10,16 +10,20 @@ import SwiftUI
 import FullCarUI
 import FullCarKit
 
+
+@MainActor
 struct MyCarPullListView: View {
     
+    @Environment(\.dismiss) private var dismiss
+    
+    @Bindable var viewModel: MyCarPullListViewModel
     
     var body: some View {
-        
         _body
         .navigationBarStyle(
             leadingView: {
                 Button {
-                    //viewModel.onBackButtonTapped()
+                    dismiss()
                 } label: {
                     Image(icon: .back)
                         .resizable()
@@ -33,19 +37,19 @@ struct MyCarPullListView: View {
             }, trailingView: {
             }
         )
+        .task {
+            await viewModel.fetch()
+        }
     }
     
     private var _body: some View {
         ScrollView {
             LazyVGrid(columns: [GridItem()], content: {
-                MyCarPullItemView()
-                MyCarPullItemView()
-                MyCarPullItemView()
+                ForEach(viewModel.myCarPullList, id:\.id) { item in
+                    MyCarPullItemView(item: item,
+                                      isLast: item.id == viewModel.myCarPullList.last?.id)
+                }
             })
         }
     }
-}
-
-#Preview {
-    MyCarPullListView()
 }

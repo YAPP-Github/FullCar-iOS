@@ -16,5 +16,25 @@ import Dependencies
 @MainActor
 @Observable
 final class MyCarPullListViewModel {
+    @ObservationIgnored
+    @Dependency(\.myCarPullAPI) private var myCarPullAPI
     
+    let fullCar = FullCar.shared
+    
+    var myCarPullList: [CarPull.Model.Information] = []
+    
+    
+    func fetch() async {
+        do {
+            let value = try await myCarPullAPI.fetch()
+            
+            await MainActor.run {
+                self.myCarPullList = value.data
+            }
+        } catch {
+            print("error", error.localizedDescription)
+            
+            
+        }
+    }
 }

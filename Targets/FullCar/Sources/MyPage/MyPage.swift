@@ -100,7 +100,7 @@ extension MyPage {
             VStack(alignment: .leading, spacing: .zero) {
                 profile
 
-                navigationItemLink(Text("내카풀"), icon: .car, text: "내 카풀")
+                navigationItemLink(MyCarPullListView(viewModel: .init()), icon: .car, text: "내 카풀")
                 navigationItemLink(Text("차량 정보 관리"), icon: .userCard, text: "차량 정보 관리")
 
                 Divider()

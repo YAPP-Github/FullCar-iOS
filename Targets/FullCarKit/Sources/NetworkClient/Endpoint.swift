@@ -22,6 +22,7 @@ public extension Endpoint {
             content: String,
             moodType: String?
         )
+        case fetchMyCarPulls
     }
 
     enum Account {
@@ -38,9 +39,9 @@ public extension Endpoint {
     enum Form {
         case fetchSentForms
         case fetchReceivedForms
-        case getFormDetail(formId: Double)
-        case changeFormStatus(formId: Double, formState: String, contact: String, toPassenger: String?)
-        case applyCarpull(formId: Double, pickupLocation: String, periodType: String, money: Int, content: String)
+        case getFormDetail(formId: Int64)
+        case changeFormStatus(formId: Int64, formState: String, contact: String, toPassenger: String?)
+        case applyCarpull(formId: Int64, pickupLocation: String, periodType: String, money: Int, content: String)
     }
 
     enum Member {
@@ -173,19 +174,20 @@ extension Endpoint.Car: URLRequestConfigurable {
 extension Endpoint.CarPull: URLRequestConfigurable {
     public var url: URLConvertible {
         switch self {
-        case .fetch, .register: return "http://43.200.176.240:8080"
+        case .fetch, .register, .fetchMyCarPulls: return "http://43.200.176.240:8080"
         }
     }
     
     public var path: String? {
         switch self {
         case .fetch, .register: return "/api/v1/carpools"
+        case .fetchMyCarPulls: return "api/v1/my-carpools"
         }
     }
     
     public var method: HTTPMethod {
         switch self {
-        case .fetch: return .get
+        case .fetch, .fetchMyCarPulls : return .get
         case .register: return .post
         }
     }
@@ -215,18 +217,20 @@ extension Endpoint.CarPull: URLRequestConfigurable {
             } else {
                 return param
             }
+        case .fetchMyCarPulls:
+            return nil
         }
     }
     
     public var headers: [Header]? {
         switch self {
-        case .fetch, .register: return nil
+        case .fetch, .register, .fetchMyCarPulls: return nil
         }
     }
     
     public var encoder: ParameterEncodable {
         switch self {
-        case .fetch: return URLEncoding()
+        case .fetch, .fetchMyCarPulls: return URLEncoding()
         case .register: return JSONEncoding()
         }
     }

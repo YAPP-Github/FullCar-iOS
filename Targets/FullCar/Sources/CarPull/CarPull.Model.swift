@@ -21,7 +21,7 @@ extension CarPull {
         }
         
         struct Information: Decodable, Identifiable, Hashable {
-            let id: Double
+            let id: Int64
             let pickupLocation: String
             let periodType: PeriodType
             let money: Int
@@ -34,6 +34,10 @@ extension CarPull {
             let gender: Driver.Gender?
             let resultMessage: ResultMessage?
             let createdAt: String
+            let carNo: String?
+            let carName: String?
+            let carBrand: String?
+            let carColor: String?
             
             enum CodingKeys: String, CodingKey {
                 case id
@@ -49,9 +53,13 @@ extension CarPull {
                 case gender
                 case resultMessage
                 case createdAt
+                case carNo
+                case carName
+                case carBrand
+                case carColor
             }
             
-            init(id: Double, pickupLocation: String, periodType: PeriodType, money: Int, content: String, moodType: Driver.Mood?, formState: FormStateType?, carpoolState: CarPoolStateType?, nickname: String?, companyName: String, gender: Driver.Gender?, resultMessage: ResultMessage?, createdAt: Date) {
+            init(id: Int64, pickupLocation: String, periodType: PeriodType, money: Int, content: String, moodType: Driver.Mood?, formState: FormStateType?, carpoolState: CarPoolStateType?, nickname: String?, companyName: String, gender: Driver.Gender?, resultMessage: ResultMessage?, createdAt: Date, carNo: String? = nil, carName: String? = nil, carBrand: String? = nil, carColor: String? = nil) {
                 self.id = id
                 self.pickupLocation = pickupLocation
                 self.periodType = periodType
@@ -65,13 +73,17 @@ extension CarPull {
                 self.gender = gender
                 self.resultMessage = resultMessage
                 self.createdAt = createdAt.toString()
+                self.carNo = carNo
+                self.carName = carName
+                self.carBrand = carBrand
+                self.carColor = carColor
             }
             
             
             
             init(from decoder: Decoder) throws {
                 let container = try decoder.container(keyedBy: CodingKeys.self)
-                self.id = try container.decode(Double.self, forKey: .id)
+                self.id = try container.decode(Int64.self, forKey: .id)
                 self.pickupLocation = try container.decode(String.self, forKey: .pickupLocation)
                 self.periodType = try container.decode(PeriodType.self, forKey: .periodType)
                 self.money = try container.decode(Int.self, forKey: .money)
@@ -84,11 +96,15 @@ extension CarPull {
                 self.gender = try? container.decode(Driver.Gender?.self, forKey: .gender) ?? .none
                 self.resultMessage = try? container.decode(ResultMessage?.self, forKey: .resultMessage) ?? .none
                 self.createdAt = try container.decode(String.self, forKey: .createdAt)
+                self.carNo = try? container.decode(String?.self, forKey: .carNo) ?? .none
+                self.carName = try? container.decode(String?.self, forKey: .carName) ?? .none
+                self.carBrand = try? container.decode(String?.self, forKey: .carBrand) ?? .none
+                self.carColor = try? container.decode(String?.self, forKey: .carColor) ?? .none
             }
         }
         
         struct ResultMessage: Decodable, Hashable {
-            let contact: String
+            let contact: String?
             let toPassenger: String?
         }
         
@@ -142,7 +158,7 @@ extension CarPull {
 
 #if DEBUG
 extension CarPull.Model.Information {
-    static func mock(with id: Double = Double.random(in: 0...100000)) -> Self {
+    static func mock(with id: Int64 = Int64.random(in: 0...100000)) -> Self {
         return .init(
             id: id,
             pickupLocation: "서울대입구",
@@ -156,7 +172,11 @@ extension CarPull.Model.Information {
             companyName: "카카오페이",
             gender: .female,
             resultMessage: nil,
-            createdAt: .now
+            createdAt: .now,
+            carNo: nil,
+            carName: nil,
+            carBrand: nil,
+            carColor: nil
         )
     }
 }

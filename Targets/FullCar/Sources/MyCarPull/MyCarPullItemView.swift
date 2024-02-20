@@ -11,12 +11,14 @@ import FullCarUI
 
 struct MyCarPullItemView: View {
     
+    var item: CarPull.Model.Information
+    
     var isLast: Bool = false
     
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             HStack(spacing: 30) {
-                Text("봉천역 2번출구에서 출발할게요 어쩌ㅇㅇㅁㄴㅇㄴㅁㅇㅁㅇdsdsdsds")
+                Text(item.pickupLocation)
                     .lineLimit(1)
                     .font(.pretendard17(.bold))
                     .foregroundStyle(Color.black80)
@@ -29,13 +31,13 @@ struct MyCarPullItemView: View {
                     .font(.pretendard14(.semibold))
                     .foregroundStyle(Color.gray50)
                 
-                Text("48,000원 · 1주간")
+                Text("\(item.money)원 • \(item.periodType.description)")
                     .font(.pretendard14(.semibold))
                     .foregroundStyle(Color.black80)
                 
                 Spacer()
                 
-                Text("12월 28일")
+                Text(item.createdAt.toDate())
                     .font(.pretendard14(.medium))
                     .foregroundStyle(Color.gray50)
             }
@@ -56,8 +58,4 @@ struct MyCarPullItemView: View {
         .padding(.horizontal, 20)
         
     }
-}
-
-#Preview {
-    MyCarPullItemView()
 }

@@ -31,14 +31,8 @@ extension CarPull {
                         .lineLimit(1)
                         .foregroundStyle(Color.fullCar_primary)
                     Spacer()
-                    FCBadge.init(
-                        title: carPull.carpoolState?.description ?? "모집중",
-                        badgeConfigurable: .init(
-                            font: .pretendard12(.bold),
-                            style: carPull.carpoolState == .OPEN ? .palette(.primary_secondary) : .palette(.gray60)
-                        ),
-                        iconConfigurable: .init(location: .none)
-                    )
+                    
+                    statusBadgeView
                 }
                 .padding(.bottom, 14)
                 
@@ -79,7 +73,34 @@ extension CarPull {
                 }
             }
         }
+        
+        var statusBadgeView: some View {
+            ZStack {
+                RoundedRectangle(cornerRadius: 3)
+                    .foregroundStyle(getColor(back: true))
+                Text(carPull.formState?.description ?? "")
+                    .foregroundStyle(getColor())
+                    .font(.system(size: 12))
+                    .bold()
+                    .padding(.vertical, 5)
+                    .padding(.horizontal, 8)
+            }
+            .fixedSize()
+        }
+        
+        func getColor(back: Bool = false) -> Color {
+            switch carPull.formState ?? .REQUEST {
+            case .REQUEST:
+                return back ? .fullCar_secondary : .fullCar_primary
+            case .ACCEPT:
+                return back ? .green50 : .green100
+            case .REJECT:
+                return back ? .red50 : .red100
+            }
+        }
     }
+    
+    
 }
 
 #if DEBUG
