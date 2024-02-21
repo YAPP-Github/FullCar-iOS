@@ -35,6 +35,7 @@ struct FullCarTabView: View {
     var body: some View {
         TabView(selection: $viewModel.tabSelection) {
             HomeView(viewModel: viewModel.homeViewModel)
+                .transition(.opacity.animation(.spring))
                 .tabItem {
                     if viewModel.tabSelection == .home {
                         Image("ic_home_selected", bundle: .main)
@@ -48,6 +49,7 @@ struct FullCarTabView: View {
                 .tag(FullCar.Tab.home)
             
             CarPullRegisterView(viewModel: viewModel.carPullRegisterViewModel)
+                .transition(.opacity.animation(.spring))
                 .tabItem { 
                     if viewModel.tabSelection == .register {
                         Image("ic_carpull_register_selected", bundle: .main)
@@ -61,6 +63,7 @@ struct FullCarTabView: View {
                 .tag(FullCar.Tab.register)
 
             CallListView(viewModel: viewModel.callListViewModel)
+                .transition(.opacity.animation(.spring))
                 .tabItem { 
                     if viewModel.tabSelection == .requestList {
                         Image("ic_request_list_selected", bundle: .main)
@@ -74,6 +77,7 @@ struct FullCarTabView: View {
                 .tag(FullCar.Tab.requestList)
             
             MyPage.BodyView(viewModel: viewModel.myPageViewModel)
+                .transition(.opacity.animation(.spring))
                 .tabItem { 
                     if viewModel.tabSelection == .myPage {
                         Image("ic_mypage_selected", bundle: .main)
