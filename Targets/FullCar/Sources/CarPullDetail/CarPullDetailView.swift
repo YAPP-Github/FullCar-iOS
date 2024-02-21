@@ -56,7 +56,7 @@ struct CarPullDetailView: View {
                            viewModel.onBackButtonTapped()
                        }))
                    }
-            .alert("카풀을 마강하시겠어요?", isPresented: $viewModel.isFinishedAlertOpen, actions: {
+            .alert("카풀을 마감하시겠어요?", isPresented: $viewModel.isFinishedAlertOpen, actions: {
                 Button(role: .destructive, action: {
                     Task { await viewModel.patchAction(id: viewModel.carPull.id) }
                 }, label: {
