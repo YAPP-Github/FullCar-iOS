@@ -12,13 +12,7 @@ import Dependencies
 import FullCarUI
 import FullCarKit
 
-struct MyPage {
-    enum MyCarpool { }
-    enum MyCar { }
-    enum Question { }
-    enum TermsAndPolicies { }
-    enum Setting { }
-}
+struct MyPage { }
 
 extension MyPage {
     @MainActor
@@ -36,6 +30,9 @@ extension MyPage {
         enum Destination: Hashable {
             case myCarpull
             case detail(CarPullDetailViewModel)
+            case question
+            case termsAndPolicies
+            case setting
         }
         
         var paths: [Destination] = []
@@ -77,6 +74,21 @@ extension MyPage {
 //            }
             paths.append(.myCarpull)
         }
+
+        func moveSetting() {
+            guard paths.isEmpty else { return }
+            paths.append(.setting)
+        }
+
+        func moveQuestionLink() {
+            guard paths.isEmpty else { return }
+            paths.append(.question)
+        }
+
+        func moveTermsAndPolicies() {
+            guard paths.isEmpty else { return }
+            paths.append(.termsAndPolicies)
+        }
     }
 }
 
@@ -116,6 +128,13 @@ extension MyPage {
                             MyCarPullListView(viewModel: .init(), paths: $viewModel.paths)
                         case let .detail(detailViewModel):
                             CarPullDetailView(viewModel: detailViewModel)
+                        case .question:
+                            MyPage.Question.BodyView()
+                        case .termsAndPolicies:
+                            let url = "https://www.notion.so/yapp-workspace/a8463163f86b4d58af2434aac213bb42"
+                            WebView(url: url)
+                        case .setting:
+                            MyPage.Setting.BodyView(viewModel: viewModel)
                         }
                     }
             }
@@ -126,16 +145,16 @@ extension MyPage {
                 profile
 
                 listButton(destination: .myCarpull, icon: .car, text: "내 카풀")
-                navigationItemLink(Text("차량 정보 관리"), icon: .userCard, text: "차량 정보 관리")
+//                navigationItemLink(Text("차량 정보 관리"), icon: .userCard, text: "차량 정보 관리")
 
                 Divider()
                     .overlay(Color.gray30)
                     .padding(.horizontal, 20)
                     .padding(.vertical, 10)
                 
-                navigationItemLink(Text("1:1 문의"), icon: .chat, text: "1:1 문의")
-                navigationItemLink(Text("약관 및 정책"), icon: .shield_check, text: "약관 및 정책")
-                navigationItemLink(MyPage.Setting.BodyView(viewModel: viewModel), icon: .setting, text: "설정")
+                listButton(destination: .question, icon: .chat, text: "1:1 문의")
+                listButton(destination: .termsAndPolicies, icon: .shield_check, text: "약관 및 정책")
+                listButton(destination: .setting, icon: .setting, text: "설정")
             }
         }
 
@@ -156,35 +175,6 @@ extension MyPage {
                     .overlay(Color.gray10)
             }
         }
-
-        private func navigationItemLink<Destination: View>(
-            _ destination: Destination,
-            icon: FCIcon.Symbol,
-            text: String
-        ) -> some View {
-            NavigationLink(destination: destination) {
-                HStack(alignment: .center, spacing: 6) {
-                    Image(icon: icon)
-                        .renderingMode(.template)
-                        .resizable()
-                        .frame(iconSize: ._24)
-                        .foregroundStyle(Color.black80)
-
-                    Text(text)
-                        .font(.pretendard16(.medium))
-                        .foregroundStyle(Color.black80)
-
-                    Spacer()
-
-                    Image(icon: .chevron_right)
-                        .frame(iconSize: ._20)
-                        .foregroundStyle(Color.gray60)
-                }
-                .padding(.horizontal, 20)
-                .padding(.top, 16)
-                .padding(.bottom, 18)
-            }
-        }
         
         private func listButton(destination: MyPage.ViewModel.Destination, icon: FCIcon.Symbol, text: String) -> some View {
             Button(action: {
@@ -192,6 +182,12 @@ extension MyPage {
                 //case .detail(l)
                 case .myCarpull:
                     viewModel.moveMyCarPull()
+                case .question:
+                    viewModel.moveQuestionLink()
+                case .termsAndPolicies:
+                    viewModel.moveTermsAndPolicies()
+                case .setting:
+                    viewModel.moveSetting()
                 default:
                     break
                 }

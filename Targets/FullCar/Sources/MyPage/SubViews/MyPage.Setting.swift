@@ -9,6 +9,10 @@
 import SwiftUI
 import FullCarUI
 
+extension MyPage {
+    enum Setting { }
+}
+
 extension MyPage.Setting {
     @MainActor
     struct BodyView: View {
