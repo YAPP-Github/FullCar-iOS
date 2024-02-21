@@ -47,18 +47,30 @@ struct MyCarPullListView: View {
     
     private var _body: some View {
         ScrollView {
-            LazyVGrid(columns: [GridItem()], content: {
-                ForEach(viewModel.myCarPullList, id:\.id) { item in
-                    Button(action: {
-                        moveCarpullDetail(item)
-                    }, label: {
-                        MyCarPullItemView(item: item,
-                                          isLast: item.id == viewModel.myCarPullList.last?.id)
-                    })
-                    
-                }
-            })
+            if viewModel.myCarPullList.isEmpty {
+                errorView(imageName: "myCarpullisEmpty")
+            } else {
+                LazyVGrid(columns: [GridItem()], content: {
+                    ForEach(viewModel.myCarPullList, id:\.id) { item in
+                        Button(action: {
+                            moveCarpullDetail(item)
+                        }, label: {
+                            MyCarPullItemView(item: item,
+                                              isLast: item.id == viewModel.myCarPullList.last?.id)
+                        })
+                        
+                    }
+                })
+            }
         }
+    }
+    
+    private func errorView(imageName: String) -> some View {
+        VStack(spacing: .zero) {
+            Image(imageName)
+                .padding(.top, 160)
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
     
     func moveCarpullDetail(_ item: CarPull.Model.Information) {

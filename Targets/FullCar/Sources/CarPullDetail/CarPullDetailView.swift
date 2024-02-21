@@ -56,6 +56,13 @@ struct CarPullDetailView: View {
                            viewModel.onBackButtonTapped()
                        }))
                    }
+            .alert(isPresented: $viewModel.acceptAlertOpen) {
+                Alert(title: Text("탑승 요청이 완료되었습니다."),
+                             message: nil,
+                             dismissButton: .default(Text("닫기"), action: {
+                           viewModel.onBackButtonTapped()
+                       }))
+                   }
             .alert("카풀을 마감하시겠어요?", isPresented: $viewModel.isFinishedAlertOpen, actions: {
                 Button(role: .destructive, action: {
                     Task { await viewModel.patchAction(id: viewModel.carPull.id) }

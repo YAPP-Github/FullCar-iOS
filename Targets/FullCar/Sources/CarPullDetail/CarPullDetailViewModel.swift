@@ -39,6 +39,7 @@ final class CarPullDetailViewModel {
     var alertOpen: Bool = false
     var deleteDoneAlertOpen: Bool = false
     var isFinishedAlertOpen: Bool = false
+    var acceptAlertOpen: Bool = false
     
     init(
         openType: CarPullDetailOpenType = .Home,
@@ -68,7 +69,7 @@ final class CarPullDetailViewModel {
             
             await MainActor.run {
                 requestStatus = .applyAlready
-                onBackButtonTapped()
+                acceptAlertOpen = true
             }
         } catch {
             print("error", error.localizedDescription)
