@@ -32,14 +32,22 @@ extension CarPull {
                         .foregroundStyle(Color.fullCar_primary)
                     Spacer()
                     
-                    FCBadge(
-                        title: (carPull.carpoolState ?? .CLOSE).description,
-                        badgeConfigurable: .init(
-                            font: .pretendard12(.bold),
-                            style: carPull.carpoolState == .OPEN ? .palette(.primary_secondary) : .palette(.gray60)
-                        ),
-                        iconConfigurable: .init(location: .none)
-                    )
+                    if let carpoolState = carPull.carpoolState {
+                        FCBadge(
+                            title: carpoolState.description,
+                            badgeConfigurable: .init(
+                                font: .pretendard12(.bold),
+                                style: carPull.carpoolState == .OPEN ? .palette(.primary_secondary) : .palette(.gray60)
+                            ),
+                            iconConfigurable: .init(location: .none)
+                        )
+                    } else if let formState = carPull.formState {
+                        FCBadge(title: formState.description,
+                                badgeConfigurable: .init(font: .pretendard12(.bold), style: .palette(getColor())),
+                                iconConfigurable: .init(location: .none))
+                    }
+                    
+                    
                 }
                 .padding(.bottom, 14)
                 
@@ -81,14 +89,14 @@ extension CarPull {
             }
         }
         
-        func getColor(back: Bool = false) -> Color {
+        func getColor() -> ColorStyle.Palette {
             switch carPull.formState ?? .REQUEST {
             case .REQUEST:
-                return back ? .fullCar_secondary : .fullCar_primary
+                return .primary_secondary
             case .ACCEPT:
-                return back ? .green50 : .green100
+                return .green
             case .REJECT:
-                return back ? .red50 : .red100
+                return .red
             }
         }
     }
