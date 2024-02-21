@@ -38,6 +38,7 @@ public let mainTarget: Target = .init(
                 "NSAllowsArbitraryLoads": true
             ],
             "UIBackgroundModes": ["remote-notification"],
+            "UISupportedInterfaceOrientations": ["UIInterfaceOrientationPortrait"],
         ]
     ),
     sources: ["Sources/**"],

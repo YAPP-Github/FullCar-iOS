@@ -27,6 +27,9 @@ extension Login {
 
         var isShowLoginErrorAlert: Bool = false
 
+        let privacyURL: String = "https://www.notion.so/yapp-workspace/1eca7b9677384ce2a1b07b1cd51fa7af"
+        let serviceURL: String = "https://www.notion.so/yapp-workspace/a8463163f86b4d58af2434aac213bb42"
+
         private let throttler = Throttler(duration: 2)
 
         func loginButtonTapped(for type: SocialType) async {
@@ -175,7 +178,7 @@ extension Login {
                     Text("회원가입 시 ")
 
                     Button(action: {
-                        let url = URL(string: "https://www.notion.so/yapp-workspace/1eca7b9677384ce2a1b07b1cd51fa7af")
+                        let url = URL(string: viewModel.privacyURL)
                         openURL(url!)
                     }, label: {
                         Text("<개인정보 처리방침>")
@@ -184,7 +187,7 @@ extension Login {
                     Text(" 및")
 
                     Button(action: {
-                        let url = URL(string: "https://www.notion.so/yapp-workspace/a8463163f86b4d58af2434aac213bb42")
+                        let url = URL(string: viewModel.serviceURL)
                         openURL(url!)
                     }, label: {
                         Text("<서비스 이용약관>에")

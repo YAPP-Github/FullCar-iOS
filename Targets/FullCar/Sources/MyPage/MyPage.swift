@@ -28,7 +28,7 @@ extension MyPage {
         var isShowLogoutErrorAlert = false
         
         enum Destination: Hashable {
-            case myCarpull
+            case myCarpull(MyCarPullListViewModel)
             case detail(CarPullDetailViewModel)
             case question
             case termsAndPolicies
@@ -36,6 +36,8 @@ extension MyPage {
         }
         
         var paths: [Destination] = []
+
+        let termsURL: String = "https://www.notion.so/yapp-workspace/a8463163f86b4d58af2434aac213bb42"
 
         func logout() async {
             do {
@@ -67,12 +69,15 @@ extension MyPage {
         
         func moveMyCarPull() {
             guard paths.isEmpty else { return }
-            let detailViewModel = MyCarPullListViewModel()
-            // TODO: 먼저 지워지는거 수정
-//            detailViewModel.onBackButtonTapped = {
-//                self.paths.removeAll()
-//            }
-            paths.append(.myCarpull)
+            let vm = MyCarPullListViewModel()
+            vm.onSelect = { [weak self] item in
+                let detailViewModel = CarPullDetailViewModel(openType: .MyPage, carPull: item)
+                detailViewModel.onBackButtonTapped = { [weak self] in
+                    self?.paths.removeLast()
+                }
+                self?.paths.append(.detail(detailViewModel))
+            }
+            paths.append(.myCarpull(vm))
         }
 
         func moveSetting() {
@@ -121,14 +126,13 @@ extension MyPage {
                         message: { Text("에러가 발생했어요. 다시 시도해주세요.") })
                     .navigationDestination(for: MyPage.ViewModel.Destination.self) { destination in
                         switch destination {
-                        case .myCarpull:
-                            MyCarPullListView(viewModel: .init(), paths: $viewModel.paths)
+                        case let .myCarpull(viewModel):
+                            MyCarPullListView(viewModel: viewModel)
                         case let .detail(detailViewModel):
                             CarPullDetailView(viewModel: detailViewModel)
                         case .question: EmptyView()
                         case .termsAndPolicies:
-                            let url = "https://www.notion.so/yapp-workspace/a8463163f86b4d58af2434aac213bb42"
-                            WebView(url: url)
+                            WebView(url: viewModel.termsURL)
                         case .setting:
                             MyPage.Setting.BodyView(viewModel: viewModel)
                         }
@@ -140,7 +144,7 @@ extension MyPage {
             VStack(alignment: .leading, spacing: .zero) {
                 profile
 
-                listButton(destination: .myCarpull, icon: .car, text: "내 카풀")
+                listButton(destination: .myCarpull(.init()), icon: .car, text: "내 카풀")
 //                navigationItemLink(Text("차량 정보 관리"), icon: .userCard, text: "차량 정보 관리")
 
                 Divider()

@@ -104,11 +104,14 @@ struct RootView: View {
                     .padding(.bottom, 7.5)
                 Image("ic_launch_text", bundle: .main)
             }
+            .transition(.opacity.animation(.spring))
                 
         case .login:
             Login.BodyView(viewModel: .init())
+                .transition(.opacity.animation(.spring))
         case .onboarding:
             Onboarding.Company.BodyView(viewModel: .init())
+                .transition(.opacity.animation(.spring))
         case .tab:
             FullCarTabView(viewModel: .init(tabSelection: .home))
         }

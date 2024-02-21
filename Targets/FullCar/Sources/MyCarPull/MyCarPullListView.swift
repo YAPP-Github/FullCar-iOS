@@ -16,8 +16,7 @@ struct MyCarPullListView: View {
     
     @Environment(\.dismiss) private var dismiss
     
-    @Bindable var viewModel: MyCarPullListViewModel
-    @Binding var paths: [MyPage.ViewModel.Destination]
+    let viewModel: MyCarPullListViewModel
     
     var body: some View {
         
@@ -40,7 +39,7 @@ struct MyCarPullListView: View {
                 
             }
         )
-        .task {
+        .onFirstTask {
             await viewModel.fetch()
         }
     }

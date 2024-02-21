@@ -151,7 +151,14 @@ struct CarPullRegisterView: View {
     var body: some View {
         NavigationStack(path: $viewModel.paths) { 
             _body
-                .navigationTitle("카풀 등록")
+                .navigationBarStyle(
+                    leadingView: { },
+                    centerView: {
+                        Text("카풀 등록")
+                            .font(.pretendard18(.bold))
+                    },
+                    trailingView: { }
+                )
                 .navigationDestination(for: CarPullRegisterViewModel.Destination.self) { destination in
                     switch destination {
                     case let .carRegister(viewModel):
