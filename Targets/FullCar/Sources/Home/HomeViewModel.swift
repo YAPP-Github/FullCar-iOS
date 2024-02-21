@@ -66,6 +66,10 @@ final class HomeViewModel {
         // TODO: 먼저 지워지는거 수정
         detailViewModel.onBackButtonTapped = { [weak self] in
             self?.paths.removeAll()
+            
+            Task {
+                await self?.refreshable()
+            }
         }
         paths.append(.detail(detailViewModel))
     }
