@@ -20,7 +20,11 @@ let project = Project(
         disableSynthesizedResourceAccessors: true
     ),
     packages: [],
-    settings: .settings(configurations: .app),
+    settings: .settings(base: [
+        "MARKETING_VERSION": "1",
+        "CURRENT_PROJECT_VERSION": "1.0.0",
+        "INFOPLIST_KEY_CFBundleDisplayName": "FullCar",
+    ], configurations: .app),
     targets: [
         mainTarget,
     ],
