@@ -127,7 +127,7 @@ extension Onboarding.Company {
                     locationList
                 }
 
-                if isLoading {
+                if isLoading && isFocused == nil {
                     DimView(color: Color.fullCar_primary, scale: 1.3)
                 }
             }
@@ -160,6 +160,7 @@ extension Onboarding.Company {
                 Task {
                     isFocused = nil
                     isLoading = true
+
                     let coordinates = await viewModel.fetchCompanyCoordinate(keyword)
                     locations = coordinates
 

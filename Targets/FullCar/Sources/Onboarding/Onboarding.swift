@@ -50,6 +50,8 @@ extension Onboarding {
 
         let fullCar = FullCar.shared
 
+        var isFocused: Onboarding.Field?
+
         // MARK: 화면 이동
         var isSearchViewAppear: Bool = false
         var isOnboardingViewAppear: Bool = false
