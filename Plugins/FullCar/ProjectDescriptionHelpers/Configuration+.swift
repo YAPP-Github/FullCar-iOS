@@ -22,7 +22,7 @@ public extension [Configuration] {
                 "CODE_SIGN_ENTITLEMENTS": "FullCarSandbox.entitlements",
                 "CODE_SIGN_IDENTITY": "Apple Development",
                 "DEVELOPMENT_TEAM": "ZMXTCSPNUZ",
-                "PROVISIONING_PROFILE_SPECIFIER": "FullCar Development",
+                "PROVISIONING_PROFILE_SPECIFIER": "FullCar - Develop",
 //                "APP_UNIVERSAL_LINKS": "",
             ],
             xcconfig: .relativeToRoot("Targets/FullCar/Resources/APIKeys.xcconfig")
@@ -40,7 +40,7 @@ public extension [Configuration] {
                 "CODE_SIGN_ENTITLEMENTS": "FullCarStore.entitlements",
                 "CODE_SIGN_IDENTITY": "Apple Distribution",
                 "DEVELOPMENT_TEAM": "ZMXTCSPNUZ",
-                "PROVISIONING_PROFILE_SPECIFIER": "FullCar Distribution",
+                "PROVISIONING_PROFILE_SPECIFIER": "FullCar - AppStore",
 //                /// 아직 없는데 추가해야하는 아이들
 //                "APP_UNIVERSAL_LINKS": "",
             ],
