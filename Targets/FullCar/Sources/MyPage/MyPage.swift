@@ -80,11 +80,6 @@ extension MyPage {
             paths.append(.setting)
         }
 
-        func moveQuestionLink() {
-            guard paths.isEmpty else { return }
-            paths.append(.question)
-        }
-
         func moveTermsAndPolicies() {
             guard paths.isEmpty else { return }
             paths.append(.termsAndPolicies)
@@ -95,6 +90,8 @@ extension MyPage {
 extension MyPage {
     @MainActor
     struct BodyView: View {
+        @Environment(\.openURL) var openURL
+
         @Bindable var viewModel: ViewModel
 
         var body: some View {
@@ -128,8 +125,7 @@ extension MyPage {
                             MyCarPullListView(viewModel: .init(), paths: $viewModel.paths)
                         case let .detail(detailViewModel):
                             CarPullDetailView(viewModel: detailViewModel)
-                        case .question:
-                            MyPage.Question.BodyView()
+                        case .question: EmptyView()
                         case .termsAndPolicies:
                             let url = "https://www.notion.so/yapp-workspace/a8463163f86b4d58af2434aac213bb42"
                             WebView(url: url)
@@ -183,7 +179,8 @@ extension MyPage {
                 case .myCarpull:
                     viewModel.moveMyCarPull()
                 case .question:
-                    viewModel.moveQuestionLink()
+                    let url = URL(string: "https://open.kakao.com/o/sg3bvqag")
+                    openURL(url!)
                 case .termsAndPolicies:
                     viewModel.moveTermsAndPolicies()
                 case .setting:

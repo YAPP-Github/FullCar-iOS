@@ -163,12 +163,10 @@ extension Onboarding.ViewModel {
     /// 닉네임 중복 확인 api 호출
     func sendVerificationNickname() async {
         isFocused = nil
-        
+
         do {
-            // 닉네임 중복 확인 api 호출
             try await onboardingAPI.check(nickname: nickname)
 
-            // case1) 닉네임 인증 성공
             isNicknameValid = true
             nicknameTextFieldState = .default
         } catch {
