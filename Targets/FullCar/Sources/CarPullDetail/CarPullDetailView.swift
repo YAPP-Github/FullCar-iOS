@@ -50,13 +50,13 @@ struct CarPullDetailView: View {
                 }
             }
             .alert(isPresented: $viewModel.deleteDoneAlertOpen) {
-                       Alert(title: Text("카풀 게시글이 삭제되었습니다."),
+                Alert(title: Text(viewModel.openType == .MyPage ? "카풀 게시글이 삭제되었습니다." : "신고 완료되었습니다."),
                              message: nil,
                              dismissButton: .default(Text("닫기"), action: {
                            viewModel.onBackButtonTapped()
                        }))
                    }
-            .alert("카풀을 마강하시겠어요?", isPresented: $viewModel.isFinishedAlertOpen, actions: {
+            .alert("카풀을 마감하시겠어요?", isPresented: $viewModel.isFinishedAlertOpen, actions: {
                 Button(role: .destructive, action: {
                     Task { await viewModel.patchAction(id: viewModel.carPull.id) }
                 }, label: {
@@ -66,12 +66,12 @@ struct CarPullDetailView: View {
             .alert(viewModel.openType == .Home ? "카풀 게시글을 신고하시겠어요?" : "카풀을 삭제 하시겠어요?", isPresented: $viewModel.alertOpen, actions: {
                 Button(role: .destructive, action: {
                     switch viewModel.openType {
+                    case .Home:
+                        viewModel.deleteDoneAlertOpen = true
                     case .MyPage:
                         Task { await viewModel.deleteAction(id: viewModel.carPull.id) }
-                    case .Home:
-                        //Task { await }
-                        break
                     }
+                    
                 }, label: {
                     Text(viewModel.openType == .Home ? "신고하기" : "삭제하기")
                 })
@@ -100,10 +100,6 @@ struct CarPullDetailView: View {
                 
                 if let information = viewModel.information {
                     Car.InformationCardView(information: information)
-                }
-                
-                if viewModel.requestStatus == .inProcess {
-                    Text("희망 접선 장소 해야함")
                 }
             }
         }

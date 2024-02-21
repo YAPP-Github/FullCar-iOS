@@ -59,6 +59,10 @@ struct CallListView: View {
                 } else {
                     CallRequestListView(data: $viewModel.sentData) { item in
                         viewModel.onAcceptTapped(type: .SentRequestDetails, data: item)
+                    } refreashable: {
+                        Task {
+                            await viewModel.loadAction(.request)
+                        }
                     }
                         .tag(FullCar.CallListTab.request)
                         .transition(.fadeInOut)
@@ -71,6 +75,10 @@ struct CallListView: View {
                 } else {
                     CallReceiveListView(data: $viewModel.receiveData) { item in
                         viewModel.onAcceptTapped(type: .ReceivedRequestDetails, data: item)
+                    } refreshable: {
+                        Task {
+                            await viewModel.loadAction(.receive)
+                        }
                     }
                         .tag(FullCar.CallListTab.receive)
                 }

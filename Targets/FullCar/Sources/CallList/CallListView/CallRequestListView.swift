@@ -14,6 +14,7 @@ struct CallRequestListView: View {
     @Binding var data: [CarPull.Model.Information]
     
     var onTapGesture: ((CarPull.Model.Information) -> ())
+    var refreashable: (() -> ())
     
     var body: some View {
         ScrollView {
@@ -31,6 +32,10 @@ struct CallRequestListView: View {
                     }
                 }
             })
+            
+        }
+        .refreshable {
+            refreashable()
         }
     }
 }

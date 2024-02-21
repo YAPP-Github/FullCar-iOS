@@ -55,16 +55,7 @@ final class CarPullDetailViewModel {
     }
     
     func beginRequestButtonTapped() async {
-        await MainActor.run {
-            requestStatus = .inProcess
-        }
         await applyFullCar()
-        
-        #if DEBUG
-        await MainActor.run {
-            requestStatus = .applyAlready
-        }
-        #endif
     }
     
     func applyFullCar() async {
@@ -74,6 +65,11 @@ final class CarPullDetailViewModel {
                                                peroidType: carPull.periodType.rawValue,
                                                money: carPull.money,
                                                content: carPull.content ?? "")
+            
+            await MainActor.run {
+                requestStatus = .applyAlready
+                onBackButtonTapped()
+            }
         } catch {
             print("error", error.localizedDescription)
         }
@@ -84,7 +80,7 @@ final class CarPullDetailViewModel {
             let _ = try await callListAPI.patchCarpull(formId: id)
             
             await MainActor.run {
-                isFinishedAlertOpen = true
+                onBackButtonTapped()
             }
         } catch {
             print("error", error.localizedDescription)

@@ -28,6 +28,9 @@ final class HomeViewModel {
     @Dependency(\.carpullAPI) private var carpullAPI
     @ObservationIgnored
     @Dependency(\.fullCar) private var fullCar
+    @ObservationIgnored
+    @Dependency(\.myCarPullAPI) private var myCarPullAPI
+    var myCarPullList: [CarPull.Model.Information] = []
     
     var paths: [Destination] = []
     private(set) var carPullList: [CarPull.Model.Information] = []
@@ -41,6 +44,7 @@ final class HomeViewModel {
     
     func onFirstTask() async {
         await fetchCarPulls(page: currentPage)
+        await myCarPullFetch()
     }
     
     func rowAppeared(at index: Int) async {
@@ -53,13 +57,19 @@ final class HomeViewModel {
     func refreshable() async {
         self.currentPage = Constants.startPage
         await fetchCarPulls(page: self.currentPage)
+        await myCarPullFetch()
     }
     
     func onCardTapped(_ carpull: CarPull.Model.Information) {
         guard paths.isEmpty else { return }
-        let detailViewModel = CarPullDetailViewModel(openType: .Home, carPull: carpull)
+        let detailViewModel = CarPullDetailViewModel(openType: myCarPullList.contains(where: { $0.id == carpull.id }) ? .MyPage : .Home, carPull: carpull)
+        // TODO: 먼저 지워지는거 수정
         detailViewModel.onBackButtonTapped = { [weak self] in
             self?.paths.removeAll()
+            
+            Task {
+                await self?.refreshable()
+            }
         }
         paths.append(.detail(detailViewModel))
     }
@@ -89,6 +99,18 @@ final class HomeViewModel {
         }
         catch {
             self.error = error
+        }
+    }
+    
+    func myCarPullFetch() async {
+        do {
+            let value = try await myCarPullAPI.fetch()
+            
+            await MainActor.run {
+                self.myCarPullList = value.data
+            }
+        } catch {
+            print("error", error.localizedDescription)
         }
     }
 }
