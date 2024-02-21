@@ -37,6 +37,8 @@ extension MyPage {
         
         var paths: [Destination] = []
 
+        let termsURL: String = "https://www.notion.so/yapp-workspace/a8463163f86b4d58af2434aac213bb42"
+
         func logout() async {
             do {
                 try await myPageAPI.logout()
@@ -127,8 +129,7 @@ extension MyPage {
                             CarPullDetailView(viewModel: detailViewModel)
                         case .question: EmptyView()
                         case .termsAndPolicies:
-                            let url = "https://www.notion.so/yapp-workspace/a8463163f86b4d58af2434aac213bb42"
-                            WebView(url: url)
+                            WebView(url: viewModel.termsURL)
                         case .setting:
                             MyPage.Setting.BodyView(viewModel: viewModel)
                         }
