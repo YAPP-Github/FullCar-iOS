@@ -65,18 +65,30 @@ extension Login {
 extension Login {
     @MainActor
     struct BodyView: View {
+        @Environment(\.openURL) var openURL
+
         @Bindable var viewModel: ViewModel
 
         var body: some View {
-            bodyView
-                .padding(.horizontal, 20)
-                .alert(
-                    "로그인할 수 없음",
-                    isPresented: $viewModel.isShowLoginErrorAlert,
-                    actions: {
-                        Button(action: { }, label: { Text("확인") })
-                    },
-                    message: { Text("에러가 발생했어요. 다시 시도해주세요.") })
+            VStack(spacing: 16) {
+                bodyView
+
+                policyText
+            }
+            .padding(.horizontal, 20)
+            .alert(
+                "로그인할 수 없음",
+                isPresented: $viewModel.isShowLoginErrorAlert,
+                actions: {
+                    Button(action: { }, label: {
+                        Text("확인")
+                            .font(.pretendard17(.regular))
+                    })
+                },
+                message: {
+                    Text("에러가 발생했어요. 다시 시도해주세요.")
+                        .font(.pretendard13(.regular))
+                })
         }
 
         private var bodyView: some View {
@@ -88,7 +100,7 @@ extension Login {
                 .padding(.bottom, 57)
 
                 Image(icon: .homeLogo)
-                    .padding(.bottom, 148)
+                    .padding(.bottom, 130)
 
                 VStack(spacing: 10) {
                     loginButton(for: .kakao)
@@ -155,6 +167,36 @@ extension Login {
             case .kakao: return LoginStyle.kakao
             case .apple: return LoginStyle.apple
             }
+        }
+
+        private var policyText: some View {
+            VStack(spacing: .zero) {
+                HStack(spacing: .zero) {
+                    Text("회원가입 시 ")
+
+                    Button(action: {
+                        let url = URL(string: "https://www.notion.so/yapp-workspace/1eca7b9677384ce2a1b07b1cd51fa7af")
+                        openURL(url!)
+                    }, label: {
+                        Text("<개인정보 처리방침>")
+                    })
+
+                    Text(" 및")
+
+                    Button(action: {
+                        let url = URL(string: "https://www.notion.so/yapp-workspace/a8463163f86b4d58af2434aac213bb42")
+                        openURL(url!)
+                    }, label: {
+                        Text("<서비스 이용약관>에")
+                    })
+                }
+
+                HStack(spacing: .zero) {
+                    Text("동의하시게 됩니다.")
+                }
+            }
+            .font(.pretendard12(.semibold))
+            .foregroundStyle(Color.gray45)
         }
     }
 }

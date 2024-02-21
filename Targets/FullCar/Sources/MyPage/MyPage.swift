@@ -128,7 +128,7 @@ extension MyPage {
                         case .question: EmptyView()
                         case .termsAndPolicies:
                             let url = "https://www.notion.so/yapp-workspace/a8463163f86b4d58af2434aac213bb42"
-                            //WebView(url: url)
+                            WebView(url: url)
                         case .setting:
                             MyPage.Setting.BodyView(viewModel: viewModel)
                         }
