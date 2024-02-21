@@ -15,6 +15,10 @@ import Dependencies
 @Observable
 final class HomeViewModel {
     
+    enum Constants {
+        static let startPage: Int = .zero
+    }
+    
     enum Destination: Hashable {
         case detail(CarPullDetailViewModel)
     }
@@ -30,7 +34,7 @@ final class HomeViewModel {
     private(set) var error: Error?
     var companyName: String { fullCar.member?.company.name ?? "" }
     
-    private var currentPage: Int = 1
+    private var currentPage: Int = Constants.startPage
     
     // MARK: Action
     
@@ -46,7 +50,7 @@ final class HomeViewModel {
     
     @Sendable
     func refreshable() async {
-        self.currentPage = 1
+        self.currentPage = Constants.startPage
         await fetchCarPulls(page: self.currentPage)
     }
     
@@ -74,7 +78,7 @@ final class HomeViewModel {
             let response = try await carpullAPI.fetch(page: currentPage)
             self.error = .none
             
-            if page == 1 {
+            if page == Constants.startPage {
                 carPullList = response.data.carPullList
             } else {
                 carPullList.append(contentsOf: response.data.carPullList)
