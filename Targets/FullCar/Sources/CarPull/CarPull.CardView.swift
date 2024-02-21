@@ -32,7 +32,14 @@ extension CarPull {
                         .foregroundStyle(Color.fullCar_primary)
                     Spacer()
                     
-                    statusBadgeView
+                    FCBadge(
+                        title: (carPull.carpoolState ?? .CLOSE).description,
+                        badgeConfigurable: .init(
+                            font: .pretendard12(.bold),
+                            style: carPull.carpoolState == .OPEN ? .palette(.primary_secondary) : .palette(.gray60)
+                        ),
+                        iconConfigurable: .init(location: .none)
+                    )
                 }
                 .padding(.bottom, 14)
                 
@@ -72,20 +79,6 @@ extension CarPull {
                         .foregroundStyle(Color.gray40)
                 }
             }
-        }
-        
-        var statusBadgeView: some View {
-            ZStack {
-                RoundedRectangle(cornerRadius: 3)
-                    .foregroundStyle(getColor(back: true))
-                Text(carPull.formState?.description ?? "")
-                    .foregroundStyle(getColor())
-                    .font(.system(size: 12))
-                    .bold()
-                    .padding(.vertical, 5)
-                    .padding(.horizontal, 8)
-            }
-            .fixedSize()
         }
         
         func getColor(back: Bool = false) -> Color {
