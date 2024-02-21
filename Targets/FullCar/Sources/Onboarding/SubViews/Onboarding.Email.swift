@@ -85,6 +85,8 @@ extension Onboarding.Email {
 
     @MainActor
     struct SendButtonView: View {
+        @Environment(\.openURL) var openURL
+        
         @Bindable var viewModel: Onboarding.ViewModel
 
         var body: some View {
@@ -94,9 +96,7 @@ extension Onboarding.Email {
         private var bodyView: some View {
             VStack(spacing: 10) {
                 if viewModel.isEmailRequestSent {
-                    Text("메일이 오지 않나요? >")
-                        .foregroundStyle(Color.fullCar_primary)
-                        .font(.pretendard14(.semibold))
+                    guideButton
                 }
 
                 Button(action: {
@@ -110,6 +110,17 @@ extension Onboarding.Email {
                 .buttonStyle(.fullCar(style: .palette(.primary_white)))
                 .disabled(!viewModel.isEmailValidation() == !viewModel.isEmailRequestSent)
             }
+        }
+
+        private var guideButton: some View {
+            Button(action: {
+                let url = URL(string: "https://open.kakao.com/o/sg3bvqag")
+                openURL(url!)
+            }, label: {
+                Text("메일이 오지 않나요? >")
+                    .foregroundStyle(Color.fullCar_primary)
+                    .font(.pretendard14(.semibold))
+            })
         }
     }
 
