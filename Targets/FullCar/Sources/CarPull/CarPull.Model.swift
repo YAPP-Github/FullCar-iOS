@@ -14,9 +14,11 @@ extension CarPull {
         struct Fetch: Decodable {
             let size: Int
             let carPullList: [CarPull.Model.Information]
+            let isLast: Bool
             private enum CodingKeys: String, CodingKey {
                 case size
                 case carPullList = "content"
+                case isLast = "last"
             }
         }
         

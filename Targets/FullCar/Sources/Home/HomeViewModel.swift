@@ -17,6 +17,7 @@ final class HomeViewModel {
     
     enum Constants {
         static let startPage: Int = .zero
+        static let fetchSize: Int = 20
     }
     
     enum Destination: Hashable {
@@ -86,6 +87,7 @@ final class HomeViewModel {
             if page == Constants.startPage {
                 carPullList = response.data.carPullList
             } else {
+                guard !response.data.isLast else { return }
                 carPullList.append(contentsOf: response.data.carPullList)
             }
             
