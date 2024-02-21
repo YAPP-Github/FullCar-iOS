@@ -90,7 +90,7 @@ extension CarPull.API: DependencyKey {
                     .mock(),
                     .mock(),
                     .mock(),
-                ]
+                ], isLast: false
             )
         )
     }

@@ -17,6 +17,7 @@ final class HomeViewModel {
     
     enum Constants {
         static let startPage: Int = .zero
+        static let fetchSize: Int = 20
     }
     
     enum Destination: Hashable {
@@ -57,7 +58,6 @@ final class HomeViewModel {
     func onCardTapped(_ carpull: CarPull.Model.Information) {
         guard paths.isEmpty else { return }
         let detailViewModel = CarPullDetailViewModel(openType: .Home, carPull: carpull)
-        // TODO: 먼저 지워지는거 수정
         detailViewModel.onBackButtonTapped = { [weak self] in
             self?.paths.removeAll()
         }
@@ -81,6 +81,7 @@ final class HomeViewModel {
             if page == Constants.startPage {
                 carPullList = response.data.carPullList
             } else {
+                guard !response.data.isLast else { return }
                 carPullList.append(contentsOf: response.data.carPullList)
             }
             
