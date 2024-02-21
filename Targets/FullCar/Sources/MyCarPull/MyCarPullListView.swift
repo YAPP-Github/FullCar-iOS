@@ -16,8 +16,7 @@ struct MyCarPullListView: View {
     
     @Environment(\.dismiss) private var dismiss
     
-    @Bindable var viewModel: MyCarPullListViewModel
-    @Binding var paths: [MyPage.ViewModel.Destination]
+    let viewModel: MyCarPullListViewModel
     
     var body: some View {
         
@@ -40,7 +39,7 @@ struct MyCarPullListView: View {
                 
             }
         )
-        .task {
+        .onFirstTask {
             await viewModel.fetch()
         }
     }
@@ -50,7 +49,7 @@ struct MyCarPullListView: View {
             LazyVGrid(columns: [GridItem()], content: {
                 ForEach(viewModel.myCarPullList, id:\.id) { item in
                     Button(action: {
-                        moveCarpullDetail(item)
+                        viewModel.onSelect(item)
                     }, label: {
                         MyCarPullItemView(item: item,
                                           isLast: item.id == viewModel.myCarPullList.last?.id)
@@ -59,14 +58,5 @@ struct MyCarPullListView: View {
                 }
             })
         }
-    }
-    
-    func moveCarpullDetail(_ item: CarPull.Model.Information) {
-        let detailViewModel = CarPullDetailViewModel(openType: .MyPage, carPull: item)
-        // TODO: 먼저 지워지는거 수정
-        detailViewModel.onBackButtonTapped = {
-            self.paths.removeLast()
-        }
-        paths.append(.detail(detailViewModel))
     }
 }
