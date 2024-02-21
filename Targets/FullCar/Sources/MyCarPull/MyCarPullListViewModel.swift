@@ -11,7 +11,7 @@ import FullCarKit
 import FullCarUI
 import Observation
 import Dependencies
-
+import XCTestDynamicOverlay
 
 @MainActor
 @Observable
@@ -19,21 +19,27 @@ final class MyCarPullListViewModel {
     @ObservationIgnored
     @Dependency(\.myCarPullAPI) private var myCarPullAPI
     
-    let fullCar = FullCar.shared
-    
     var myCarPullList: [CarPull.Model.Information] = []
+    
+    var onSelect: (CarPull.Model.Information) -> Void = unimplemented("")
     
     init() {}
     
     func fetch() async {
         do {
             let value = try await myCarPullAPI.fetch()
-            
-            await MainActor.run {
-                self.myCarPullList = value.data
-            }
+            self.myCarPullList = value.data
         } catch {
             print("error", error.localizedDescription)
         }
+    }
+}
+extension MyCarPullListViewModel: Hashable {
+    nonisolated static func == (lhs: MyCarPullListViewModel, rhs: MyCarPullListViewModel) -> Bool {
+        return lhs === rhs
+    }
+    
+    nonisolated func hash(into hasher: inout Hasher) {
+        hasher.combine(ObjectIdentifier(self))
     }
 }
