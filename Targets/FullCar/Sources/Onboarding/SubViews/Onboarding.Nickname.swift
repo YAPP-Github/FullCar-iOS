@@ -14,14 +14,15 @@ extension Onboarding.Nickname {
     struct TextFieldView: View {
         @Bindable var viewModel: Onboarding.ViewModel
 
-        @FocusState private var isNicknameTextFieldFocused: Bool
+        @FocusState private var isFocused: Onboarding.Field?
 
         var body: some View {
             bodyView
                 .onAppear {
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                        isNicknameTextFieldFocused = true
-                    }
+                    viewModel.isFocused = .nickname
+                }
+                .onChange(of: viewModel.isFocused) { _, newValue in
+                    isFocused = newValue
                 }
         }
 
@@ -29,6 +30,7 @@ extension Onboarding.Nickname {
             FCTextFieldView(
                 textField: {
                     TextField("10자 이내로 입력해주세요.", text: $viewModel.nickname)
+                        .focused($isFocused, equals: .nickname)
                         .textFieldStyle(.fullCar(
                             type: .check($viewModel.isNicknameValid),
                             state: $viewModel.nicknameTextFieldState)

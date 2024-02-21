@@ -32,6 +32,13 @@ struct Onboarding {
             }
         }
     }
+
+    enum Field: Hashable {
+        case company
+        case email
+        case authCode
+        case nickname
+    }
 }
 
 extension Onboarding {
@@ -153,6 +160,8 @@ extension Onboarding.ViewModel {
 
     /// 닉네임 중복 확인 api 호출
     func sendVerificationNickname() async {
+        isFocused = nil
+        
         do {
             // 닉네임 중복 확인 api 호출
             try await onboardingAPI.check(nickname: nickname)

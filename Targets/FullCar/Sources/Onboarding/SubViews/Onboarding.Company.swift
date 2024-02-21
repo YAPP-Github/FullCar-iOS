@@ -100,7 +100,7 @@ extension Onboarding.Company {
         @State var onSearchButtonTapped: Bool = false
         @State var isLoading: Bool = false
 
-        @FocusState private var isSearchTextFieldFocused: Bool
+        @FocusState private var isFocused: Onboarding.Field?
 
         var body: some View {
             bodyView
@@ -113,9 +113,7 @@ extension Onboarding.Company {
                     trailingView: { }
                 )
                 .onAppear {
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                        isSearchTextFieldFocused = true
-                    }
+                    isFocused = .company
                 }
         }
 
@@ -140,7 +138,7 @@ extension Onboarding.Company {
                 textField: {
                     HStack {
                         TextField("회사, 주소 검색", text: $keyword)
-                            .focused($isSearchTextFieldFocused)
+                            .focused($isFocused, equals: .company)
                             .textFieldStyle(
                                 .fullCar(
                                     type: .none,
@@ -160,7 +158,7 @@ extension Onboarding.Company {
         private var searchButton: some View {
             Button(action: {
                 Task {
-                    isSearchTextFieldFocused = false
+                    isFocused = nil
                     isLoading = true
                     let coordinates = await viewModel.fetchCompanyCoordinate(keyword)
                     locations = coordinates

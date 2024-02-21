@@ -14,14 +14,15 @@ extension Onboarding.Email {
     struct TextFieldView: View {
         @Bindable var viewModel: Onboarding.ViewModel
 
-        @FocusState private var isEmailTextFieldFocused: Bool
+        @FocusState private var isFocused: Onboarding.Field?
 
         var body: some View {
             bodyView
                 .onAppear {
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                        isEmailTextFieldFocused = true
-                    }
+                    isFocused = .email
+                }
+                .onChange(of: isFocused) { _, newValue in
+                    viewModel.isFocused = newValue
                 }
         }
 
@@ -29,7 +30,7 @@ extension Onboarding.Email {
             FCTextFieldView(
                 textField: {
                     TextField("\("gildong@fullcar.com")", text: $viewModel.email)
-                        .focused($isEmailTextFieldFocused)
+                        .focused($isFocused, equals: .email)
                         .textFieldStyle(.fullCar(
                             type: .check($viewModel.isEmailValid),
                             state: $viewModel.emailTextFieldState)
@@ -53,27 +54,29 @@ extension Onboarding.Email {
     struct AuthCodeView: View {
         @Bindable var viewModel: Onboarding.ViewModel
 
-        @FocusState private var isAuthCodeTextFieldFocused: Bool
-        
+        @FocusState private var isFocused: Onboarding.Field?
+
         var body: some View {
             bodyView
                 .onAppear {
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                        self.isAuthCodeTextFieldFocused = true
-                    }
+                    isFocused = .authCode
+                }
+                .onChange(of: isFocused) { _, newValue in
+                    viewModel.isFocused = newValue
                 }
         }
 
         private var bodyView: some View {
             FCTextFieldView(
                 textField: {
-                    TextField("인증번호 6자리를 입력해 주세요.", 
+                    TextField("인증번호 6자리를 입력해 주세요.",
                               text: $viewModel.authenticationCode)
-                        .textFieldStyle(.fullCar(
-                            state: $viewModel.authCodeTextFieldState,
-                            padding: 16)
-                        )
-                        .keyboardType(.numberPad)
+                    .focused($isFocused, equals: .authCode)
+                    .textFieldStyle(.fullCar(
+                        state: $viewModel.authCodeTextFieldState,
+                        padding: 16)
+                    )
+                    .keyboardType(.numberPad)
                 },
                 state: $viewModel.authCodeTextFieldState
             )
