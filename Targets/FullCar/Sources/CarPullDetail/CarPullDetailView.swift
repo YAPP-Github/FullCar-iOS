@@ -117,10 +117,122 @@ struct CarPullDetailView: View {
                 if let information = viewModel.information {
                     Car.InformationCardView(information: information)
                 }
+                
+                if viewModel.requestStatus == .inProcess {
+                    VStack(spacing: .zero) {
+                        wishPlaceTextField
+                        wishCostTextField
+                        wishSayTextField
+                    }
+                    .padding(.all, 20)
+                }
             }
         }
         .scrollIndicators(.hidden)
     }
+    
+    private var wishPlaceTextField: some View {
+        FCTextFieldView(
+            textField: {
+                TextField("ex) 삼성역 5번 출구", text: $viewModel.wishPlaceString)
+                    .textFieldStyle(
+                        .fullCar(state: $viewModel.wishPlaceStringState, padding: 16)
+                    )
+            },
+            state: $viewModel.wishPlaceStringState,
+            headerText: "희망 접선 장소",
+            isHeaderRequired: true
+        )
+        .padding(.bottom, 28)
+    }
+    
+    private var wishCostTextField: some View {
+        SectionView {
+            FCTextFieldView(
+                textField: { periodSelectionView },
+                state: $viewModel.wishCostState
+            )
+        } header: {
+            HeaderLabel(
+                title: "희망 비용",
+                isRequired: true,
+                font: .pretendard16(.semibold)
+            )
+        }
+        .padding(.bottom, 36)
+    }
+    
+    private var wishSayTextField: some View {
+        Group {
+            HeaderLabel(
+                title: "운전자에게 전할 말",
+                isRequired: false,
+                font: .pretendard16(.semibold)
+            )
+            .padding(.bottom, 12)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            
+            FCTextEditor(
+                text: $viewModel.sendText,
+                placeholder: "운전자에게 하고 싶은 말이 있다면 자유롭게 작성해주세요!",
+                font: .pretendard16(.semibold),
+                padding: 16,
+                radius: 10
+            )
+            .frame(height: 150)
+        }
+    }
+    
+    private var periodSelectionView: some View {
+        HStack(spacing: .zero) {
+            periodSelectionButton
+                .padding(.trailing, 12)
+            
+            TextField(
+                "ex) 30,000",
+                text: .init(
+                    get: { viewModel.wishCostText },
+                    set: { viewModel.wishCostTextChanged($0) }
+                )
+            )
+            .keyboardType(.numberPad)
+            .textFieldStyle(
+                .fullCar(
+                    type: .won,
+                    state: $viewModel.wishCostState
+                )
+            )
+        }
+    }
+    
+    private var periodSelectionButton: some View {
+        Menu {
+            ForEach(CarPull.Model.PeriodType.allCases, id: \.self) { period in
+                Button {
+                    viewModel.periodSelectionButton(period: period)
+                } label: {
+                    Text(period.description)
+                }
+            }
+        } label: {
+            HStack(spacing: .zero) {
+                Text(viewModel.periodType?.description ?? "기간")
+                    .font(.pretendard16(.semibold))
+                    .foregroundStyle(viewModel.periodType == nil ? Color.gray45 : Color.black80)
+                    .padding(.trailing, 8)
+                Image(systemName: "chevron.down")
+                    .foregroundStyle(Color.black80)
+            }
+            .padding(.horizontal, 12)
+            .padding(.vertical, 16)
+            .overlay {
+                RoundedRectangle(cornerRadius: 10)
+                    .stroke(lineWidth: 1)
+                    .foregroundStyle(Color.gray30)
+            }
+        }
+    }
+    
     
     private var beginRequestButton: some View {
         Button {
@@ -128,20 +240,30 @@ struct CarPullDetailView: View {
             case .MyPage:
                 viewModel.isFinishedAlertOpen = true
             case .Home:
-                Task { await viewModel.beginRequestButtonTapped() }
+                
+                switch viewModel.requestStatus {
+                case .beforeBegin:
+                    withAnimation(.smooth(duration: 0.2)) {
+                        viewModel.requestStatus = .inProcess
+                    }
+                case .inProcess:
+                    Task { await viewModel.beginRequestButtonTapped() }
+                case .applyAlready:
+                    break
+                }
             }
         }
-    label: { Text(viewModel.openType == .Home ? "탑승요청" : "마감하기") }
+    label: { Text(viewModel.openType == .Home ? viewModel.requestStatus == .beforeBegin ? "탑승요청" : "요청하기" : "마감하기") }
         .buttonStyle(
             .fullCar(
                 font: .pretendard17(.bold),
                 horizontalPadding: 137,
                 verticalPadding: 17,
                 radius: 8,
-                style: .palette(viewModel.requestStatus == .applyAlready ? .gray60 : .primary_white)
+                style: viewModel.checkStyle()
             )
         )
-        .disabled(viewModel.requestStatus == .applyAlready)
+        .disabled(viewModel.checkDisable())
     }
 }
 

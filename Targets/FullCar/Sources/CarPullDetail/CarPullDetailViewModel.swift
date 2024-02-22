@@ -10,6 +10,8 @@ import Foundation
 import Observation
 import Dependencies
 import XCTestDynamicOverlay
+import FullCarUI
+import SwiftUI
 
 
 
@@ -50,6 +52,16 @@ final class CarPullDetailViewModel {
     
     var alertType: AlertType = .alreadyRegister
     
+    // MARK: 입력 데이터들
+    var wishPlaceString: String = ""
+    var wishPlaceStringState: InputState = .default
+    
+    var wishCostText: String = ""
+    var wishCostState: InputState = .default
+    var periodType: CarPull.Model.PeriodType?
+    
+    var sendText: String = ""
+    
     init(
         openType: CarPullDetailOpenType = .Home,
         requestStatus: RequestStatus = .beforeBegin,
@@ -71,10 +83,10 @@ final class CarPullDetailViewModel {
     func applyFullCar() async {
         do {
             try await callListAPI.applyCarpull(formId: carPull.id,
-                                               pickupLocation: carPull.pickupLocation,
-                                               peroidType: carPull.periodType.rawValue,
-                                               money: carPull.money,
-                                               content: carPull.content ?? "")
+                                               pickupLocation: wishPlaceString,
+                                               peroidType: periodType?.rawValue ?? "",
+                                               money: Int(wishCostText) ?? 0,
+                                               content: sendText)
             
             await MainActor.run {
                 requestStatus = .applyAlready
@@ -88,6 +100,19 @@ final class CarPullDetailViewModel {
             
             print("error", error.localizedDescription)
         }
+    }
+    
+    func wishCostTextChanged(_ wishCostText: String) {
+        if wishCostText.count <= 10 {
+            self.wishCostState = .focus
+        } else {
+            self.wishCostState = .error("희망 비용은 10글자 까지 입력할 수 있어요.")
+        }
+        self.wishCostText = wishCostText
+    }
+    
+    func periodSelectionButton(period: CarPull.Model.PeriodType) {
+        self.periodType = period
     }
     
     func patchAction(id: Int64) async {
@@ -107,6 +132,30 @@ final class CarPullDetailViewModel {
             alreadyRegisterAlertOpen = true
         } catch {
             print("에러", error.localizedDescription)
+        }
+    }
+    
+    func checkDisable() -> Bool {
+        withAnimation(.smooth(duration: 0.2)) {
+            switch requestStatus {
+            case .beforeBegin:
+                return false
+            case .inProcess:
+                return ((wishPlaceString.isEmpty) && (wishCostText.isEmpty))
+            case .applyAlready:
+                return true
+            }
+        }
+    }
+    
+    func checkStyle() -> ColorStyle {
+        switch requestStatus {
+        case .beforeBegin:
+            return .palette(.primary_white)
+        case .inProcess:
+            return !(wishPlaceString.isEmpty) && !(wishCostText.isEmpty) ? .palette(.primary_white) : .palette(.gray60)
+        case .applyAlready:
+            return .palette(.gray60)
         }
     }
 }
