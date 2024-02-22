@@ -39,7 +39,7 @@ struct MyCarPullListView: View {
                 
             }
         )
-        .onFirstTask {
+        .task {
             await viewModel.fetch()
         }
     }

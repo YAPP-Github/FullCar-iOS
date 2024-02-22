@@ -299,8 +299,8 @@ extension Endpoint.Member: URLRequestConfigurable {
     
     public var headers: [Header]? {
         switch self {
-        case .search(_, let key): return [
-            .authorization("KakaoAK \(key)")
+        case .search(_, _): return [
+            .authorization("KakaoAK 1beb7fb6952155736b0d5554eb63ee38")
         ]
         default: return nil
         }

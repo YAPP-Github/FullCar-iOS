@@ -23,6 +23,12 @@ final class CarPullDetailViewModel {
         case Home
     }
     
+    enum AlertType {
+    case alreadyRegister
+    case deleteDone
+    case apply
+    }
+    
     enum RequestStatus {
         case beforeBegin
         case inProcess
@@ -40,6 +46,9 @@ final class CarPullDetailViewModel {
     var deleteDoneAlertOpen: Bool = false
     var isFinishedAlertOpen: Bool = false
     var acceptAlertOpen: Bool = false
+    var alreadyRegisterAlertOpen: Bool = false
+    
+    var alertType: AlertType = .alreadyRegister
     
     init(
         openType: CarPullDetailOpenType = .Home,
@@ -69,9 +78,14 @@ final class CarPullDetailViewModel {
             
             await MainActor.run {
                 requestStatus = .applyAlready
-                acceptAlertOpen = true
+                alertType = .apply
+                alreadyRegisterAlertOpen = true
             }
         } catch {
+            
+            alertType = .alreadyRegister
+            alreadyRegisterAlertOpen = true
+            
             print("error", error.localizedDescription)
         }
     }
@@ -79,10 +93,7 @@ final class CarPullDetailViewModel {
     func patchAction(id: Int64) async {
         do {
             let _ = try await callListAPI.patchCarpull(formId: id)
-            
-            await MainActor.run {
-                onBackButtonTapped()
-            }
+            onBackButtonTapped()
         } catch {
             print("error", error.localizedDescription)
         }
@@ -92,9 +103,8 @@ final class CarPullDetailViewModel {
         do {
             let _ = try await callListAPI.deleteCarpull(formId: id)
             
-            await MainActor.run {
-                deleteDoneAlertOpen = true
-            }
+            alertType = .deleteDone
+            alreadyRegisterAlertOpen = true
         } catch {
             print("에러", error.localizedDescription)
         }

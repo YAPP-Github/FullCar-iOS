@@ -49,20 +49,29 @@ struct CarPullDetailView: View {
                     viewModel.alertOpen = true
                 }
             }
-            .alert(isPresented: $viewModel.deleteDoneAlertOpen) {
-                Alert(title: Text(viewModel.openType == .MyPage ? "카풀 게시글이 삭제되었습니다." : "신고 완료되었습니다."),
-                             message: nil,
-                             dismissButton: .default(Text("닫기"), action: {
-                           viewModel.onBackButtonTapped()
-                       }))
-                   }
-            .alert(isPresented: $viewModel.acceptAlertOpen) {
-                Alert(title: Text("탑승 요청이 완료되었습니다."),
-                             message: nil,
-                             dismissButton: .default(Text("닫기"), action: {
-                           viewModel.onBackButtonTapped()
-                       }))
-                   }
+            .alert(isPresented: $viewModel.alreadyRegisterAlertOpen) {
+                
+                switch viewModel.alertType {
+                case .alreadyRegister:
+                    Alert(title: Text("이미 신청한 카풀이거나, 탈퇴한 유저의 카풀입니다."),
+                          message: nil,
+                          dismissButton: .default(Text("닫기"), action: {
+                        viewModel.onBackButtonTapped()
+                    }))
+                case .deleteDone:
+                    Alert(title: Text(viewModel.openType == .MyPage ? "카풀 게시글이 삭제되었습니다." : "신고 완료되었습니다."),
+                          message: nil,
+                          dismissButton: .default(Text("닫기"), action: {
+                        viewModel.onBackButtonTapped()
+                    }))
+                case .apply:
+                    Alert(title: Text("탑승 요청이 완료되었습니다."),
+                          message: nil,
+                          dismissButton: .default(Text("닫기"), action: {
+                        viewModel.onBackButtonTapped()
+                    }))
+                }
+            }
             .alert("카풀을 마감하시겠어요?", isPresented: $viewModel.isFinishedAlertOpen, actions: {
                 Button(role: .destructive, action: {
                     Task { await viewModel.patchAction(id: viewModel.carPull.id) }
