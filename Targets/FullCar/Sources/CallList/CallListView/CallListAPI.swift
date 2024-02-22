@@ -23,7 +23,13 @@ extension CallListView {
         private var apply: @Sendable (Int64, String, String, Int, String) async throws -> CommonResponse<CarPull.Model.Information>
         private var delete: @Sendable (Int64) async throws -> CommonResponse<CarPull.Model.Information>
         private var patch: @Sendable (Int64) async throws -> CommonResponse<CarPull.Model.Information>
+        private var get: @Sendable (Int64) async throws -> CommonResponse<CarPull.Model.Information>
         
+        
+        @discardableResult
+        func getCarpoolDetail(id: Int64) async throws -> CommonResponse<CarPull.Model.Information> {
+            return try await self.get(id)
+        }
         
         @discardableResult
         func getFormDetail(formId: Int64) async throws -> CommonResponse<CarPull.Model.Information> {
@@ -73,6 +79,9 @@ extension CallListView.API: DependencyKey {
             .response()
     }, patch: { formId in
         return try await NetworkClient.main.request(endpoint: Endpoint.CarPull.patchCarpull(id: formId))
+            .response()
+    }, get: { id in
+        return try await NetworkClient.main.request(endpoint: Endpoint.CarPull.getCarpullDetail(id: id))
             .response()
     })
     #if DEBUG
@@ -300,6 +309,20 @@ extension CallListView.API: DependencyKey {
                                                         resultMessage: .init(contact: "카풀 매칭에 실패했어요. 다른 카풀을 찾아보세요!", toPassenger: nil),
                                                         createdAt: Date()))
     }, patch: { formId in
+            .init(status: 200, message: "", data: .init(id: 4,
+                                                        pickupLocation: "봉천역",
+                                                        periodType: .oneWeek,
+                                                        money: 10000,
+                                                        content: "봉천역에서 카풀해요~",
+                                                        moodType: .quiet,
+                                                        formState: .REJECT,
+                                                        carpoolState: .OPEN,
+                                                        nickname: "알뜰한 물개",
+                                                        companyName: "현대자동차",
+                                                        gender: .male,
+                                                        resultMessage: .init(contact: "카풀 매칭에 실패했어요. 다른 카풀을 찾아보세요!", toPassenger: nil),
+                                                        createdAt: Date()))
+    }, get: { id in
             .init(status: 200, message: "", data: .init(id: 4,
                                                         pickupLocation: "봉천역",
                                                         periodType: .oneWeek,

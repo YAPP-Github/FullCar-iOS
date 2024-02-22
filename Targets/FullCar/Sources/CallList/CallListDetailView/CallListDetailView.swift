@@ -130,20 +130,23 @@ struct CallListDetailView: View {
             
             if viewModel.toggleOpen {
                 
-                CarPull.CardView(carPull: viewModel.carpullData)
-                
-                Rectangle()
-                    .foregroundStyle(Color.gray10)
-                    .frame(height: 8, alignment: .center)
-                
-                if let _ = viewModel.carpullData.carNo {
-                    let carpullData = viewModel.carpullData
-                    Car.InformationCardView(information: .init(id: Int(carpullData.id),
-                                                               carNumber: carpullData.carNo ?? "",
-                                                               carName: carpullData.carName ?? "",
-                                                               carBrand: carpullData.carBrand ?? "",
-                                                               carColor: carpullData.carColor ?? ""))
+                if let requestCarpoolData = viewModel.requestCarpoolData {
+                    CarPull.CardView(carPull: requestCarpoolData)
+                    
+                    Rectangle()
+                        .foregroundStyle(Color.gray10)
+                        .frame(height: 8, alignment: .center)
+                    
+                    if let _ = requestCarpoolData.carNo {
+                        Car.InformationCardView(information: .init(id: Int(requestCarpoolData.id),
+                                                                   carNumber: requestCarpoolData.carNo ?? "",
+                                                                   carName: requestCarpoolData.carName ?? "",
+                                                                   carBrand: requestCarpoolData.carBrand ?? "",
+                                                                   carColor: requestCarpoolData.carColor ?? ""))
+                    }
                 }
+                
+                
             }
             
             Rectangle()

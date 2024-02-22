@@ -40,6 +40,7 @@ extension CarPull {
             let carName: String?
             let carBrand: String?
             let carColor: String?
+            let carpoolId: Int64?
             
             enum CodingKeys: String, CodingKey {
                 case id
@@ -59,9 +60,10 @@ extension CarPull {
                 case carName
                 case carBrand
                 case carColor
+                case carpoolId
             }
             
-            init(id: Int64, pickupLocation: String, periodType: PeriodType, money: Int, content: String, moodType: Driver.Mood?, formState: FormStateType?, carpoolState: CarPoolStateType?, nickname: String?, companyName: String, gender: Driver.Gender?, resultMessage: ResultMessage?, createdAt: Date, carNo: String? = nil, carName: String? = nil, carBrand: String? = nil, carColor: String? = nil) {
+            init(id: Int64, pickupLocation: String, periodType: PeriodType, money: Int, content: String, moodType: Driver.Mood?, formState: FormStateType?, carpoolState: CarPoolStateType?, nickname: String?, companyName: String, gender: Driver.Gender?, resultMessage: ResultMessage?, createdAt: Date, carNo: String? = nil, carName: String? = nil, carBrand: String? = nil, carColor: String? = nil, carpoolId: Int64? = nil) {
                 self.id = id
                 self.pickupLocation = pickupLocation
                 self.periodType = periodType
@@ -79,6 +81,7 @@ extension CarPull {
                 self.carName = carName
                 self.carBrand = carBrand
                 self.carColor = carColor
+                self.carpoolId = carpoolId
             }
             
             
@@ -102,6 +105,7 @@ extension CarPull {
                 self.carName = try? container.decode(String?.self, forKey: .carName) ?? .none
                 self.carBrand = try? container.decode(String?.self, forKey: .carBrand) ?? .none
                 self.carColor = try? container.decode(String?.self, forKey: .carColor) ?? .none
+                self.carpoolId = try? container.decode(Int64?.self, forKey: .carpoolId) ?? .none
             }
         }
         

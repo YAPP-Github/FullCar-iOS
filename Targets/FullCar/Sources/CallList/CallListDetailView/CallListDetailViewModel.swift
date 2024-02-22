@@ -41,6 +41,7 @@ final class CallListDetailViewModel {
     var toggleRotate: CGFloat = 0
     
     var carpullData: CarPull.Model.Information
+    var requestCarpoolData: CarPull.Model.Information? = nil
     
     var typingState: CallListDetailView.TypingState = .waiting
     
@@ -63,10 +64,11 @@ final class CallListDetailViewModel {
     func loadData() async {
         do {
             let receiveData = try await callListAPI.getFormDetail(formId: carpullData.id)
+            let carpoolData = try await callListAPI.getCarpoolDetail(id: receiveData.data.carpoolId ?? 0)
             
-            await MainActor.run {
-                self.carpullData = receiveData.data
-            }
+            self.carpullData = receiveData.data
+            self.requestCarpoolData = carpoolData.data
+            
         } catch {
             print("error", error.localizedDescription)
         }
