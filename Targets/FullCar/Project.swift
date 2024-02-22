@@ -21,8 +21,8 @@ let project = Project(
     ),
     packages: [],
     settings: .settings(base: [
-        "MARKETING_VERSION": "1",
-        "CURRENT_PROJECT_VERSION": "1.0.0",
+        "MARKETING_VERSION": "2",
+        "CURRENT_PROJECT_VERSION": "1.1",
         "INFOPLIST_KEY_CFBundleDisplayName": "FullCar",
     ], configurations: .app),
     targets: [

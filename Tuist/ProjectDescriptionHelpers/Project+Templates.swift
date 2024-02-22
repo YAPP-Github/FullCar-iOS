@@ -85,8 +85,8 @@ extension Project {
     ) -> [Target] {
         let platform: Platform = platform
         let infoPlist: [String: Plist.Value] = [
-            "CFBundleShortVersionString": "1.0",
-            "CFBundleVersion": "1",
+            "CFBundleShortVersionString": "1.1",
+            "CFBundleVersion": "2",
             "UIMainStoryboardFile": "",
             "UILaunchStoryboardName": "LaunchScreen"
         ]

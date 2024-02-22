@@ -16,8 +16,8 @@ public let mainTarget: Target = .init(
     deploymentTarget: .app,
     infoPlist: .extendingDefault(
         with: [
-            "CFBundleShortVersionString": "1.0",
-            "CFBundleVersion": "1",
+            "CFBundleShortVersionString": "1.1",
+            "CFBundleVersion": "2",
             "UIUserInterfaceStyle": "Light",
             "UIMainStoryboardFile": "",
             "UILaunchStoryboardName": "LaunchScreen",
