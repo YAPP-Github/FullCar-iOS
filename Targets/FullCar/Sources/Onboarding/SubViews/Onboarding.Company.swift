@@ -119,18 +119,43 @@ extension Onboarding.Company {
 
         private var bodyView: some View {
             ZStack {
-                VStack(spacing: 1) {
+                VStack(spacing: .zero) {
                     companySearchBar
                         .padding(.horizontal, 20)
                         .padding(.top, 20)
 
-                    locationList
+                    if !onSearchButtonTapped {
+                        message
+                    } else {
+                        locationList
+                            .padding(.top, 1)
+                    }
                 }
 
                 if isLoading && isFocused == nil {
                     DimView(color: Color.fullCar_primary, scale: 1.3)
                 }
             }
+        }
+
+        @ViewBuilder
+        private var message: some View {
+            Spacer()
+
+            VStack(spacing: .zero) {
+                HStack(spacing: .zero) {
+                    Text("회사 이름(한글/영어), 도로명/지번 주소")
+                        .font(.pretendard16(.bold))
+
+                    Text("등의")
+                        .font(.pretendard16(.regular))
+                }
+                Text("방식으로 검색을 시도해보세요!")
+                    .font(.pretendard16(.regular))
+            }
+            .foregroundStyle(Color.gray60)
+
+            Spacer()
         }
 
         private var companySearchBar: some View {
@@ -180,7 +205,7 @@ extension Onboarding.Company {
 
         private var locationList: some View {
             ScrollView {
-                if locations.isEmpty && onSearchButtonTapped {
+                if locations.isEmpty {
                     emptyLocationList
                         .padding(.top, 104)
                 } else {
