@@ -183,10 +183,10 @@ extension Endpoint.CarPull: URLRequestConfigurable {
     
     public var path: String? {
         switch self {
-        case .fetch, .register: return "/api/v1/carpools"
-        case .deleteCarpull(let id), .patchCarpull(let id): return "/api/v1/carpools/\(id)"
+        case .fetch, .register: return "api/v1/carpools"
+        case .deleteCarpull(let id), .patchCarpull(let id): return "api/v1/carpools/\(id)"
         case .fetchMyCarPulls: return "api/v1/my-carpools"
-        case .getCarpullDetail(let id): return "api/v1/my-carpools/\(id)"
+        case .getCarpullDetail(let id): return "api/v1/carpools/\(id)"
         }
     }
     
